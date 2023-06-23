@@ -1,0 +1,4 @@
+data-ingestions/yellow_tripdata_2022-12.parquet
+data-ingestions/config.py
+data-ingestions/.ipynb_checkpoints/taxi-rides-checkpoint.ipynb
+.DS_Store
