@@ -1,0 +1,9 @@
+data-ingestions/.DS_Store
+.DS_Store
+data-ingestions/yellow_tripdata_2022-12.parquet
+data-ingestions/.ipynb_checkpoints/taxi-rides-checkpoint.ipynb
+website/website/.env
+website/website/__pycache__/__init__.cpython-311.pyc
+website/website/__pycache__/settings.cpython-311.pyc
+website/website/__pycache__/urls.cpython-311.pyc
+website/website/__pycache__/wsgi.cpython-311.pyc
