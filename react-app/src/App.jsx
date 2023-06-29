@@ -35,10 +35,10 @@
 // export default App
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import HomePage from './components/HomePage';
+import HomePage from './components/HomePage/HomePage';
 // import LoginPage from './components/LoginPage';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
 
 function App() {
   return (
