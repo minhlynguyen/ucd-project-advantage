@@ -16,11 +16,10 @@ from django.contrib.gis.db import models as geomodels
 from django.contrib.gis.geos import GEOSGeometry
 import json
 
-
-class TaxiZones(geomodels.Model):
+class TaxiZone(geomodels.Model):
     id = geomodels.PositiveIntegerField(primary_key=True)
-    geom = geomodels.MultiPolygonField()
     name = geomodels.CharField(max_length=45)
+    geom = geomodels.MultiPolygonField()
     
 with open('../data-ingestions/nyc-taxi-zones.geojson', 'r') as fd:
     data = json.load(fd)
@@ -29,8 +28,10 @@ with open('../data-ingestions/nyc-taxi-zones.geojson', 'r') as fd:
         geom = GEOSGeometry(str(feature['geometry']))
         geonameid = feature['properties']['objectid']
         geoname = feature['properties']['zone']
-        zone = TaxiZones(
+        zone = TaxiZone(
             id=geonameid,
             geom=GEOSGeometry(geom),
             name=geoname)
         zone.save()
+
+# class Place()
