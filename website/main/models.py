@@ -11,7 +11,7 @@ class Advertiser(models.Model):
 # class BillboardVendor(models.Model):
 #     user=models.ForeignKey(User,on_delete=models.CASCADE)
 
-# Taxi zone models in main DB
+# Taxi zone models in public schema
 from django.contrib.gis.db import models as geomodels
 from django.contrib.gis.geos import GEOSGeometry
 import json
@@ -39,7 +39,7 @@ def taxi_zone_populate(model):
                 borough=geoborough)
             zone.save()
 
-taxi_zone_populate(TaxiZone)
+# taxi_zone_populate(TaxiZone)
 
 # Taxi zone models in maps schema
 
@@ -54,4 +54,4 @@ class Zone(models.Model):
         db_table = 'maps\".\"zone'
 
 ## Populate
-taxi_zone_populate(Zone)
+# taxi_zone_populate(Zone)
