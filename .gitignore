@@ -24,3 +24,5 @@ website/main/__pycache__/views.cpython-311.pyc
 website/main/__pycache__/urls.cpython-311.pyc
 data-ingestions/taxi-geojson.ipynb
 data-ingestions/.ipynb_checkpoints/taxi-geojson-checkpoint.ipynb
+website/main/migrations/__pycache__/0002_zone_taxizone_borough.cpython-311.pyc
+data-ingestions/.ipynb_checkpoints/nyc-taxi-zones-geojson-checkpoint.ipynb
