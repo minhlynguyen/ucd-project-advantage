@@ -37,7 +37,6 @@ class Advertiser(models.Model):
 #                 name=geoname,
 #                 borough=geoborough)
 #             zone.save()
-# taxi_zone_populate(TaxiZone)
 
 # Taxi zone models in maps schema
 ## Create table
