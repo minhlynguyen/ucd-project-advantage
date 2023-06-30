@@ -17,12 +17,9 @@ data-ingestions/~$taxi_zones_data_dict.xlsx
 data-ingestions/taxi_zones_data_dict.xlsx
 data-ingestions/taxi_zones.csv
 website/main/__pycache__/serializers.cpython-311.pyc
-.gitignore
-.gitignore
-website/main/migrations/__pycache__/0002_taxizones.cpython-311.pyc
 website/main/__pycache__/views.cpython-311.pyc
 website/main/__pycache__/urls.cpython-311.pyc
-data-ingestions/taxi-geojson.ipynb
-data-ingestions/.ipynb_checkpoints/taxi-geojson-checkpoint.ipynb
 website/main/migrations/__pycache__/0002_zone_taxizone_borough.cpython-311.pyc
-data-ingestions/.ipynb_checkpoints/nyc-taxi-zones-geojson-checkpoint.ipynb
+data-ingestions/.ipynb_checkpoints/nyc-geojson-checkpoint.ipynb
+website/main/migrations/__pycache__/0003_puma_delete_taxizone.cpython-311.pyc
+website/main/migrations/__pycache__/0004_zone_puma_populate.cpython-311.pyc
