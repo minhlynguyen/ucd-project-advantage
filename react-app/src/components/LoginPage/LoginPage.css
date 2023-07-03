@@ -1,0 +1,52 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* body .login-container{
+  background-color:black;
+
+} */
+
+section{
+  max-width:95%;
+  padding: 1rem;
+  font-size:  2rem;
+  font-weight: 5rem;
+
+}
+.login-container {
+
+  display: flex;
+  font-family: 'Dosis', sans-serif;
+
+
+  }
+  
+  .column{
+    flex: 50%;
+  }
+
+  .login-left{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: black;
+    border-radius: 4px;
+
+
+  }
+
+  .login-right{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+  }
+
+  .input-container{
+    display: flex;
+    flex-direction: column;
+  }
+
+ 
