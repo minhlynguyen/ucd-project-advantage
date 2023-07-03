@@ -60,12 +60,14 @@ function MyRoutes() {
       {location.pathname !== '/login' && location.pathname !== '/signup' && <Header />}
       <Routes>
         <Route path="/" element={<HomePage />} />
-        {/* <Route path="/about" element={<AboutPage />} /> */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage/>}/>
+
         {/* <Route path="/about" element={<AboutPage />} />
         <Route path="/login" element={<LoginPage />} /> */}
         <Route path='/heatmap' element={<HeatmapPage />} />
+
+        {/* <Route path="/about" element={<AboutPage />} /> */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage/>}/>
       </Routes>
       {/* Only show Footer when not on LoginPage */}
       {location.pathname !== '/login' && <Footer />}

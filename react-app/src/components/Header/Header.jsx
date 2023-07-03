@@ -22,8 +22,8 @@ export default function Header() {
             <div className={`nav-components ${isNavExpanded ? "navigation-menu expanded" : "navigation-menu"}`}>
                 <div className="nav-left">
                     <ul className="navbar-links">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Solutions</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/heatmap">Solutions</a></li>
                         <li><a href="#">Testimonials</a></li>
                     </ul>
                 </div>
