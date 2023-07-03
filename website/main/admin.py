@@ -1,8 +1,7 @@
 from django.contrib.gis import admin
 
 # Register your models here.
-from .models import TaxiZone, Zone
-# from .models import Zone
+from .models import Zone, Puma
 
-admin.site.register(TaxiZone, admin.ModelAdmin)
-# admin.site.register(Zone, admin.ModelAdmin)
+admin.site.register(Zone, admin.GISModelAdmin)
+admin.site.register(Puma, admin.GISModelAdmin)
