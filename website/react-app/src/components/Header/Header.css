@@ -1,0 +1,184 @@
+/* root */
+@import url('https://fonts.googleapis.com/css2?family=Dosis');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   
+
+
+}
+
+body{
+    background-color: #e1dcd9;
+    
+
+}
+  
+
+/* parent navbar container */
+.navbar-parent{
+    display: flex;
+    align-items: center;
+    max-width: 95%;
+    font-family: 'Dosis', sans-serif;
+    font-size:  1.4rem;
+    font-weight: 5rem;
+
+
+
+
+}
+
+.dropdown-button{
+    display: none;
+}
+
+
+/* container for left and right nav */
+
+.nav-components{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    /* background-color: green; */
+
+}
+
+/* left of navbar */
+.nav-left{
+    display: flex;
+    align-items: center;
+}
+
+.navbar-links{
+    display: flex;
+    letter-spacing: .05rem;
+
+
+}
+
+
+.navbar-links > li{
+    list-style: none;
+
+
+
+}
+
+.navbar-links > li  > a {
+    display: inline-block;
+    border-bottom: 2px solid transparent;
+    padding: .5em 1em .5em 1em;
+    text-decoration: none;
+    color: #80868b;
+    transition: all 200ms ease-in-out;
+
+
+}
+
+.navbar-links > li > a:hover{
+cursor: pointer;
+color: black;
+border-bottom: 2px solid  #32435f;
+
+}
+
+
+/* right of navbar */
+.nav-right{
+    display: flex;
+   
+
+}
+.nav-right > button{
+    justify-content: center;
+    align-items: center;
+    border: 1.5px solid transparent;
+    border-radius: 4px;
+    letter-spacing: .05rem;
+    margin-left: 1rem;
+    padding: .5em 1em .5em 1em;
+    font-size:  0.8em;
+    font-weight: 5rem;
+    transition: all 240ms ease-in-out;
+}
+
+.login-button:hover{
+    border-color: #32435f;
+}
+    
+.login-link{
+    text-decoration: none;
+    color: black;
+}
+
+.getstarted-button{
+    background-color: #32435f;
+    color:  #f4f8fe;
+}
+
+.getstarted-button:hover{
+    background-color: #465e86;
+    cursor: pointer;
+}
+
+@media (max-width: 850px) {
+
+.logo{
+display: block;
+margin: 0;    }
+
+.dropdown-button{
+    display: inline-block;
+    padding-left: .5em;
+    padding-top: 0.5em;
+    width: 2rem;
+    height: 2rem;
+    position: fixed;
+
+  
+ 
+    
+}
+.dropdown-button:hover{
+    cursor: pointer;
+}
+.navbar-parent{
+    display: inline-block;
+
+}
+    
+.nav-left > ul {
+    flex-direction: column;  
+}
+
+.navigation-menu ul{
+    display: none;
+  }
+.navigation-menu .nav-right > button{
+    display: none;}
+.navigation-menu.expanded ul {
+    display: block;
+  }
+  .navigation-menu.expanded .nav-right  button {
+    display: block;
+  }
+ .nav-components{
+        flex-direction: column; 
+    }
+
+.nav-right{
+    flex-direction: column;  
+    margin: 1.5rem;
+
+
+}
+
+.nav-right > button{
+    margin-bottom: 1rem;
+}
+    
+    }

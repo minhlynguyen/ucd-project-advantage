@@ -1,0 +1,166 @@
+/* .HeatmapPage {
+    height: 100vh;
+}
+  
+.FunctionArea {
+    height: 20vh;  
+}
+  
+.MapArea {
+    display: flex;
+    height: 80vh;
+    overflow: hidden;
+}
+  
+#map {
+    height: 100%;
+    width: 100%;
+    transition: width 0.5s;
+}
+  
+.map-selected {
+    width: 70%;
+    overflow: hidden;
+    transition: width 0.5s;
+}
+  
+.DetailsContainer {
+    width: 30%;
+    overflow: hidden;
+    transition: width 0.5s;
+}
+  
+.DetailsHidden {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.5s;
+}
+  
+  
+.DetailsCard {
+    padding: 20px;
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+.DetailsCard h2 {
+    margin-top: 0;
+    color: #333;
+}
+.DetailsCard p {
+    margin: 0 0 10px;
+    line-height: 1.6;
+}
+.DetailsCard ul {
+    padding-left: 20px;
+} */
+
+/* try style */
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #32435f;
+    /* background-color: #e1dcd9; */
+  }
+  
+  button {
+    font-family: 'Roboto', sans-serif;
+    background-color: #32435f;
+    color: #e1dcd9;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin: 3px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #a67f78;
+  }
+  
+  input[type="text"] {
+    font-family: 'Roboto', sans-serif;
+    padding: 5px;
+    border: 1px solid #8f8681;
+    border-radius: 10px;
+  }
+  
+  .HeatmapPage {
+    height: 85vh;
+  }
+  
+  .FunctionArea {
+    height: 10vh;
+    /* display: flex; */
+    align-items: center;
+    /* justify-content: space-around; */
+    background-color: #e1dcd9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #32435f;
+    box-sizing: border-box;
+  }
+  .Filters {
+    font-size: 14px;
+  }
+  
+  .MapArea {
+    display: flex;
+    height: 75vh;
+    overflow: hidden;
+  }
+  
+  #map {
+    height: 100%;
+    width: 100%;
+    transition: width 0.5s;
+  }
+  
+  .map-selected {
+    width: 70%;
+    overflow: hidden;
+    transition: width 0.5s;
+  }
+
+  .map-unselected {
+    width: 100%;
+    transition: width 1s;
+  }
+  
+  .DetailsContainer {
+    width: 30%;
+    overflow: hidden;
+    transition: width 0.5s;
+    background-color: #e1dcd9;
+  }
+  
+  .DetailsHidden {
+    width: 0;
+    overflow: hidden;
+  }
+  
+  .DetailsCard {
+    padding: 20px;
+    margin: 10px;
+    border: 1px solid #8f8681;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  }
+  
+  .DetailsCard h2 {
+    margin-top: 0;
+    color: #32435f;
+  }
+  
+  .DetailsCard p {
+    margin: 0 0 10px;
+    line-height: 1.6;
+  }
+  
+  .DetailsCard ul {
+    padding-left: 20px;
+  }
+  
