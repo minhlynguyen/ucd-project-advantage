@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars 
 import React from "react"
-import weblogo from '../../assets/AdVantage.svg'
+import weblogo from '../../assets/AdVantageWhite.svg'
 import './LoginPage.css'
 export default function LoginPage() {
 
@@ -20,7 +20,7 @@ export default function LoginPage() {
                     </div>
                     <div className="input-container">
                       <input type="login-email" placeholder="example@gmail.com" id="login-email" name="login-email"/>
-                        <input type="login-password" placeholder="password"id="login-assword" name="login-password"></input>
+                        <input type="login-password" placeholder="password"id="login-password" name="login-password"></input>
                     </div>
                     <div className="button-container">
                         <button>Register</button>

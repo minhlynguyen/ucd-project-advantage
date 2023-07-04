@@ -1,6 +1,8 @@
+ // eslint-disable-next-line no-unused-vars 
 import React, { useEffect, useRef, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+// eslint-disable-next-line no-unused-vars 
 import choropleth from 'leaflet-choropleth';
 import zones from './data.jsx';
 import "./HeatmapPage.css"

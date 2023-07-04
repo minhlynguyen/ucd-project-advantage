@@ -1,5 +1,7 @@
 /* root */
 @import url('https://fonts.googleapis.com/css2?family=Dosis');
+@import url('https://fonts.googleapis.com/css2?family=Roboto');
+
 
 *{
     margin: 0;
@@ -11,7 +13,8 @@
 }
 
 body{
-    background-color: #e1dcd9;
+    /* background-color: #e1dcd9; */
+    background-color: white;
     
 
 }
@@ -20,14 +23,23 @@ body{
 /* parent navbar container */
 .navbar-parent{
     display: flex;
-    align-items: center;
-    max-width: 95%;
-    font-family: 'Dosis', sans-serif;
+  
+
+
+}
+
+nav{
+    font-family: 'Roboto',Arial,Helvetica , sans-serif;
+
     font-size:  1.4rem;
     font-weight: 5rem;
-
-
-
+    box-shadow: #80868b;
+}
+.container{
+    display: flex;
+    max-width: 90%;
+    width: 900px;
+    align-items: center;
 
 }
 
@@ -101,13 +113,16 @@ border-bottom: 2px solid  #32435f;
     letter-spacing: .05rem;
     margin-left: 1rem;
     padding: .5em 1em .5em 1em;
-    font-size:  0.8em;
+    font-size:  1.4rem;
     font-weight: 5rem;
     transition: all 240ms ease-in-out;
 }
 
 .login-button:hover{
-    border-color: #32435f;
+    border: 1.8px solid;
+    border-color:  #32435f;
+    background-color: #e1dcd9;
+    transition: all 240ms ease-in-out;
 }
     
 .login-link{
@@ -181,4 +196,5 @@ margin: 0;    }
     margin-bottom: 1rem;
 }
     
-    }
+
+}

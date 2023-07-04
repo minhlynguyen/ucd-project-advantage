@@ -12,7 +12,8 @@ export default function Header() {
     const [isNavExpanded, setIsNavExpanded] = useState(false)
 
     return (
-        <nav className='navbar-parent'>          
+        <nav className='navbar-parent'>  
+        <div className='container '>       
         <FontAwesomeIcon className="dropdown-button" icon={faBars} onClick={() => {
           setIsNavExpanded(!isNavExpanded); 
         //   console.log("hello")
@@ -31,6 +32,7 @@ export default function Header() {
                     <button className="getstarted-button"> <a>Get Started</a></button>
                     <button className="login-button"><Link className="login-link"to="/login">Login</Link></button>
                 </div>
+            </div> 
             </div> 
         </nav>
         

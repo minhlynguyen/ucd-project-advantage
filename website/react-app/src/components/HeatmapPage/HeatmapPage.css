@@ -58,14 +58,10 @@
 } */
 
 /* try style */
-body {
-    font-family: 'Roboto', sans-serif;
-    color: #32435f;
-    /* background-color: #e1dcd9; */
-  }
+
   
-  button {
-    font-family: 'Roboto', sans-serif;
+  .FunctionArea button {
+    font-family: 'Roboto',Arial,Helvetica , sans-serif;
     background-color: #32435f;
     color: #e1dcd9;
     border: none;
@@ -96,7 +92,7 @@ body {
     /* display: flex; */
     align-items: center;
     /* justify-content: space-around; */
-    background-color: #e1dcd9;
+    background-color: white;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #32435f;
