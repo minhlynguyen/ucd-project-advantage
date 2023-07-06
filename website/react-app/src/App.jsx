@@ -74,6 +74,14 @@ function MyRoutes() {
     </div>
   );
 }
-
+// import './App.css';
+// import ZoneComponent from  './components/BackendAPI/ZoneComponent'
+// function App() {
+//   return (
+//     <div>
+//       <ZoneComponent />
+//     </div>
+//   );
+// }
 
 export default App;
