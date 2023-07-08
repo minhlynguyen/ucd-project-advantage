@@ -11,9 +11,10 @@ header{
     
 
 }
+  
 
-.container{
-    max-width: 95%;
+/* parent navbar container */
+.navbar-parent{
     display: flex;
     align-items: center;
 }
