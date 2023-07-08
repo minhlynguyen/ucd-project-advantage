@@ -1,8 +1,11 @@
 import React from "react"
+import './Footer.css'
 export default function Footer() {
     return (
-        <div>
-            <h4>@Advantage</h4>
-        </div>
+   <footer>
+    <div className="footer-container">
+
+    </div>
+   </footer>
     )
 }
