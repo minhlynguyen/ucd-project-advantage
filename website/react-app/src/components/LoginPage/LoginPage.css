@@ -1,4 +1,13 @@
+<<<<<<< HEAD
 /* section */
+=======
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+>>>>>>> 8dabbb0 (changes made but not final)
 section{
   max-width:95%;
   padding: 2em;
@@ -9,10 +18,19 @@ section{
 }
 .login-container {
   display: flex;
+<<<<<<< HEAD
   font-family: 'Roboto',Helvetica, sans-serif;
 }
   /* creating the column */
 .column{
+=======
+  font-family: 'Roboto', sans-serif;
+
+
+  }
+  
+  .column{
+>>>>>>> 8dabbb0 (changes made but not final)
     flex: 50%;
 }
 /* left login */
@@ -25,6 +43,7 @@ section{
     height: 100%;
     height: 30em;
     box-shadow: rgba(0, 0, 0, 0.16) 8px 10px 12px, rgba(0, 0, 0, 0.23) 8px 10px 12px; 
+<<<<<<< HEAD
 }
 
 
@@ -33,6 +52,14 @@ section{
 }
 
 /* right log in */
+=======
+  }
+
+.login-left-content{
+  color: white;
+}
+
+>>>>>>> 8dabbb0 (changes made but not final)
 .login-right{
     display: flex;
     flex-direction: column;
@@ -41,7 +68,10 @@ section{
     margin-left: 2em ;
 }
 
+<<<<<<< HEAD
 /* email and password input */
+=======
+>>>>>>> 8dabbb0 (changes made but not final)
 .input-container{
     display: flex;
     flex-direction: column;
@@ -82,7 +112,11 @@ section{
   color: #32435f;
 
   }
+<<<<<<< HEAD
 /* log in and register buttons and styling */
+=======
+
+>>>>>>> 8dabbb0 (changes made but not final)
   .login-button-container{
     display: flex;
     margin-top: 3em;
@@ -111,11 +145,20 @@ section{
     width: 12em;
   }
 
+<<<<<<< HEAD
 /* reponsivenes */
 
   
 
 @media (max-width: 1000px) {
+=======
+
+
+  
+
+ 
+   @media (max-width: 1000px) {
+>>>>>>> 8dabbb0 (changes made but not final)
 
     .login-left{
       display: none;

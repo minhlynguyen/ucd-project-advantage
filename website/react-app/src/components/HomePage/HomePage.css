@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* page container */
 .homepage-container{
         display: flex;
@@ -48,6 +49,44 @@
 .homepage-getstarted-button{
     background-color: #32435f;
     color:  #f4f8fe;   
+=======
+
+main{
+    max-width:95%;
+    padding: 2em;
+
+    
+
+
+    
+}
+.homepage-container{
+    border: 2px transparent #465e86;
+    border-radius: 25px;
+    width: 100%;
+    max-width: 40em;
+    box-shadow: rgba(0, 0, 0, 0.16) 8px 10px 12px, rgba(0, 0, 0, 0.23) 8px 10px 12px; 
+}
+
+
+.logo-contiainer{
+    display: flex;
+    justify-content: center;
+}
+
+.homepage-button-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 10em;
+    margin-bottom: 2em;
+    
+}
+
+.homepage-getstarted-button{
+    background-color: #32435f;
+    color:  #f4f8fe;
+    
+>>>>>>> 8dabbb0 (changes made but not final)
 }
 
 
@@ -56,9 +95,19 @@
     background-color: #465e86;
 }
   
+<<<<<<< HEAD
 .homepage-button-container button{
     border: 1.5px solid transparent;
     border-radius: 4px;
+=======
+   
+
+
+.homepage-button-container button{
+    border: 1.5px solid transparent;
+    border-radius: 4px;
+    margin-left: 1em;
+>>>>>>> 8dabbb0 (changes made but not final)
     padding: .5em 2em .5em 1em;
     font-size:  0.8em;
     font-weight: 5rem;
@@ -66,5 +115,9 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     letter-spacing: 0.125rem;
 
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> 8dabbb0 (changes made but not final)

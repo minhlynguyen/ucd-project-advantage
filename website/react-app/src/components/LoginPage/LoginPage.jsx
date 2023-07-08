@@ -11,8 +11,16 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+<<<<<<< HEAD
 // handling submit
 
+=======
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+
+
+>>>>>>> 8dabbb0 (changes made but not final)
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Login submitted');
@@ -24,6 +32,10 @@ export default function LoginPage() {
             <div className="column login-left">
                 <img src={weblogo} className="logo" alt="AdVantage"/>
                 <div className=" login-left-content"> 
+<<<<<<< HEAD
+=======
+                <p>A paragraph is a series of sentences that are .</p>
+>>>>>>> 8dabbb0 (changes made but not final)
                 </div>
             </div>
             <div className="column login-right"> 

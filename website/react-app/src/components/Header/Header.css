@@ -1,14 +1,31 @@
+/* root */
+@import url('https://fonts.googleapis.com/css2?family=Dosis');
+@import url('https://fonts.googleapis.com/css2?family=Roboto');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   
+
+
+}
+
+body{
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size:  1.4rem;
+    font-weight: 5rem;
+    
+
+}
+  
 
 /* header */
 header{
     margin-bottom: 2em;
     background: #f8f8f8;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    background-color: white;
-    font-family: 'Roboto', sans-serif;
-    font-size:  1.4rem;
-    font-weight: 5rem;
-    
 
 }
 
@@ -25,6 +42,9 @@ header{
 nav{
     width: 100%;
 }
+nav{
+    width: 100%;
+}
 
 /* container for left and right nav */
 
@@ -36,7 +56,11 @@ nav{
 
 
 .nav-left ul{
+.nav-left ul{
     list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
     padding: 0;
     display: flex;
     justify-content: center;
@@ -45,6 +69,7 @@ nav{
 }
 
 .nav-left a {
+.nav-left a {
     border-bottom: 2px solid transparent;
     padding: .5em 1em .5em 1em;
     text-decoration: none;
@@ -52,10 +77,13 @@ nav{
     transition: all 200ms ease-in-out;
     letter-spacing: 0.3rem;
 
+    letter-spacing: 0.3rem;
+
 
 
 }
 
+.nav-left li a:hover{
 .nav-left li a:hover{
 cursor: pointer;
 color: black;
@@ -70,10 +98,16 @@ border-bottom: 2px solid  #32435f;
 
    
 
+
+   
+
 }
+.nav-right button{
 .nav-right button{
     border: 1.5px solid transparent;
     border-radius: 4px;
+    margin-left: 1em;
+    padding: .5em 2em .5em 1em;
     margin-left: 1em;
     padding: .5em 2em .5em 1em;
     font-size:  0.8em;
@@ -84,10 +118,17 @@ border-bottom: 2px solid  #32435f;
 
 
 
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    letter-spacing: 0.125rem;
+
+
+
 }
 
 
+
 .login-button:hover{
+    border-color:   #32435f;
     border-color:   #32435f;
 }
     
@@ -100,6 +141,7 @@ border-bottom: 2px solid  #32435f;
     background-color: #32435f;
     color:  #f4f8fe;
 
+
 }
 
 .getstarted-button:hover{
@@ -108,8 +150,12 @@ border-bottom: 2px solid  #32435f;
 }
 
 @media (max-width: 1000px) {
+@media (max-width: 1000px) {
 
 .logo{
+display: none;  
+
+}
 display: none;  
 
 }
@@ -118,14 +164,20 @@ display: none;
     display: inline-block;
     padding-left: 1em;
     padding-top: 1em;
+    padding-left: 1em;
+    padding-top: 1em;
     width: 2rem;
     height: 2rem;
+    position: fixed; 
+    
     position: fixed; 
     
 }
 .dropdown-button:hover{
     cursor: pointer;
 }
+
+.container{
 
 .container{
     display: inline-block;
@@ -136,7 +188,25 @@ display: none;
     display: flex;
     justify-content: space-between;
     padding: 1.5em 0 1em 1em;
+
+ 
+.nav-left ul a{
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5em 0 1em 1em;
     flex-direction: column;  
+
+}
+
+.nav-left a {
+    margin-right: 10em; 
+  }
+
+  .nav-left li a:hover{
+    cursor: pointer;
+    color: black;
+
+
 
 }
 
@@ -157,15 +227,25 @@ display: none;
 .navigation-menu .nav-right button{
     display: none;
 }
+.navigation-menu .nav-right button{
+    display: none;
+}
 .navigation-menu.expanded ul {
     display: block;
   }
+  .navigation-menu.expanded .nav-right button {
   .navigation-menu.expanded .nav-right button {
     display: block;
   }
  .nav-components{
 
+
         flex-direction: column; 
+        padding-top: 3em;
+        padding-left: 2em;
+        gap: 1.5rem
+
+      
         padding-top: 3em;
         padding-left: 2em;
         gap: 1.5rem
@@ -176,10 +256,14 @@ display: none;
 .nav-right{
     flex-direction: column;  
     gap: 1.5rem;
+    gap: 1.5rem;
 
 
 }
 
+.nav-right button{
+    
+    margin-bottom: 1em;
 .nav-right button{
     
     margin-bottom: 1em;
