@@ -12,27 +12,29 @@ export default function Header() {
     const [isNavExpanded, setIsNavExpanded] = useState(false)
 
     return (
-        <nav className='navbar-parent'>          
-        <FontAwesomeIcon className="dropdown-button" icon={faBars} onClick={() => {
-          setIsNavExpanded(!isNavExpanded); 
-        //   console.log("hello")
-        }}/>
-    
-           <img src={weblogo} className="logo" alt="AdVantage"/>
-            <div className={`nav-components ${isNavExpanded ? "navigation-menu expanded" : "navigation-menu"}`}>
-                <div className="nav-left">
-                    <ul className="navbar-links">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/heatmap">Solutions</a></li>
-                        <li><a href="#">Testimonials</a></li>
-                    </ul>
-                </div>
-                <div className="nav-right">
-                    <button className="getstarted-button"> <a>Get Started</a></button>
-                    <button className="login-button"><Link className="login-link"to="/login">Login</Link></button>
-                </div>
-            </div> 
-        </nav>
+        <header>          
+            <div className="container">
+            <FontAwesomeIcon className="dropdown-button" icon={faBars} onClick={() => {
+            setIsNavExpanded(!isNavExpanded); 
+            }}/>  
+           <img src={weblogo} className="logo" alt="AdVantage-Header-Logo"/>
+           <nav>
+                <div className={`nav-components ${isNavExpanded ? "navigation-menu expanded" : "navigation-menu"}`}>
+                    <div className="nav-left">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/heatmap">Solutions</a></li>
+                            <li><a href="#">Testimonials</a></li>
+                        </ul>
+                    </div>
+                    <div className="nav-right">
+                        <button className="getstarted-button"> <a>Get Started</a></button>
+                        <button className="login-button"><Link className="login-link"to="/login">Login</Link></button>
+                    </div>
+                </div> 
+            </nav>
+            </div>
+        </header>
         
     )
 }
