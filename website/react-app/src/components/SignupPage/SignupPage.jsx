@@ -64,57 +64,12 @@ export default function SignupPage() {
     
 };
     return (
-        <section className="signup-container">
-            <div className="column signup-left">
-                <img src={weblogo} className="logo" alt="AdVantage"/>
-                <div className=" signup-left-content"> 
-                </div>
-            </div>
-            <div className="column signup-right"> 
-                <form action="" onSubmit={handleSubmit}>
-                    <div className="login-right-content">
-                        <h2>Register</h2>
-                        <p> Create an account.</p>
-                    </div>
-                    <div className="signup-name-container">
-                        <input type="" placeholder="Firstname" id="firstname" name="firstname" value={firstname}  onChange={(e) => setFirstname(e.target.value)}/>
-                        <input type="" placeholder="Lastname" id="lastname" name="lastname" value={lastname} onChange={(e) => setLastname(e.target.value)}/>
-                    </div>
-                    <div className="industry-container">
-                        <select id="industry" name="industry" value={industry} onChange={handleIndustryChange}>                       
-                            <option value="">Select Your Industry</option>
-                            <option value="automotive">Automotive</option>
-                            <option value="technology">Technology</option>
-                            <option value="finance">Finance</option>
-                            <option value="retail">Retail</option>
-                            <option value="healthcare">Healthcare</option>
-                            <option value="foodandbeverage">Food and Beverage</option>
-                            <option value="tourism">Tourism</option>
-                            <option value="education">Education</option>
-                            <option value="realestate">Real Estate</option>
-                            <option value="other">Other</option>
+        <div className="login-container">
+            <div> </div>
+            <div> </div>
 
-                        </select>
-                        
-                        <input type="" placeholder="Business Name" id="busiessname" value={businessname} name="businessname" onChange={(e) => setBusinessname(e.target.value)}/>
-                    </div>
-                    <div className="input-container">
-                        <span className="input-icon"><FontAwesomeIcon icon={faEnvelope} beat/></span>
-                        <input type="email" placeholder="" id="signup-email" name="signup-email" value={email} className="input-field-1" onChange={(e) => setEmail(e.target.value)}/>
-                    </div>
-                    <div className="input-container">
-                        <span  className="input-icon"><FontAwesomeIcon icon={faLock} beat/></span>
-                        <input type="password" placeholder="" id="signup-password" name="signup-password" value={password} className="input-field-2" onChange={(e) => setPassword(e.target.value)}/>
-                    </div>
-                    <div className="signup-button-container">
-                        <button type="submit" className="register-button">Register</button>
-                        <p> Already have an account?{" "}
-                            <span className="login-link"> <Link className="registerpage-login-link"to="/login">Login </Link></span>
-                        </p>
 
-                    </div>
-                </form>
-            </div>           
-        </section>
+            
+        </div>
     )
 }
