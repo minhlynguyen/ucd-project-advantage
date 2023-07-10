@@ -1,15 +1,10 @@
 import React, { useEffect, useRef, useState , useContext} from 'react';
 import 'leaflet/dist/leaflet.css';
-import { UserContext } from '../../App';
-import L from 'leaflet';
-import choropleth from 'leaflet-choropleth';
-import zones from './data.jsx';
-import { Navigate } from 'react-router-dom';
+
 import "./HeatmapPage.css"
 
 
 function FunctionArea() {
-
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [incomeRange, setIncomeRange] = useState('');
   const [merchantCountRange, setMerchantCountRange] = useState('');
@@ -144,37 +139,26 @@ function Map({selectedZone, setSelectedZone}) {
 }
 
 function Details({zone}) {
+  console.log("zone in Details:", zone);
   return (
     <div className="DetailsCard">
       <h2>Zone Details</h2>
-      <p><strong>ID:</strong> {zone.id}</p>
-      <p><strong>Busy Index:</strong> {zone.busyIndex}</p>
-      <p><strong>Coordinates:</strong></p>
-      <ul>
-        {zone.coordinates.map((coordinate, index) =>
-          <li key={index}>Lat: {coordinate[0]}, Lng: {coordinate[1]}</li>
-        )}
-      </ul>
+      <p><strong>ID:</strong> {zone.properties.location_id}</p>
+      <p><strong>Zone:</strong> {zone.properties.zone}</p>
     </div>
   );
 }
 
 
 function HeatmapPage() {
-  const { currentUser } = useContext(UserContext);
-
-  if (!currentUser){
-    return <Navigate to="/login" />;
-
-  }
   const [selectedZone, setSelectedZone] = useState(null);
   return (
     <div className="HeatmapPage">
       <FunctionArea />
       <div className="MapArea">
-        <Map selectedZone={selectedZone} setSelectedZone={setSelectedZone} />
+        <Map zones={zones} setZones={setZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} />
         <div className={selectedZone ? "DetailsContainer" : "DetailsContainer DetailsHidden"}>
-          {selectedZone && <Details zone={zones.find(zone => zone.id === selectedZone)} />}
+          {selectedZone && <Details zone={zones.features.find(zone => zone.properties.location_id === selectedZone)} />}
         </div>
       </div>
     </div>

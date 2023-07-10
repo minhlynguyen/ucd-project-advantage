@@ -6,7 +6,8 @@ function ZoneComponent() {
     useEffect(() => {
         fetchData();
     }, []);
-    const apiURL = "http://127.0.0.1:8000/api/zones/";
+    // const apiURL = "http://127.0.0.1:8000/api/zones/";
+    const apiURL = "./NYC Taxi Zones.geojson";
     const fetchData = async () => {
         const response = await axios.get(apiURL
             // ,
