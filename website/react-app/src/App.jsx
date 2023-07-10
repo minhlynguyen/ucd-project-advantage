@@ -60,6 +60,7 @@ function MyRoutes() {
         <Route path='/heatmap' element={<HeatmapPage />} />
         <Route path="/signup" element={<SignupLoginPage/>}/>
       </Routes>
+      
       {/* Only show Footer when not on LoginPage */}
       {location.pathname !== '/signup' && <Footer />}
     </div>
