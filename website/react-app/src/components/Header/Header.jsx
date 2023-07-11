@@ -8,6 +8,8 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import weblogo from '../../assets/AdVantageMain.svg'
 
 import './Header.css';
+// import SignedInHeader from "./SignedInHeader";
+
 
 
 export default function Header() {
