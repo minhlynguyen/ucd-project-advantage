@@ -1,9 +1,4 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+/* section */
 section{
   max-width:95%;
   padding: 2em;
@@ -13,18 +8,15 @@ section{
 
 }
 .login-container {
-
   display: flex;
-  font-family: 'Roboto', sans-serif;
-
-
-  }
-  
-  .column{
+  font-family: 'Roboto',Helvetica, sans-serif;
+}
+  /* creating the column */
+.column{
     flex: 50%;
-  }
-
-  .login-left{
+}
+/* left login */
+.login-left{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -33,12 +25,14 @@ section{
     height: 100%;
     height: 30em;
     box-shadow: rgba(0, 0, 0, 0.16) 8px 10px 12px, rgba(0, 0, 0, 0.23) 8px 10px 12px; 
-  }
+}
 
-.login-left-content{
+
+.login-left-content h4{
   color: white;
 }
 
+/* right log in */
 .login-right{
     display: flex;
     flex-direction: column;
@@ -47,6 +41,7 @@ section{
     margin-left: 2em ;
 }
 
+/* email and password input */
 .input-container{
     display: flex;
     flex-direction: column;
@@ -87,7 +82,7 @@ section{
   color: #32435f;
 
   }
-
+/* log in and register buttons and styling */
   .login-button-container{
     display: flex;
     margin-top: 3em;
@@ -116,12 +111,11 @@ section{
     width: 12em;
   }
 
-
+/* reponsivenes */
 
   
 
- 
-   @media (max-width: 1000px) {
+@media (max-width: 1000px) {
 
     .login-left{
       display: none;
@@ -130,4 +124,22 @@ section{
   border-radius: 4px;
 }
  
+@media (max-width: 700px) {
+
+
+  .login-button-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 2em;
+  
+  }
+
+  .login-button-container button{
+    width: 100%;
+  }
+   
+    
   } 
+
+}

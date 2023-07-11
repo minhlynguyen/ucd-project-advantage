@@ -10,18 +10,20 @@ import './SignupPage.css'
 
 
 export default function SignupPage() {
+    // setting credentials for registration page
     const [email, setEmail] = useState("");
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [businessname, setBusinessname] = useState("");
     const [password, setPassword] = useState("");
-    const [industry, setIndustry] = useState(''); // State to store the selected industry
+    const [industry, setIndustry] = useState(""); // State to store the selected industry
     const handleIndustryChange = (event) => {
         const selectedIndustry = event.target.value; // Get the selected industry
         setIndustry(selectedIndustry); // Update the selected industry in state
         // console.log(selectedIndustry); // Log the selected industry  };
 
   }
+//   handling submit
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('First name:', firstname)
@@ -38,7 +40,6 @@ export default function SignupPage() {
             <div className="column signup-left">
                 <img src={weblogo} className="logo" alt="AdVantage"/>
                 <div className=" signup-left-content"> 
-                    <p>A paragraph is a series of sentences that are .</p>
                 </div>
             </div>
             <div className="column signup-right"> 
@@ -62,6 +63,11 @@ export default function SignupPage() {
                             <option value="foodandbeverage">Food and Beverage</option>
                             <option value="tourist">Tourist</option>
                             <option value="education">Education</option>
+                            <option value="realestate">Real Estate</option>
+                            <option value="entertainmentandrecreation">Entertainment and Research</option>
+                            <option value="professionalservices">Professional Services</option>
+                            <option value="other">Other</option>
+
                         </select>
                         
                         <input type="" placeholder="Business Name" id="busiessname" value={businessname} name="businessname" onChange={(e) => setBusinessname(e.target.value)}/>
@@ -74,10 +80,6 @@ export default function SignupPage() {
                         <span  className="input-icon"><FontAwesomeIcon icon={faLock} beat/></span>
                         <input type="password" placeholder="" id="signup-password" name="signup-password" value={password} className="input-field-2" onChange={(e) => setPassword(e.target.value)}/>
                     </div>
-                    {/* <div className="tacbox">
-                        <input id="checkbox" type="checkbox" />
-                        <label htmlFor="checkbox"> I agree to these <a href="#">Terms and Conditions</a>.</label>
-                    </div> */}
                     <div className="signup-button-container">
                         <button type="submit" className="register-button">Register</button>
                         <p> Already have an account?{" "}

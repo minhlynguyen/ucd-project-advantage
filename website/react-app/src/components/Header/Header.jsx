@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import weblogo from '../../assets/AdVantageMain.svg'
 import './Header.css';
+// import SignedInHeader from "./SignedInHeader";
+
 
 export default function Header() {
     const [isNavExpanded, setIsNavExpanded] = useState(false)
@@ -17,7 +19,7 @@ export default function Header() {
             <FontAwesomeIcon className="dropdown-button" icon={faBars} onClick={() => {
             setIsNavExpanded(!isNavExpanded); 
             }}/>  
-           <img src={weblogo} className="logo" alt="AdVantage-Header-Logo"/>
+           <img src={weblogo} className="logo" alt="AdVantage-Header-Logo" />
            <nav>
                 <div className={`nav-components ${isNavExpanded ? "navigation-menu expanded" : "navigation-menu"}`}>
                     <div className="nav-left">
@@ -28,7 +30,7 @@ export default function Header() {
                         </ul>
                     </div>
                     <div className="nav-right">
-                        <button className="getstarted-button"> <a>Get Started</a></button>
+                    <Link className="getstarted-button" to ="/heatmap"><button className="getstarted-button"> Get Started </button> </Link>
                         <button className="login-button"><Link className="login-link"to="/login">Login</Link></button>
                     </div>
                 </div> 
