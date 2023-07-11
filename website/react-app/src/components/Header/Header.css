@@ -1,31 +1,14 @@
-/* root */
-@import url('https://fonts.googleapis.com/css2?family=Dosis');
-@import url('https://fonts.googleapis.com/css2?family=Roboto');
-
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-   
-
-
-}
-
-body{
-    background-color: white;
-    font-family: 'Roboto', sans-serif;
-    font-size:  1.4rem;
-    font-weight: 5rem;
-    
-
-}
-  
 
 /* header */
 header{
     margin-bottom: 2em;
     background: #f8f8f8;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size:  1.4rem;
+    font-weight: 5rem;
+    
 
 }
 
