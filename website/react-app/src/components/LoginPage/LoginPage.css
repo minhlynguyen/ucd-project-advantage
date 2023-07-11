@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* section */
 =======
 *{
@@ -8,6 +9,9 @@
 }
 
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+/* section */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 section{
   max-width:95%;
   padding: 2em;
@@ -19,10 +23,14 @@ section{
 .login-container {
   display: flex;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
   font-family: 'Roboto',Helvetica, sans-serif;
 }
   /* creating the column */
 .column{
+<<<<<<< HEAD
 =======
   font-family: 'Roboto', sans-serif;
 
@@ -31,6 +39,8 @@ section{
   
   .column{
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
     flex: 50%;
 }
 /* left login */
@@ -44,6 +54,7 @@ section{
     height: 30em;
     box-shadow: rgba(0, 0, 0, 0.16) 8px 10px 12px, rgba(0, 0, 0, 0.23) 8px 10px 12px; 
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 
@@ -54,12 +65,20 @@ section{
 /* right log in */
 =======
   }
+=======
+}
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 
-.login-left-content{
+
+.login-left-content h4{
   color: white;
 }
 
+<<<<<<< HEAD
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+/* right log in */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 .login-right{
     display: flex;
     flex-direction: column;
@@ -69,9 +88,13 @@ section{
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* email and password input */
 =======
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+/* email and password input */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 .input-container{
     display: flex;
     flex-direction: column;
@@ -113,10 +136,14 @@ section{
 
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* log in and register buttons and styling */
 =======
 
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+/* log in and register buttons and styling */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
   .login-button-container{
     display: flex;
     margin-top: 3em;
@@ -146,6 +173,7 @@ section{
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* reponsivenes */
 
   
@@ -159,6 +187,13 @@ section{
  
    @media (max-width: 1000px) {
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+/* reponsivenes */
+
+  
+
+@media (max-width: 1000px) {
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 
     .login-left{
       display: none;
@@ -167,4 +202,22 @@ section{
   border-radius: 4px;
 }
  
+@media (max-width: 700px) {
+
+
+  .login-button-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 2em;
+  
+  }
+
+  .login-button-container button{
+    width: 100%;
+  }
+   
+    
   } 
+
+}

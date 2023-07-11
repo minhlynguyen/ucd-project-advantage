@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* section style */
 =======
 
@@ -9,6 +10,9 @@
   }
 
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+/* section style */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 section{
     max-width:95%;
     padding: 2em;
@@ -25,6 +29,9 @@ section{
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
   /* creating the column layout */
 .column{
         flex: 50%;
@@ -32,11 +39,14 @@ section{
 
 
 /* left column */
+<<<<<<< HEAD
 =======
 .column{
         flex: 50%;
 }
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 .signup-left{
     display: flex;
     flex-direction: column;
@@ -50,6 +60,7 @@ section{
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .signup-left-content h4{
     color: white;
   }
@@ -61,6 +72,13 @@ section{
   }
 
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+.signup-left-content h4{
+    color: white;
+  }
+
+  /* right column */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 .signup-right{
     display: flex;
     flex-direction: column;
@@ -77,20 +95,27 @@ section{
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 /* right column: name */
 
 .signup-name-container{
 display: flex;
 gap: .5em;
+<<<<<<< HEAD
 =======
 .signup-name-container{
 display: flex;
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 
 
 }
 
 .signup-name-container input{
+<<<<<<< HEAD
 <<<<<<< HEAD
     margin-right: .5em;
     width: 100%;
@@ -104,6 +129,13 @@ display: flex;
 
 
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+    margin-right: .5em;
+    width: 100%;
+}
+
+/* industry option and input */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 select{
     font-size: 1.3rem;
     background-color: #e1dcd9;
@@ -116,6 +148,9 @@ select{
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 /* password and email container */
 .industry-container 
 input{
@@ -124,8 +159,11 @@ input{
 
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 .input-container{
     display: flex;
     flex-direction: column;
@@ -142,9 +180,12 @@ input{
     border: none;
     border-radius: 5px;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     padding: 1em;
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
     box-shadow: rgba(0, 0, 0, 0.16) 5px 2px 6px;
   }
 
@@ -162,6 +203,7 @@ input{
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* register button */
 =======
   .tacbox {
@@ -176,6 +218,9 @@ input{
   
 
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+/* register button */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 .register-button{
     cursor: pointer;
     border: 1.5px solid transparent;
@@ -202,9 +247,13 @@ input{
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* link for log in */
 =======
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+/* link for log in */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
 .signup-button-container p{
     margin-top: 1em;
     font-size: 1.25rem;
@@ -212,10 +261,14 @@ input{
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* reposiveness */
 =======
 
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+/* reposiveness */
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
  
 @media (max-width: 1000px) {
 
@@ -227,7 +280,11 @@ input{
 }
  
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
   } 
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+}
+>>>>>>> b3710aa (changes made to navbar, signin and signup)

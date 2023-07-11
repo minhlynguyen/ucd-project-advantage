@@ -8,6 +8,7 @@ import weblogo from '../../assets/AdVantage.svg'
 import './LoginPage.css'
 export default function LoginPage() {
 // setting login credentials 
+<<<<<<< HEAD
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -15,10 +16,12 @@ export default function LoginPage() {
 // handling submit
 
 =======
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-
+// handling submit
 
 >>>>>>> 8dabbb0 (changes made but not final)
     const handleSubmit = (e) => {
@@ -33,9 +36,12 @@ export default function LoginPage() {
                 <img src={weblogo} className="logo" alt="AdVantage"/>
                 <div className=" login-left-content"> 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                 <p>A paragraph is a series of sentences that are .</p>
 >>>>>>> 8dabbb0 (changes made but not final)
+=======
+>>>>>>> b3710aa (changes made to navbar, signin and signup)
                 </div>
             </div>
             <div className="column login-right"> 
