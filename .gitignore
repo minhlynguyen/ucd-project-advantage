@@ -23,5 +23,7 @@ website/main/migrations/__pycache__/0002_zone_taxizone_borough.cpython-311.pyc
 data-ingestions/.ipynb_checkpoints/nyc-geojson-checkpoint.ipynb
 website/main/migrations/__pycache__/0003_puma_delete_taxizone.cpython-311.pyc
 website/main/migrations/__pycache__/0004_zone_puma_populate.cpython-311.pyc
+website/requirements.txt
+
 node_modules
 *.env
