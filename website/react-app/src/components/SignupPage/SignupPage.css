@@ -1,10 +1,4 @@
-
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
+/* section style */
 section{
     max-width:95%;
     padding: 2em;
@@ -20,9 +14,13 @@ section{
     font-family: 'Roboto', sans-serif;
   }
 
+  /* creating the column layout */
 .column{
         flex: 50%;
 }
+
+
+/* left column */
 .signup-left{
     display: flex;
     flex-direction: column;
@@ -35,10 +33,11 @@ section{
   }
 
 
-.signup-left-content{
+.signup-left-content h4{
     color: white;
   }
 
+  /* right column */
 .signup-right{
     display: flex;
     flex-direction: column;
@@ -54,18 +53,21 @@ section{
   
 }
 
+/* right column: name */
+
 .signup-name-container{
 display: flex;
+gap: .5em;
 
 
 }
 
 .signup-name-container input{
-    margin-right: .8em;
+    margin-right: .5em;
     width: 100%;
 }
 
-
+/* industry option and input */
 select{
     font-size: 1.3rem;
     background-color: #e1dcd9;
@@ -74,6 +76,14 @@ select{
     padding: 1em;
     margin-right: .5em;
     box-shadow: rgba(0, 0, 0, 0.16) 5px 2px 6px;
+
+}
+
+/* password and email container */
+.industry-container 
+input{
+  padding-left: 2.4em;
+
 
 }
 
@@ -92,7 +102,6 @@ input{
     background-color: #e1dcd9;
     border: none;
     border-radius: 5px;
-    padding: 1em;
     box-shadow: rgba(0, 0, 0, 0.16) 5px 2px 6px;
   }
 
@@ -109,17 +118,7 @@ input{
     padding-left: 2em; /* Adjust this value to provide space for the icon */
   }
 
-  .tacbox {
-    display:block;
-    padding: 1em;
-    margin: 1em;
-    border: 2px solid #ddd;
-    background-color: #eee;
-    font-size: 1rem;
-
-  }
-  
-
+/* register button */
 .register-button{
     cursor: pointer;
     border: 1.5px solid transparent;
@@ -145,13 +144,14 @@ input{
 
 }
 
+/* link for log in */
 .signup-button-container p{
     margin-top: 1em;
     font-size: 1.25rem;
 
 }
 
-
+/* reposiveness */
  
 @media (max-width: 1000px) {
 
@@ -162,4 +162,4 @@ input{
   border-radius: 4px;
 }
  
-  } 
+}

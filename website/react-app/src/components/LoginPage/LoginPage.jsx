@@ -7,11 +7,11 @@ import {faLock} from '@fortawesome/free-solid-svg-icons';
 import weblogo from '../../assets/AdVantage.svg'
 import './LoginPage.css'
 export default function LoginPage() {
-
+// setting login credentials 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-
+// handling submit
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -24,7 +24,6 @@ export default function LoginPage() {
             <div className="column login-left">
                 <img src={weblogo} className="logo" alt="AdVantage"/>
                 <div className=" login-left-content"> 
-                <p>A paragraph is a series of sentences that are .</p>
                 </div>
             </div>
             <div className="column login-right"> 
