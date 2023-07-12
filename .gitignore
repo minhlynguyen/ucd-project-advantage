@@ -37,6 +37,8 @@ website/user_api/__pycache__/validations.cpython-311.pyc
 website/user_api/__pycache__/views.cpython-311.pyc
 website/user_api/migrations/__pycache__/__init__.cpython-311.pyc
 website/user_api/migrations/__pycache__/0001_initial.cpython-311.pyc
-=======
-*.env
->>>>>>> b3710aa (changes made to navbar, signin and signup)
+*.pyc
+/.vscode/
+website/docker-compose.yml
+website/Dockerfile
+delete dupes.py
