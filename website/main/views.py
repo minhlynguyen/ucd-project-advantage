@@ -8,9 +8,9 @@ from . import serializers
 from . import models
 
 # Create your views here.
-class AdvertiserList(generics.ListAPIView):
-    queryset = models.Advertiser.objects.all()
-    serializer_class = serializers.AdvertiserSerializer
+# class AdvertiserList(generics.ListAPIView):
+#     queryset = models.Advertiser.objects.all()
+#     serializer_class = serializers.AdvertiserSerializer
 
 class SolutionsView(TemplateView):
     template_name = "solutions.html"
