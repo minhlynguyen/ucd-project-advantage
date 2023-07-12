@@ -19,15 +19,7 @@ export default function Header() {
             <FontAwesomeIcon className="dropdown-button" icon={faBars} onClick={() => {
             setIsNavExpanded(!isNavExpanded); 
             }}/>  
-<<<<<<< HEAD
-<<<<<<< HEAD
            <img src={weblogo} className="logo" alt="AdVantage-Header-Logo" />
-=======
-           <img src={weblogo} className="logo" alt="AdVantage-Header-Logo"/>
->>>>>>> 8dabbb0 (changes made but not final)
-=======
-           <img src={weblogo} className="logo" alt="AdVantage-Header-Logo" />
->>>>>>> b3710aa (changes made to navbar, signin and signup)
            <nav>
                 <div className={`nav-components ${isNavExpanded ? "navigation-menu expanded" : "navigation-menu"}`}>
                     <div className="nav-left">
@@ -38,15 +30,7 @@ export default function Header() {
                         </ul>
                     </div>
                     <div className="nav-right">
-<<<<<<< HEAD
-<<<<<<< HEAD
                     <Link className="getstarted-button" to ="/heatmap"><button className="getstarted-button"> Get Started </button> </Link>
-=======
-                        <button className="getstarted-button"> <a>Get Started</a></button>
->>>>>>> 8dabbb0 (changes made but not final)
-=======
-                    <Link className="getstarted-button" to ="/heatmap"><button className="getstarted-button"> Get Started </button> </Link>
->>>>>>> b3710aa (changes made to navbar, signin and signup)
                         <button className="login-button"><Link className="login-link"to="/login">Login</Link></button>
                     </div>
                 </div> 

@@ -1,17 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 /* section */
-=======
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
->>>>>>> 8dabbb0 (changes made but not final)
-=======
-/* section */
->>>>>>> b3710aa (changes made to navbar, signin and signup)
 section{
   max-width:95%;
   padding: 2em;
@@ -22,25 +9,10 @@ section{
 }
 .login-container {
   display: flex;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b3710aa (changes made to navbar, signin and signup)
   font-family: 'Roboto',Helvetica, sans-serif;
 }
   /* creating the column */
 .column{
-<<<<<<< HEAD
-=======
-  font-family: 'Roboto', sans-serif;
-
-
-  }
-  
-  .column{
->>>>>>> 8dabbb0 (changes made but not final)
-=======
->>>>>>> b3710aa (changes made to navbar, signin and signup)
     flex: 50%;
 }
 /* left login */
@@ -53,8 +25,6 @@ section{
     height: 100%;
     height: 30em;
     box-shadow: rgba(0, 0, 0, 0.16) 8px 10px 12px, rgba(0, 0, 0, 0.23) 8px 10px 12px; 
-<<<<<<< HEAD
-<<<<<<< HEAD
 }
 
 
@@ -63,22 +33,6 @@ section{
 }
 
 /* right log in */
-=======
-  }
-=======
-}
->>>>>>> b3710aa (changes made to navbar, signin and signup)
-
-
-.login-left-content h4{
-  color: white;
-}
-
-<<<<<<< HEAD
->>>>>>> 8dabbb0 (changes made but not final)
-=======
-/* right log in */
->>>>>>> b3710aa (changes made to navbar, signin and signup)
 .login-right{
     display: flex;
     flex-direction: column;
@@ -87,14 +41,7 @@ section{
     margin-left: 2em ;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 /* email and password input */
-=======
->>>>>>> 8dabbb0 (changes made but not final)
-=======
-/* email and password input */
->>>>>>> b3710aa (changes made to navbar, signin and signup)
 .input-container{
     display: flex;
     flex-direction: column;
@@ -135,15 +82,7 @@ section{
   color: #32435f;
 
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
 /* log in and register buttons and styling */
-=======
-
->>>>>>> 8dabbb0 (changes made but not final)
-=======
-/* log in and register buttons and styling */
->>>>>>> b3710aa (changes made to navbar, signin and signup)
   .login-button-container{
     display: flex;
     margin-top: 3em;
@@ -172,28 +111,11 @@ section{
     width: 12em;
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 /* reponsivenes */
 
   
 
 @media (max-width: 1000px) {
-=======
-
-
-  
-
- 
-   @media (max-width: 1000px) {
->>>>>>> 8dabbb0 (changes made but not final)
-=======
-/* reponsivenes */
-
-  
-
-@media (max-width: 1000px) {
->>>>>>> b3710aa (changes made to navbar, signin and signup)
 
     .login-left{
       display: none;
