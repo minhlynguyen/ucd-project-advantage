@@ -23,9 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 *.env
-<<<<<<< HEAD
 __pycache__/
 __pycache__2/
 *.pyc
-=======
->>>>>>> b3710aa (changes made to navbar, signin and signup)
