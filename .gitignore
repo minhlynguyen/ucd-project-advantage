@@ -36,6 +36,12 @@ website/user_api/__pycache__/validations.cpython-311.pyc
 website/user_api/__pycache__/views.cpython-311.pyc
 website/user_api/migrations/__pycache__/__init__.cpython-311.pyc
 website/user_api/migrations/__pycache__/0001_initial.cpython-311.pyc
+*.pyc
+/.vscode/
+website/docker-compose.yml
+website/Dockerfile
+delete dupes.py
+
 
 node_modules
 *.env
