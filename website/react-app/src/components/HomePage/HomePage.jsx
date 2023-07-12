@@ -1,19 +1,24 @@
-// eslint-disable-next-line no-unused-vars 
+// eslint-disable-next-line no-unused-vars
 import React from "react"
-// eslint-disable-next-line no-unused-vars 
-import Header from '../Header/Header';
+import { Link } from 'react-router-dom';
+import './HomePage.css'
+import webhomepagelogo from '../../assets/AdVantageMainAnimated.svg'
+
 export default function HomePage() {
     return (
-        <div>
-            <div className="maincontent-container">
-                <div className="maincontent-homepage">
-
+        <main> 
+          
+            <div className="homepage-container">
+                <div className="logo-container">
+                <img src={webhomepagelogo} className="homepagelogo" alt="AdVantage-Header-Logo"/>
                 </div>
-                <div>
-                <button className="getstarted-button"> <a>Get Started</a></button>
+                <div className="homepage-text">
+                    <p>Make Better Decisions.</p>
                 </div>
-
-            </div>
-        </div>
+                <div className="homepage-button-container">
+                    <Link className="getstarted-button" to ="/heatmap"><button className="homepage-getstarted-button"> Get Started</button>   </Link>
+                </div>
+             </div>
+        </main>
     )
 }

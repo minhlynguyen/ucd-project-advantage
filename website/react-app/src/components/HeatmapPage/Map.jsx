@@ -17,7 +17,7 @@ function Map({ zones, onZoneClick }) {
     }
   }, [mapRef]);
 
-  return <div id="map" ref={mapRef}></div>
+  return <div className="container" id="map" ref={mapRef}></div>
 }
 
 export default Map;

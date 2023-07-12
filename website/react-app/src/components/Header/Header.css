@@ -1,85 +1,62 @@
-/* root */
-@import url('https://fonts.googleapis.com/css2?family=Dosis');
 
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-   
-
-
-}
-
-body{
-    background-color: #e1dcd9;
+/* header */
+header{
+    margin-bottom: 2em;
+    background: #f8f8f8;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size:  1.4rem;
+    font-weight: 5rem;
     
 
 }
-  
 
-/* parent navbar container */
-.navbar-parent{
+.container{
+    max-width: 95%;
     display: flex;
     align-items: center;
-    max-width: 95%;
-    font-family: 'Dosis', sans-serif;
-    font-size:  1.4rem;
-    font-weight: 5rem;
-
-
-
-
 }
 
 .dropdown-button{
     display: none;
 }
 
+nav{
+    width: 100%;
+}
 
 /* container for left and right nav */
 
 .nav-components{
     display: flex;
-    align-items: center;
     justify-content: space-between;
     width: 100%;
-    /* background-color: green; */
-
-}
-
-/* left of navbar */
-.nav-left{
-    display: flex;
-    align-items: center;
-}
-
-.navbar-links{
-    display: flex;
-    letter-spacing: .05rem;
-
-
 }
 
 
-.navbar-links > li{
+.nav-left ul{
     list-style: none;
-
+    padding: 0;
+    display: flex;
+    justify-content: center;
 
 
 }
 
-.navbar-links > li  > a {
-    display: inline-block;
+.nav-left a {
     border-bottom: 2px solid transparent;
     padding: .5em 1em .5em 1em;
     text-decoration: none;
     color: #80868b;
     transition: all 200ms ease-in-out;
+    letter-spacing: 0.3rem;
+
 
 
 }
 
-.navbar-links > li > a:hover{
+.nav-left li a:hover{
 cursor: pointer;
 color: black;
 border-bottom: 2px solid  #32435f;
@@ -90,24 +67,28 @@ border-bottom: 2px solid  #32435f;
 /* right of navbar */
 .nav-right{
     display: flex;
+
    
 
 }
-.nav-right > button{
-    justify-content: center;
-    align-items: center;
+.nav-right button{
     border: 1.5px solid transparent;
     border-radius: 4px;
-    letter-spacing: .05rem;
-    margin-left: 1rem;
-    padding: .5em 1em .5em 1em;
+    margin-left: 1em;
+    padding: .5em 2em .5em 1em;
     font-size:  0.8em;
     font-weight: 5rem;
     transition: all 240ms ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    letter-spacing: 0.125rem;
+
+
+
 }
 
+
 .login-button:hover{
-    border-color: #32435f;
+    border-color:   #32435f;
 }
     
 .login-link{
@@ -118,6 +99,7 @@ border-bottom: 2px solid  #32435f;
 .getstarted-button{
     background-color: #32435f;
     color:  #f4f8fe;
+
 }
 
 .getstarted-button:hover{
@@ -125,60 +107,82 @@ border-bottom: 2px solid  #32435f;
     cursor: pointer;
 }
 
-@media (max-width: 850px) {
+@media (max-width: 1000px) {
 
 .logo{
-display: block;
-margin: 0;    }
+display: none;  
+
+}
 
 .dropdown-button{
     display: inline-block;
-    padding-left: .5em;
-    padding-top: 0.5em;
+    padding-left: 1em;
+    padding-top: 1em;
     width: 2rem;
     height: 2rem;
-    position: fixed;
-
-  
- 
+    position: fixed; 
     
 }
 .dropdown-button:hover{
     cursor: pointer;
 }
-.navbar-parent{
+
+.container{
     display: inline-block;
+}
+
+ 
+.nav-left ul a{
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5em 0 1em 1em;
+    flex-direction: column;  
 
 }
-    
-.nav-left > ul {
-    flex-direction: column;  
+
+.nav-left a {
+    margin-right: 10em; 
+  }
+
+  .nav-left li a:hover{
+    cursor: pointer;
+    color: black;
+
+
 }
 
 .navigation-menu ul{
     display: none;
   }
-.navigation-menu .nav-right > button{
-    display: none;}
+.navigation-menu .nav-right button{
+    display: none;
+}
 .navigation-menu.expanded ul {
     display: block;
   }
-  .navigation-menu.expanded .nav-right  button {
+  .navigation-menu.expanded .nav-right button {
     display: block;
   }
  .nav-components{
+
         flex-direction: column; 
+        padding-top: 3em;
+        padding-left: 2em;
+        gap: 1.5rem
+
+      
     }
 
 .nav-right{
     flex-direction: column;  
-    margin: 1.5rem;
+    gap: 1.5rem;
 
 
 }
 
-.nav-right > button{
-    margin-bottom: 1rem;
+.nav-right button{
+    
+    margin-bottom: 1em;
 }
     
     }

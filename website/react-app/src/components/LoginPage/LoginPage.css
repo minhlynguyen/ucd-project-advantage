@@ -1,52 +1,127 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-/* body .login-container{
-  background-color:black;
-
-} */
-
+/* section */
 section{
   max-width:95%;
-  padding: 1rem;
-  font-size:  2rem;
+  padding: 2em;
+  font-size:  1.6rem;
   font-weight: 5rem;
+
 
 }
 .login-container {
-
   display: flex;
-  font-family: 'Dosis', sans-serif;
-
-
-  }
-  
-  .column{
+  font-family: 'Roboto',Helvetica, sans-serif;
+}
+  /* creating the column */
+.column{
     flex: 50%;
-  }
-
-  .login-left{
+}
+/* left login */
+.login-left{
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: black;
-    border-radius: 4px;
+    border-radius: 25px;
+    height: 100%;
+    height: 30em;
+    box-shadow: rgba(0, 0, 0, 0.16) 8px 10px 12px, rgba(0, 0, 0, 0.23) 8px 10px 12px; 
+}
 
 
-  }
+.login-left-content h4{
+  color: white;
+}
 
-  .login-right{
+/* right log in */
+.login-right{
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    margin-left: 2em ;
+}
+
+/* email and password input */
+.input-container{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+ 
+  }
+
+ input{
+    margin: 0.5em 0;
+    font-size: 1.3rem;
+    background-color: #e1dcd9;
+    border: none;
+    border-radius: 5px;
+    padding: 1em;
+    box-shadow: rgba(0, 0, 0, 0.16) 5px 2px 6px;
+  }
+
+  .input-icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .input-field-1{
+    padding-left: 2em; /* Adjust this value to provide space for the icon */
+  }
+
+  .input-field-2{
+    padding-left: 1.9em;
+   } 
+  
+
+  .login-right-content{
+  margin-bottom: 3em;
+  letter-spacing: .2rem;
+  color: #32435f;
+
+  }
+/* log in and register buttons and styling */
+  .login-button-container{
+    display: flex;
+    margin-top: 3em;
+    justify-content: space-around;
     
   }
 
-  .input-container{
-    display: flex;
-    flex-direction: column;
+.loginpage-register-button:hover, 
+.login-button:hover{
+  cursor: pointer;
+  border-color:   #32435f;
+
+
   }
 
+
+  .login-button-container button{
+    border: 1.5px solid transparent;
+    background-color: #e1dcd9;
+    border-radius: 4px;
+    letter-spacing: .1rem;
+    font-size:  1.3rem;
+    padding: 1em;
+    transition: all 240ms ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 5px 12px;
+    width: 12em;
+  }
+
+/* reponsivenes */
+
+  
+
+@media (max-width: 1000px) {
+
+    .login-left{
+      display: none;
+    }
+.login-right{
+  border-radius: 4px;
+}
  
+  } 
