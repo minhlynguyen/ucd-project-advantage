@@ -6,9 +6,9 @@ import json
 # Create your models here.
 
 # Advertiser models
-class Advertiser(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE)
-    address=models.TextField(null=True)
+# class Advertiser(models.Model):
+#     user=models.ForeignKey(User,on_delete=models.CASCADE)
+#     address=models.TextField(null=True)
 
 # Billboard vendor models
 # class BillboardVendor(models.Model):
