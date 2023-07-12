@@ -7,6 +7,6 @@ from .views import SolutionsView, zones #, AdvertiserList
 urlpatterns = [
     # path('advertisers/', AdvertiserList.as_view()),
     path('solutions/',SolutionsView.as_view()),
-    path('zones/',zones)
+    path('zones/',zones),
     # path('admin/super', admin.site.urls)
 ]

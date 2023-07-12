@@ -22,7 +22,7 @@ class AppUserManager(BaseUserManager):
 		user = self.create_user(email, password)
 		user.is_superuser = True
 		user.save()
-		return user 
+		return user
 
 
 class AppUser(AbstractBaseUser, PermissionsMixin):		
@@ -35,7 +35,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 	
 	class Meta:
 		managed = True
-		db_table = 'user-data\".\"user'
+		db_table = 'user_data\".\"user'
 	
 	def __str__(self):
 		return self.username
