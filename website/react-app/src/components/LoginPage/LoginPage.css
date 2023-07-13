@@ -49,7 +49,7 @@ section{
  
   }
 
- input{
+ .login-container input{
     margin: 0.5em 0;
     font-size: 1.3rem;
     background-color: #e1dcd9;
@@ -86,7 +86,10 @@ section{
   .login-button-container{
     display: flex;
     margin-top: 3em;
-    justify-content: space-around;
+    gap: 2.5em;
+    justify-content: space-between;
+
+
     
   }
 
@@ -97,31 +100,37 @@ section{
 
 
   }
+.login-button-container .loginpage-register-button{
+  width: 100%;
+}
 
-
-  .login-button-container button{
+  .login-button-container 
+  button{
     border: 1.5px solid transparent;
     background-color: #e1dcd9;
     border-radius: 4px;
     letter-spacing: .1rem;
     font-size:  1.3rem;
-    padding: 1em;
+    text-align: center;
+    padding: 1em 3em 1em 3em;
     transition: all 240ms ease-in-out;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 5px 12px;
-    width: 12em;
   }
 
 /* reponsivenes */
 
   
 
-@media (max-width: 1000px) {
+@media (max-width: 1150px) {
 
     .login-left{
       display: none;
     }
-.login-right{
-  border-radius: 4px;
-}
+
+    .login-button-container{
+      display: flex;
+      flex-direction: column;
+
+    }
  
   } 
