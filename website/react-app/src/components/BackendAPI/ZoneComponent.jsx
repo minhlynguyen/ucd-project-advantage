@@ -6,7 +6,7 @@ function ZoneComponent() {
     useEffect(() => {
         fetchData();
     }, []);
-    const apiURL = "http://127.0.0.1:8000/api/zones/";
+    const apiURL = "http://127.0.0.1:8000/main/zones/";
     const fetchData = async () => {
         const response = await axios.get(apiURL
             // ,
