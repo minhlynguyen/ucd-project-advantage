@@ -5,17 +5,7 @@ from django.contrib.gis.geos import GEOSGeometry
 import json
 # Create your models here.
 
-# Advertiser models
-# class Advertiser(models.Model):
-#     user=models.ForeignKey(User,on_delete=models.CASCADE)
-#     address=models.TextField(null=True)
-
-# Billboard vendor models
-# class BillboardVendor(models.Model):
-#     user=models.ForeignKey(User,on_delete=models.CASCADE)
-
 # Taxi zone models in maps schema
-## Create table
 class Zone(models.Model):
     id = geomodels.PositiveIntegerField(primary_key=True)
     name = geomodels.CharField(max_length=45)
@@ -32,3 +22,5 @@ class Puma(models.Model):
     class Meta:
         managed = True
         db_table = 'maps\".\"puma'
+
+# 
