@@ -61,11 +61,9 @@ export default function SignupPage() {
                             <option value="retail">Retail</option>
                             <option value="healthcare">Healthcare</option>
                             <option value="foodandbeverage">Food and Beverage</option>
-                            <option value="tourist">Tourist</option>
+                            <option value="tourism">Tourism</option>
                             <option value="education">Education</option>
                             <option value="realestate">Real Estate</option>
-                            <option value="entertainmentandrecreation">Entertainment and Research</option>
-                            <option value="professionalservices">Professional Services</option>
                             <option value="other">Other</option>
 
                         </select>
