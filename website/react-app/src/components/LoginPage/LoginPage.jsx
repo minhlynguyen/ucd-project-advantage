@@ -1,13 +1,20 @@
 // eslint-disable-next-line no-unused-vars 
-import React , {useState} from "react"
+import React, { useContext, useState } from 'react';
+import axios from 'axios';
+import { UserContext } from '../../App';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import {faLock} from '@fortawesome/free-solid-svg-icons';
 import weblogo from '../../assets/AdVantage.svg'
 import './LoginPage.css'
+
+const client = axios.create({
+  baseURL: "http://127.0.0.1:8000"
+});
 export default function LoginPage() {
 // setting login credentials 
+    const { setCurrentUser } = useContext(UserContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -15,6 +22,21 @@ export default function LoginPage() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        client
+        .post(
+            "/user/login",
+            {
+              email: email,
+              password: password
+            })
+        .then(function() {
+            setCurrentUser(true);
+          })
+        .catch(function (error) {
+            // Handle login error
+            console.error('Login error:', error);
+        });
+        
         console.log('Login submitted');
         console.log('Email:', email);
         console.log('Password:', password);
