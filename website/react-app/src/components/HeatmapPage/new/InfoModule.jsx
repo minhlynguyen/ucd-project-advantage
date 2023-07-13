@@ -9,7 +9,7 @@
 // };
 
 // export default InfoModule;
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 function ZoneCard({ zone }) {
@@ -24,28 +24,26 @@ function ZoneCard({ zone }) {
 }
 
 
-function InfoModule() {
-  const [zones, setZones] = useState([]);
+function InfoModule({ zones }) {
+  const [sortedZones, setSortedZones] = useState([]);
 
   useEffect(() => {
-    // const apiurl = 'http://127.0.0.1:8000/api/zones/';
-    const apiurl = './data.json';
-    axios.get(apiurl)
-      .then(response => {
-        const data = response.data;
-        const sortedZones = data.features.sort((a, b) => a.properties.pk - b.properties.pk).slice(0, 5);
-        setZones(sortedZones);
-      });
-  }, []);
+    if (Object.keys(zones).length !== 0) {
+      const sortedZonesArray = zones.features.sort((a, b) => a.properties.pk - b.properties.pk).slice(0, 5);
+      setSortedZones(sortedZonesArray);
+      console.log("sortedZones:", sortedZonesArray);
+    }
+  }, [zones]);
 
   return (
     <div className="info-module">
-      {zones.map(zone => <ZoneCard key={zone.id} zone={zone} />)}
+      {sortedZones.map(zone => <ZoneCard key={zone.id} zone={zone} />)}
     </div>
   );
 }
 
 export default InfoModule;
+
 
 
 
