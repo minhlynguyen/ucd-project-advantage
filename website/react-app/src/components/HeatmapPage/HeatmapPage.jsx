@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState , useContext} from 'react';
 import 'leaflet/dist/leaflet.css';
-
 import "./HeatmapPage.css"
 import FunctionArea from './FunctionArea.jsx';
 import Map from './Map';
@@ -27,9 +26,7 @@ function HeatmapPage() {
   useEffect(() => {
     const fetchData = async () => {
       console.log('Before fetching data');
-      // preflight requests? so twice?
       const response = await axios.get("http://127.0.0.1:8000/api/zones/");
-      // const response = await axios.get("./NYC Taxi Zones.geojson");
       console.log('After fetching data, before setting zones');
       setZones(response.data);
       console.log('After setting zones');
@@ -53,3 +50,6 @@ function HeatmapPage() {
 
 export default HeatmapPage;
 // export default React.memo(HeatmapPage);
+
+
+

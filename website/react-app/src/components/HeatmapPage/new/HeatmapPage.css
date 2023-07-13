@@ -1,0 +1,26 @@
+/* HeatmapPage.css */
+
+.heatmap-page {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+}
+
+.function-module {
+    flex-shrink: 0;
+}
+
+.map-info-container {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.map-module {
+    width: 70%;
+}
+
+.info-module {
+width: 30%;
+}
+  

@@ -8,8 +8,6 @@ import SignupPage from './components/SignupPage/SignupPage';
 import Header from './components/Header/Header';
 import SignedInHeader from './components/Header/SignedInHeader/SignedInHeader'
 import Footer from './components/Footer/Footer';
-import HeatmapPage from './components/HeatmapPage/HeatmapPage';
-
 // Create a user context
 const UserContext = createContext();
 
@@ -18,6 +16,10 @@ const UserContext = createContext();
 //   email: 'johndoe@example.com'
 // };
 
+// old one
+// import HeatmapPage from './components/HeatmapPage/HeatmapPage';
+// new one
+import HeatmapPage from './components/HeatmapPage/new/HeatmapPage';
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   // testing user log in 
@@ -56,7 +58,7 @@ function MyRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage/>}/>
       </Routes>
-    </div>
+    // </div>
   );
 }
 
