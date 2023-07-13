@@ -26,3 +26,4 @@ dist-ssr
 __pycache__/
 __pycache__2/
 *.pyc
+*.parquet
