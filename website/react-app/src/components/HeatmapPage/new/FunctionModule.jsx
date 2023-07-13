@@ -83,7 +83,7 @@
 
 import React, { useState } from 'react';
 
-function FunctionModule() {
+function FunctionModule( {filters, setFilters}) {
   // set hooks
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [incomeRange, setIncomeRange] = useState('');
@@ -111,6 +111,7 @@ function FunctionModule() {
       endTime,
       includedBusinesses,
     };
+    setFilters(requestBody);
     console.log('POST request body:', requestBody);
   };
 

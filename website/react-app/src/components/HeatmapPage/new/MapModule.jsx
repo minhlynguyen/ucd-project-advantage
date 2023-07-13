@@ -15,7 +15,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 
-function MapModule() {
+function MapModule({ zones }) {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const zonesRef = useRef({});
@@ -32,13 +32,8 @@ function MapModule() {
   }, []);
 
   useEffect(() => {
-    // replace the URL with your actual API URL
-    // const apiurl = 'http://127.0.0.1:8000/api/zones/';
-    const apiurl = './data.json';
-    axios.get(apiurl)
-      .then(response => {
-        const data = response.data;
-        data.features.forEach(feature => {
+    if (Object.keys(zones).length !== 0) {
+        zones.features.forEach(feature => {
           const polygon = L.geoJSON(feature, {
             color: '#FD8D3C',
             fillOpacity: 0.2
@@ -79,8 +74,9 @@ function MapModule() {
             mapInstanceRef.current.fitBounds(coordinates);
           });
         });
-      });
-  }, []);
+    }
+
+  }, [zones]);
 
   return <div ref={mapRef} className="map-module"></div>;
 }
