@@ -1,17 +1,20 @@
 // This Header page will include header used in the main page after user has logged in. 
 
 // eslint-disable-next-line no-unused-vars 
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import weblogo from '../../assets/AdVantageMain.svg'
+
 import './Header.css';
 // import SignedInHeader from "./SignedInHeader";
 
 
+
 export default function Header() {
     const [isNavExpanded, setIsNavExpanded] = useState(false)
+
 
     return (
         <header>          

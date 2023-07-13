@@ -1,12 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState , useContext} from 'react';
 import 'leaflet/dist/leaflet.css';
+import { UserContext } from '../../App';
 import L from 'leaflet';
 import choropleth from 'leaflet-choropleth';
 import zones from './data.jsx';
+import { Navigate } from 'react-router-dom';
 import "./HeatmapPage.css"
 
 
 function FunctionArea() {
+
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [incomeRange, setIncomeRange] = useState('');
   const [merchantCountRange, setMerchantCountRange] = useState('');
@@ -158,6 +161,12 @@ function Details({zone}) {
 
 
 function HeatmapPage() {
+  const { currentUser } = useContext(UserContext);
+
+  if (!currentUser){
+    return <Navigate to="/login" />;
+
+  }
   const [selectedZone, setSelectedZone] = useState(null);
   return (
     <div className="HeatmapPage">
