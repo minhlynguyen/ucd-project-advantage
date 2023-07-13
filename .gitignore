@@ -42,3 +42,6 @@ website/docker-compose.yml
 website/Dockerfile
 delete dupes.py
 *.parquet
+*.json
+*.geojson
+data-ingestions/.ipynb_checkpoints/historical-checkpoint.ipynb
