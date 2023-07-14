@@ -21,6 +21,8 @@ function MapModule({ zones }) {
   const mapInstanceRef = useRef(null);
   const zonesRef = useRef({});
   const selectedZoneRef = useRef(null);
+  const infoRef = useRef(null);
+  const legendRef = useRef(null);
 
   useEffect(() => {
     if (mapRef.current && !mapInstanceRef.current) {
@@ -36,8 +38,10 @@ function MapModule({ zones }) {
   // Refer to https://leafletjs.com/examples/choropleth/
   useEffect(() => {
     if (Object.keys(zones).length !== 0) {
+
       var geojson;
-      // set color scale
+
+      // set color scale and style
       const maxPk = zones.features.reduce((max, feature) => {
         return feature.properties.pk > max ? feature.properties.pk : max;
       }, zones.features[0].properties.pk);
@@ -55,6 +59,39 @@ function MapModule({ zones }) {
             fillOpacity: 0.7
         };
       }
+
+      // Info Control in the corner
+      let info = L.control();
+      info.onAdd = function (map) {
+          this._div = L.DomUtil.create('div', 'zoneBriefInfo'); // create a div with a class "zoneBriefInfo"
+          this.update();
+          return this._div;
+      };
+      // method that we will use to update the control based on feature properties passed
+      info.update = function (props) {
+          this._div.innerHTML = '<h4>New York Busyness</h4>' +  (props ?
+              '<b>' + props.name + '</b><br />' + props.pk + ' impression'
+              : 'Hover over a zone');
+      };
+
+      // Legend Control
+      let legend = L.control({position: 'bottomleft'});
+      legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'map-legend'),// create a div with a class "zoneBriefInfo"
+        grades = [0, 10, 20, 50, 100, 200],
+        labels = [];
+
+        // loop through our density intervals and generate a label with a colored square for each interval
+        for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + colorScale(grades[i] + 1).hex() + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+
+        return div;
+      };
+
+
       // Listeners
       // high light
       function highlightFeature(e) {
@@ -85,81 +122,31 @@ function MapModule({ zones }) {
             click: zoomToFeature
         });
       }
+      
       // add zones layers on map
       geojson = L.geoJson(zones, {
         style: style,
         onEachFeature: onEachFeature
-      }).addTo(mapInstanceRef.current);  
+      }).addTo(mapInstanceRef.current);
       
-      // Info Control in the corner
-      var info = L.control();
-
-      info.onAdd = function (map) {
-          this._div = L.DomUtil.create('div', 'zoneBriefInfo'); // create a div with a class "zoneBriefInfo"
-          this.update();
-          return this._div;
-      };
-
-      // method that we will use to update the control based on feature properties passed
-      info.update = function (props) {
-          this._div.innerHTML = '<h4>New York Busyness</h4>' +  (props ?
-              '<b>' + props.name + '</b><br />' + props.pk + ' impression'
-              : 'Hover over a zone');
-      };
-
+      // add info and legend controls on map
+      if (infoRef.current) {
+        infoRef.current.remove();
+        infoRef.current = null;
+      }
       info.addTo(mapInstanceRef.current);
-      
-      // Legend Control
+      infoRef.current = info;
 
+      if (legendRef.current) {
+        legendRef.current.remove();
+        legendRef.current = null;
+      }
+      legend.addTo(mapInstanceRef.current);
+      legendRef.current = legend;
+      
     }
   }, [zones]);
 
-  // useEffect(() => {
-  //   if (Object.keys(zones).length !== 0) {
-  //       zones.features.forEach(feature => {
-  //         const polygon = L.geoJSON(feature, {
-  //           color: '#FD8D3C',
-  //           fillOpacity: 0.2
-  //         }).addTo(mapInstanceRef.current);
-
-  //         zonesRef.current[feature.id] = polygon;
-
-  //         polygon.on('mouseover', function () {
-  //           if (selectedZoneRef.current !== feature.id) {
-  //             this.setStyle({
-  //               fillOpacity: 0.9
-  //             });
-  //           }
-  //         });
-
-  //         polygon.on('mouseout', function () {
-  //           if (selectedZoneRef.current !== feature.id) {
-  //             this.setStyle({
-  //               fillOpacity: 0.2
-  //             });
-  //           }
-  //         });
-
-  //         polygon.on('click', function () {
-  //           console.log(`Zone clicked: ${feature.id}`);
-  //           if (selectedZoneRef.current) {
-  //             zonesRef.current[selectedZoneRef.current].setStyle({
-  //               color: '#FD8D3C',
-  //               fillOpacity: 0.2
-  //             });
-  //           }
-  //           selectedZoneRef.current = feature.id;
-  //           this.setStyle({
-  //             color: '#007acc',
-  //             fillOpacity: 0.9
-  //           });
-  //           const coordinates = feature.geometry.coordinates[0][0].map(coord => [coord[1], coord[0]]);
-  //           mapInstanceRef.current.fitBounds(coordinates);
-  //         });
-  //       });
-  //   }
-
-  // }, [zones]);
 
   return <div ref={mapRef} className="map-module"></div>;
 }
