@@ -9,16 +9,17 @@ function HeatmapPage() {
 
   const [filters, setFilters] = useState({});
   const [filteredZones, setFilteredZones] = useState({});
+  const [selectedZone, setSelectedZone] = useState(null);
 
-  const fetchData = async () => {
-    console.log("filters are:", filters);
-    //logic to wrap filters in request
-    const response = await axios.get("./data.json");
-    const data = response.data;
-    setFilteredZones(data);
-  }
-
+  // Update filteredZones when filters change
   useEffect(() => {
+    const fetchData = async () => {
+      console.log("filters are:", filters);
+      //logic to wrap filters in request
+      const response = await axios.get("./data.json");
+      const data = response.data;
+      setFilteredZones(data);
+    }
     fetchData();
   }, [filters]);
 
@@ -26,8 +27,8 @@ function HeatmapPage() {
     <div className="heatmap-page">
       <FunctionModule filters={filters} setFilters={setFilters}/>
       <div className="map-info-container">
-        <MapModule zones={filteredZones}/>
-        <InfoModule zones={filteredZones}/>
+        <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone}/>
+        <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone}/>
       </div>
     </div>
   );
