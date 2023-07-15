@@ -13,17 +13,25 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import axios from 'axios';
 import chroma from 'chroma-js';
 
-function MapModule({ zones }) {
+function MapModule({ zones, selectedZone, setSelectedZone }) {
+  // The map container div
   const mapRef = useRef(null);
+  // Map instance
   const mapInstanceRef = useRef(null);
-  const zonesRef = useRef({});
-  const selectedZoneRef = useRef(null);
+  // Info control for brief zone info in top-right
   const infoRef = useRef(null);
+  // Legend control in bottom-left
   const legendRef = useRef(null);
+  // Geojson layer for all zones
+  const geoJsonRef = useRef(null);
+  // Current zone layer
+  const currentZoneRef = useRef(null);
+  // Mapping from feature id to layer
+  const layerMappingRef = useRef({});
 
+  // Map tile layer initialisation
   useEffect(() => {
     if (mapRef.current && !mapInstanceRef.current) {
       const map = L.map(mapRef.current).setView([40.7831, -73.9712], 12);
@@ -35,11 +43,19 @@ function MapModule({ zones }) {
   }, []);
 
 
+  // When zones change, add new Geojson layer, info control, legend control and set listeners
   // Refer to https://leafletjs.com/examples/choropleth/
   useEffect(() => {
     if (Object.keys(zones).length !== 0) {
-
+      // Save a mapping from feature ID to layer
+      layerMappingRef.current = {};
+      //Remove the old geoJSON layer if it exists
+      if (geoJsonRef.current) {
+        mapInstanceRef.current.removeLayer(geoJsonRef.current);
+      }
       var geojson;
+      // Reset current zone
+      currentZoneRef.current = null;
 
       // set color scale and style
       const maxPk = zones.features.reduce((max, feature) => {
@@ -93,42 +109,64 @@ function MapModule({ zones }) {
 
 
       // Listeners
-      // high light
+      // highlight when mouse in
       function highlightFeature(e) {
         var layer = e.target;
-        layer.setStyle({
+        if (!currentZoneRef.current || e.target.feature.id !== currentZoneRef.current.feature.id) {
+          layer.setStyle({
             weight: 5,
             color: '#666',
             dashArray: '',
             fillOpacity: 0.7
-        });
-        layer.bringToFront();
+          });
+          layer.bringToFront();
+        }
+
+
+
         info.update(layer.feature.properties);
       }
-      // reset style
+      // reset style when mouse out
       function resetHighlight(e) {
-        geojson.resetStyle(e.target);
+        // If the layer is the current selected zone, do not reset its style
+        if (!currentZoneRef.current || e.target.feature.id !== currentZoneRef.current.feature.id) {
+          geojson.resetStyle(e.target);
+        }
         info.update();
       }
-      // zoom
+      
+      // click the zone
       function zoomToFeature(e) {
-        mapInstanceRef.current.fitBounds(e.target.getBounds());
+
+        // mapInstanceRef.current.fitBounds(e.target.getBounds());
+        // Set current zone
+        // setCurrentZone(e.target);
+        console.log("user pick this zone in map:", e.target);
+        setSelectedZone(e.target.feature);
+
       }
       // summary of listeners
       function onEachFeature(feature, layer) {
+        // Save the layer to the mapping
+        layerMappingRef.current[feature.id] = layer;
         layer.on({
             mouseover: highlightFeature,
+            // mouseleave: resetHighlight,
             mouseout: resetHighlight,
             click: zoomToFeature
         });
       }
-      
-      // add zones layers on map
+
+      // add zones' geojson layer on map
       geojson = L.geoJson(zones, {
         style: style,
         onEachFeature: onEachFeature
       }).addTo(mapInstanceRef.current);
-      
+      // store the geoJSON layer in the ref
+      geoJsonRef.current = geojson;
+      // Fit the map view to the geoJSON layer
+      mapInstanceRef.current.fitBounds(geojson.getBounds());
+
       // add info and legend controls on map
       if (infoRef.current) {
         infoRef.current.remove();
@@ -147,6 +185,23 @@ function MapModule({ zones }) {
     }
   }, [zones]);
 
+  //when selectedZone change, reset pre's style and set new one's style and get a zoom level in the map
+  useEffect(() => {
+    // return pre selected zone to normal
+    if (currentZoneRef.current) {
+      geoJsonRef.current.resetStyle(currentZoneRef.current); 
+      infoRef.current.update();     
+    }
+    if (selectedZone) {
+      const layer = layerMappingRef.current[selectedZone.id];
+      currentZoneRef.current = layer;
+      mapInstanceRef.current.fitBounds(layer.getBounds());
+      layer.setStyle({
+        color: 'red',
+        fillOpacity: 0
+      });
+    }
+  }, [selectedZone]);
 
   return <div ref={mapRef} className="map-module"></div>;
 }
