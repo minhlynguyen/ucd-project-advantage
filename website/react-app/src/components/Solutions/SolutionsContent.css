@@ -1,9 +1,12 @@
 /* HeatmapPage.css */
 
-.heatmap-page {
+@import url('https://fonts.googleapis.com/css2?family=Roboto');
+
+.solutions-content {
     display: flex;
     flex-direction: column;
     height: 80vh;
+    font-family: 'Roboto', sans-serif;
 }
 
 .function-module {

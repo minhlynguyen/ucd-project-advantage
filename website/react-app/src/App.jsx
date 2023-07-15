@@ -16,10 +16,7 @@ const UserContext = createContext();
 //   email: 'johndoe@example.com'
 // };
 
-// old one
-// import HeatmapPage from './components/HeatmapPage/HeatmapPage';
-// new one
-import HeatmapPage from './components/HeatmapPage/new/HeatmapPage';
+import SolutionsContent from './components/Solutions/SolutionsContent';
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   // testing user log in 
@@ -54,7 +51,7 @@ function MyRoutes() {
       )}
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path='/solutions' element={<HeatmapPage />} />
+        <Route path='/solutions' element={<SolutionsContent />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage/>}/>
       </Routes>
