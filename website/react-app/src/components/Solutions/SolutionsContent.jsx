@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './HeatmapPage.css';
+import './SolutionsContent.css';
 import FunctionModule from './FunctionModule';
 import MapModule from './MapModule';
 import InfoModule from './InfoModule';
 import axios from 'axios';
 
-function HeatmapPage() {
+function SolutionsContent() {
 
   const [filters, setFilters] = useState({});
   const [filteredZones, setFilteredZones] = useState({});
@@ -22,9 +22,9 @@ function HeatmapPage() {
     }
     fetchData();
   }, [filters]);
-
+  console.log("selectedZone:", selectedZone);
   return (
-    <div className="heatmap-page">
+    <div className="solutions-content">
       <FunctionModule filters={filters} setFilters={setFilters}/>
       <div className="map-info-container">
         <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone}/>
@@ -34,6 +34,6 @@ function HeatmapPage() {
   );
 };
 
-export default HeatmapPage;
+export default SolutionsContent;
 
 
