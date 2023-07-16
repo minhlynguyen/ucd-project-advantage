@@ -8,6 +8,8 @@ import SignupPage from './components/SignupPage/SignupPage';
 import Header from './components/Header/Header';
 import SignedInHeader from './components/Header/SignedInHeader/SignedInHeader'
 import Footer from './components/Footer/Footer';
+import SolutionsContent from './components/Solutions/SolutionsContent';
+
 // Create a user context
 const UserContext = createContext();
 
@@ -16,7 +18,6 @@ const UserContext = createContext();
 //   email: 'johndoe@example.com'
 // };
 
-import SolutionsContent from './components/Solutions/SolutionsContent';
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   // testing user log in 
@@ -26,9 +27,7 @@ function App() {
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
 
     <Router>
-      <HeaderContainer />
       <MyRoutes />
-      <Footer />
     </Router>
     </UserContext.Provider>
 
@@ -55,7 +54,9 @@ function MyRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage/>}/>
       </Routes>
-    // </div>
+      {/* Only show Footer when not on LoginPage */}
+      {location.pathname !== '/login' && <Footer />}
+    </div>
   );
 }
 

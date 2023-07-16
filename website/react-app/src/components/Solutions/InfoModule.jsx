@@ -9,7 +9,7 @@
 // };
 
 // export default InfoModule;
-import { Box, Button, Card, IconButton, Paper, Stack } from '@mui/material';
+import { Box, Button, Card, IconButton, Paper, Stack, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
@@ -20,7 +20,10 @@ function ZoneCard({ zone, setSelectedZone }) {
 
   const paperStyle = {
     height: 135,
-    padding: 20
+    padding: 20,
+    'padding-top': '5px',
+    'padding-bottom': '5px'
+
   };
   const handleClick = (clickedZone) => {
     return () => setSelectedZone(clickedZone);
@@ -29,9 +32,9 @@ function ZoneCard({ zone, setSelectedZone }) {
     
     <Paper className="zone-card" elevation={2} style={paperStyle}>
       <h3>{zone.properties.name}</h3>
-      <p>ID: {zone.id}</p>
-      <p>Borough: {zone.properties.borough}</p>
-      <p>PK: {zone.properties.pk}</p>
+      <Typography>ID: {zone.id}</Typography>
+      <Typography>Borough: {zone.properties.borough}</Typography>
+      <Typography>PK: {zone.properties.pk}</Typography>
       <Box display="flex" justifyContent="flex-end">
         {/* <Button variant='contained' size='small' onClick={handleClick(zone)}>Locate</Button> */}
         <IconButton aria-label="Locate" onClick={handleClick(zone)}><LocationOnIcon /></IconButton>
@@ -51,12 +54,10 @@ function DetailedZoneCard({ zone }) {
   return (
     <Paper className='detailed-zone-card' elevation={2} style={paperStyle}>
       <h3>This is the detailed zone card</h3>
-      <p>Summary</p>
-      <p>ID: {zone.id}</p>
-      <p>Borough: {zone.properties.borough}</p>
-      <p>PK: {zone.properties.pk}</p>
-      <p>Details:show charts, graphs, distribution, impression (total and valid)</p>
-
+      <Typography>ID: {zone.id}</Typography>
+      <Typography>Borough: {zone.properties.borough}</Typography>
+      <Typography>PK: {zone.properties.pk}</Typography>
+      <Typography>Details:show charts, graphs, distribution, impression (total and valid)</Typography>
     </Paper>
   );
 }

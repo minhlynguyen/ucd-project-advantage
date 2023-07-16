@@ -101,12 +101,14 @@ function FunctionModule( {filters, setFilters}) {
         </AccordionDetails>
       </Accordion>
 
-      <Grid container justifyContent="flex-start" spacing={10}>
-        <Grid item>
-          <TimeControl />
-        </Grid>
+      <Grid container justifyContent="flex-start" spacing={15}>
         <Grid item>
           <SearchBar />
+          {/* <TimeControl /> */}
+        </Grid>
+        <Grid item>
+          {/* <SearchBar /> */}
+          <TimeControl />
         </Grid>
       </Grid>
     </div>
