@@ -1,6 +1,10 @@
 /* HeatmapPage.css */
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto');
+.solutions-content *{
+    /* background-color: white; */
+    /* font-size: small; */
+}
 
 .solutions-content {
     display: flex;
