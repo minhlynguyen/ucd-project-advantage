@@ -26,7 +26,7 @@ export default function TimeControl({setRealTime}) {
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography variant='body2'>0</Typography>
             <Slider max={23} min={0} sx={{ width: 300 }} size="small" defaultValue={7} aria-label="Small" valueLabelDisplay="auto" />
-            <Typography variant='body2'>23</Typography>
+            <Typography variant='body2'>24h</Typography>
           </Stack> }
     </Stack>
   );

@@ -42,6 +42,7 @@ function FunctionModule( {filters, setFilters}) {
   const [tempFilters, setTempFilters] = useState({});
   const [reset, setReset] = useState(false)
   // const [realTime, setRealTime] = useState(false)
+  const [accordionExpanded, setAccordionExpanded] = useState(false);
 
 
   console.log("tempFilters in functionModule:", tempFilters);
@@ -50,70 +51,20 @@ function FunctionModule( {filters, setFilters}) {
     setReset(prevReset => !prevReset);  // Toggle the value of reset
   }
 
-  const handleApplyClick = () => {//??????没刷新地图？
+  const handleApplyClick = () => {//map doesn't refresh？
     const requestBody = tempFilters;
-    setFilters(requestBody);//就算条件没变，地图也需要刷新
+    setFilters(requestBody);//need to refresh map even the filters are the same. (or cancel selected zone)
     console.log('POST request body:', requestBody);
+    setAccordionExpanded(false);
+  };
+  const handleAccordionChange = (event, isExpanded) => {
+    setAccordionExpanded(isExpanded);
   };
 
-  // return component
-//   return (
-//     <div className='function-module'>
-//       <button onClick={handleToggleFilterClick}>
-//         {filtersVisible ? 'Hide Filters' : 'Show Filters'}
-//       </button>
-//       <button>Compare</button>
-//       <button>Saved</button>
-//       <input type="text" placeholder="Search..." onChange={handleSearch} />
-//       <button>Search</button>
-//       {filtersVisible && (
-//         <div>
-//           <label>
-//             Income Range:
-//             <input type="text" value={incomeRange} onChange={handleIncomeRangeChange} />
-//           </label>
-//           <label>
-//             Merchant Count Range:
-//             <input type="text" value={merchantCountRange} onChange={handleMerchantCountRangeChange} />
-//           </label>
-//           <label>
-//             Start Time:
-//             <input type="datetime-local" value={startTime} onChange={handleStartTimeChange} />
-//           </label>
-//           <label>
-//             End Time:
-//             <input type="datetime-local" value={endTime} onChange={handleEndTimeChange} />
-//           </label>
-//           {Object.entries(includedBusinesses).map(([businessType, { included, min, max }]) => (
-//             <div key={businessType}>
-//               <label>
-//                 {businessType} Included:
-//                 <input type="checkbox" checked={included} onChange={event => handleIncludedBusinessesChange(businessType, event.target.checked, min, max)} />
-//               </label>
-//               {included && (
-//                 <>
-//                   <label>
-//                     {businessType} Min:
-//                     <input type="number" value={min} onChange={event => handleIncludedBusinessesChange(businessType, included, event.target.value, max)} />
-//                   </label>
-//                   <label>
-//                     {businessType} Max:
-//                     <input type="number" value={max} onChange={event => handleIncludedBusinessesChange(businessType, included, min, event.target.value)} />
-//                   </label>
-//                 </>
-//               )}
-//             </div>
-//           ))}
-//           <button onClick={handleResetClick}>Reset</button>
-//           <button onClick={handleApplyClick}>Apply</button>
-//         </div>
-//       )}
-//     </div>
-//   );
   return (
     <div className='function-module'>
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{bgcolor: "#32435f", color: "white"}}>
+      <Accordion expanded={accordionExpanded} onChange={handleAccordionChange}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon /> } sx={{bgcolor: "#32435f", color: "white"}}>
           <Typography>Filters for Zones</Typography>
         </AccordionSummary>
         <AccordionDetails>  
