@@ -41,7 +41,7 @@ function FunctionModule( {filters, setFilters}) {
 
   const [tempFilters, setTempFilters] = useState({});
   const [reset, setReset] = useState(false)
-  const [realTime, setRealTime] = useState(false)
+  // const [realTime, setRealTime] = useState(false)
 
 
   console.log("tempFilters in functionModule:", tempFilters);
@@ -152,18 +152,12 @@ function FunctionModule( {filters, setFilters}) {
 
       <Grid container justifyContent="flex-start" spacing={10}>
         <Grid item>
-          <TimeControl setRealTime={setRealTime}/>
-        </Grid>
-        <Grid item>
-          {realTime ? 
-          <DateTimeSelect /> :
-          <Slider max={23} min={0} sx={{ width: 300 }} size="small" defaultValue={7} aria-label="Small" valueLabelDisplay="auto" /> }
+          <TimeControl />
         </Grid>
         <Grid item>
           <SearchBar />
         </Grid>
       </Grid>
-      {/* <DateTimeSelect /> */}
     </div>
   );
 }
