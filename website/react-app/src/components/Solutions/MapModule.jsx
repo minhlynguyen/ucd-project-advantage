@@ -197,7 +197,7 @@ function MapModule({ zones, selectedZone, setSelectedZone }) {
       currentZoneRef.current = layer;
       mapInstanceRef.current.fitBounds(layer.getBounds());
       layer.setStyle({
-        color: 'red',
+        color: '#32435f',
         fillOpacity: 0
       });
     }

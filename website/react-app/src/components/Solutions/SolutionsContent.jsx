@@ -4,6 +4,9 @@ import FunctionModule from './FunctionModule';
 import MapModule from './MapModule';
 import InfoModule from './InfoModule';
 import axios from 'axios';
+import { Box, Fab } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import DifferenceIcon from '@mui/icons-material/Difference';
 
 function SolutionsContent() {
 
@@ -30,6 +33,15 @@ function SolutionsContent() {
         <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone}/>
         <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone}/>
       </div>
+      <Box className='floating-button'>
+        <Fab color="primary" aria-label="compare">
+          <DifferenceIcon />
+        </Fab>
+        <Fab color='secondary' aria-label="like">
+          <FavoriteIcon />
+        </Fab>
+      </Box>
+
     </div>
   );
 };
