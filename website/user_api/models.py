@@ -24,6 +24,7 @@ class AppUserManager(BaseUserManager):
 			raise ValueError('A password is required.')
 		user = self.create_user(email, password)
 		user.is_superuser = True
+		user.is_staff = True
 		user.save()
 		return user
 
@@ -33,7 +34,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 	email = models.EmailField(_("email address"), unique=True)
 	username = models.CharField(max_length=150, null=True)
 	# email = models.EmailField(max_length=50, unique=True)
-	# is_staff = models.BooleanField(default=False)
+	is_staff = models.BooleanField(default=False)
 	# is_active = models.BooleanField(default=True)
 	user_type = models.IntegerField(default=1)
 	date_joined = models.DateTimeField(default=timezone.now)
