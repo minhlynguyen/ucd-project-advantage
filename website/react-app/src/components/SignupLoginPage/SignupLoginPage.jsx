@@ -26,7 +26,9 @@ export default function SignupLoginPage() {
   const [userName, setUsername] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [addclass, setaddclass] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessageRegister, setErrorMessageRegister] = useState("");
+  const [errorMessageLogin, setErrorMessageLogin] = useState("");
+
   //   handling submit
   const handleSignupSubmit = (e) => {
     e.preventDefault();
@@ -47,18 +49,18 @@ export default function SignupLoginPage() {
             navigate("/");
           }).catch(function (error) {
             console.log(error.response.status);
-            console.log("hello");
+            // console.log("hello");
   
-            if (
-              error.response &&
-              (error.response.status === 500 || error.response.status === 400)
-            ) {
-              // Set the error messages from the response
-              setErrorMessage("An error occurred during registration.");
-            } else {
-              // Handle generic error
-              setErrorMessage("Unexpected error occurred.");
-            }
+            // if (
+            //   error.response &&
+            //   (error.response.status === 500 || error.response.status === 400)
+            // ) {
+            //   // Set the error messages from the response
+            //   setErrorMessage("An error occurred during registration.");
+            // } else {
+            //   // Handle generic error
+            //   setErrorMessage("Unexpected error occurred.");
+            // }
           });
       })
       .catch(function (error) {
@@ -67,10 +69,10 @@ export default function SignupLoginPage() {
           (error.response.status === 500 || error.response.status === 400)
         ) {
           // Set the error messages from the response
-          setErrorMessage("An error occurred during registration.");
+          setErrorMessageRegister("An error occurred during registration.");
         } else {
           // Handle generic error
-          setErrorMessage("Unexpected error occurred during registration.");
+          setErrorMessageRegister("Unexpected error occurred during registration.");
         }
       });
       }
@@ -90,10 +92,10 @@ export default function SignupLoginPage() {
       .catch(function (error) {
           if (error.response && error.response.data && error.response.data.errors) {
             // Set the error messages from the response
-            setErrorMessage(error.response.data.errors);
+            setErrorMessageLogin(error.response.data.errors);
           } else {
             // Handle generic error
-            setErrorMessage('An error occurred during login. Please try again');
+            setErrorMessageLogin('An error occurred during login. Please try again');
           }
         
       });
@@ -104,7 +106,7 @@ export default function SignupLoginPage() {
         <div className="form-container signup-container">
           <Form.Root className="FormRoot" onSubmit={handleSignupSubmit}>
             <div className="register-content">
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
+            {errorMessageRegister && <div className="error-message">{errorMessageRegister}</div>}
 
 
               <h2>Register</h2>
@@ -138,7 +140,6 @@ export default function SignupLoginPage() {
                   Please provide a valid email
                 </Form.Message>
               </div>
-              {/* <span className="input-icon"><FontAwesomeIcon icon={faEnvelope} beat/></span> */}
               <Form.Control asChild>
                 <input
                   type="email"
@@ -193,7 +194,7 @@ export default function SignupLoginPage() {
         <div className="form-container login-container">
           <Form.Root className="FormRoot" onSubmit={handleLoginSubmit}>
             <div className="login-content">
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
+            {errorMessageLogin && <div className="error-message">{errorMessageLogin}</div>}
               <h2>Login</h2>
             </div>
             <Form.Field className="FormField" name="email">
@@ -222,11 +223,6 @@ export default function SignupLoginPage() {
                 <Form.Message className="FormMessage" match="valueMissing">
                   Please enter your password
                 </Form.Message>
-                {!isPasswordValid && (
-                  <Form.Message className="FormMessage" htmlFor="password">
-                    Please provide a password with a minimum of 8 characters.
-                  </Form.Message>
-                )}
               </div>
               <Form.Control asChild>
                 <input
