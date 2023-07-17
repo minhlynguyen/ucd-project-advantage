@@ -4,7 +4,7 @@ import { UserContext } from '../../App';
 import L from 'leaflet';
 import choropleth from 'leaflet-choropleth';
 import zones from './data.jsx';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import "./HeatmapPage.css"
 
 
@@ -162,12 +162,14 @@ function Details({zone}) {
 
 function HeatmapPage() {
   const { currentUser } = useContext(UserContext);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const navigate = useNavigate();
+
+
 
   if (!currentUser){
-    return <Navigate to="/login" />;
-
+    navigate('/signup')
   }
-  const [selectedZone, setSelectedZone] = useState(null);
   return (
     <div className="HeatmapPage">
       <FunctionArea />
