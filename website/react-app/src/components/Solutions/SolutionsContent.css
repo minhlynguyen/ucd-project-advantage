@@ -1,0 +1,72 @@
+/* HeatmapPage.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto');
+.solutions-content *{
+    /* background-color: white; */
+    /* font-size: small; */
+}
+
+.solutions-content {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    font-family: 'Roboto', sans-serif;
+    background-color: white;
+}
+
+.function-module {
+    flex-shrink: 0;
+}
+
+.map-info-container {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.map-module {
+    width: 70%;
+}
+
+.info-module {
+    width: 30%;
+    justify-content: center;
+}
+
+/* MapModule */
+/* Info Control */
+.zoneBriefInfo {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.zoneBriefInfo h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+/* Legend Control */
+.map-legend {
+    line-height: 18px;
+    color: #555;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.map-legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+/* Floating button */
+.floating-button {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+  }

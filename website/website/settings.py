@@ -89,7 +89,8 @@ DATABASES = {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "NAME": "advantage-db",
         "USER": "advantage",
-        "PASSWORD": config('DB_PASSWORD'),
+        # "PASSWORD": config('DB_PASSWORD'),
+        "PASSWORD": "Advantage7",
         "HOST": "database-1.cvwut6jnqsvn.us-east-1.rds.amazonaws.com",
         "PORT": "5432",
     }

@@ -8,7 +8,7 @@ import SignupPage from './components/SignupPage/SignupPage';
 import Header from './components/Header/Header';
 import SignedInHeader from './components/Header/SignedInHeader/SignedInHeader'
 import Footer from './components/Footer/Footer';
-import HeatmapPage from './components/HeatmapPage/HeatmapPage';
+import SolutionsContent from './components/Solutions/SolutionsContent';
 
 // Create a user context
 const UserContext = createContext();
@@ -50,12 +50,7 @@ function MyRoutes() {
       )}
       <Routes>
         <Route path="/" element={<HomePage />} />
-
-        {/* <Route path="/about" element={<AboutPage />} />
-        <Route path="/login" element={<LoginPage />} /> */}
-        <Route path='/heatmap' element={<HeatmapPage />} />
-
-        {/* <Route path="/about" element={<AboutPage />} /> */}
+        <Route path='/solutions' element={<SolutionsContent />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage/>}/>
       </Routes>
@@ -64,6 +59,41 @@ function MyRoutes() {
     </div>
   );
 }
+
+
+
+// function App() {
+//   return (
+//     <Router>
+//       <MyRoutes />
+//     </Router>
+//   );
+// }
+
+
+// function MyRoutes() {
+//   let location = useLocation();
+
+//   return (
+//     <div>
+//       {/* Only show Header when not on LoginPage */}
+//       {location.pathname !== '/login' && location.pathname !== '/signup' && <Header />}
+
+//       <Routes>
+//         <Route path="/" element={<HomePage />} />
+
+//         <Route path='/solutions' element={<HeatmapPage />} />
+
+//         <Route path="/login" element={<LoginPage />} />
+
+//         <Route path="/signup" element={<SignupPage/>}/>
+//       </Routes>
+      
+//       {/* Only show Footer when not on LoginPage */}
+//       {location.pathname !== '/login' && <Footer />}
+//     </div>
+//   );
+// }
 // import './App.css';
 // import ZoneComponent from  './components/BackendAPI/ZoneComponent'
 // function App() {
