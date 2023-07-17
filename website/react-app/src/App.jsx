@@ -1,27 +1,38 @@
 
 // eslint-disable-next-line no-unused-vars 
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';
-import LoginPage from './components/LoginPage/LoginPage';
-import SignupPage from './components/SignupPage/SignupPage';
+import SignupLoginPage from './components/SignupLoginPage/SignupLoginPage';
 import Header from './components/Header/Header';
 import SignedInHeader from './components/Header/SignedInHeader/SignedInHeader'
 import Footer from './components/Footer/Footer';
+import axios from 'axios';
 import SolutionsContent from './components/Solutions/SolutionsContent';
 
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+axios.defaults.withCredentials = true;
 // Create a user context
 const UserContext = createContext();
 
-// const mockUser = {
-//   name: 'John Doe',
-//   email: 'johndoe@example.com'
-// };
-
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
-  // testing user log in 
-  // const [currentUser, setCurrentUser] = useState(mockUser);
+  const [currentUser, setCurrentUser] = useState();
+
+  useEffect(() => {
+    const client = axios.create({
+      baseURL: "http://127.0.0.1:8000"
+    });
+    client.get("/user/user")
+    .then(function(res) {
+      console.log(res)
+      setCurrentUser(true);
+    })
+    .catch(function(error) {
+      console.log(error)
+      setCurrentUser(false);
+    });
+  }, []);
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
@@ -41,21 +52,16 @@ function MyRoutes() {
   return (
     <div>
       {/* Only show Header when not on LoginPage */}
-      {/* {location.pathname !== '/login' && location.pathname !== '/signup' && <Header />} */}
       {/* Only show Header or SignedInHeader based on user login status */}
-      {location.pathname !== '/login' && location.pathname !== '/signup' && (
-
-          currentUser ? <SignedInHeader /> : <Header />
-
-      )}
+      {location.pathname !== '/signup' && 
+      (currentUser ? <SignedInHeader /> : <Header />)}
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/signup" element={<SignupLoginPage/>}/>
         <Route path='/solutions' element={<SolutionsContent />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage/>}/>
       </Routes>
       {/* Only show Footer when not on LoginPage */}
-      {location.pathname !== '/login' && <Footer />}
+      {location.pathname !== '/signup' && <Footer />}
     </div>
   );
 }
