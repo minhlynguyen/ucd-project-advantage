@@ -7,8 +7,8 @@ import SignupLoginPage from './components/SignupLoginPage/SignupLoginPage';
 import Header from './components/Header/Header';
 import SignedInHeader from './components/Header/SignedInHeader/SignedInHeader'
 import Footer from './components/Footer/Footer';
-import HeatmapPage from './components/HeatmapPage/HeatmapPage';
 import axios from 'axios';
+import SolutionsContent from './components/Solutions/SolutionsContent';
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -63,8 +63,8 @@ function MyRoutes() {
       (currentUser ? <SignedInHeader /> : <Header />)}
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path='/heatmap' element={<HeatmapPage />} />
         <Route path="/signup" element={<SignupLoginPage/>}/>
+        <Route path='/solutions' element={<SolutionsContent />} />
       </Routes>
       
       {/* Only show Footer when not on LoginPage */}
