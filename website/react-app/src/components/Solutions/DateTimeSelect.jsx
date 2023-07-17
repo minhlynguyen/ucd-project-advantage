@@ -12,8 +12,8 @@ export default function DateTimeSelect() {
   const style = {
     border: '1px solid #ccc', 
     borderRadius: '10px', 
-    'font-size': '14px',
-    'background-color': 'white'
+    'fontSize': '14px',
+    'backgroundColor': 'white'
 
   }
     

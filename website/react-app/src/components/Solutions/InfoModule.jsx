@@ -21,8 +21,8 @@ function ZoneCard({ zone, setSelectedZone }) {
   const paperStyle = {
     height: 135,
     padding: 20,
-    'padding-top': '5px',
-    'padding-bottom': '5px'
+    'paddingTop': '5px',
+    'paddingBottom': '5px'
 
   };
   const handleClick = (clickedZone) => {
