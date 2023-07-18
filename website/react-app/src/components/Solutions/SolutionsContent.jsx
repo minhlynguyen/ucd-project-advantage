@@ -13,9 +13,12 @@ function SolutionsContent() {
   const [filters, setFilters] = useState({});
   const [filteredZones, setFilteredZones] = useState({});
   const [selectedZone, setSelectedZone] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Update filteredZones when filters change
   useEffect(() => {
+    setSelectedZone(null);
+    setIsLoading(true);
     const fetchData = async () => {
       console.log("filters are:", filters);
       //logic to wrap filters in request
@@ -24,16 +27,23 @@ function SolutionsContent() {
       const response = await axios.get(url);
       const data = response.data;
       setFilteredZones(data);
+      setIsLoading(false);
     }
     fetchData();
   }, [filters]);
-  console.log("selectedZone:", selectedZone);
+
+  // useEffect(() => {
+  //   setIsLoading(false);
+  // }, [filteredZones]);
+
+
+  // console.log("selectedZone:", selectedZone);
   return (
     <div className="solutions-content">
       <FunctionModule filters={filters} setFilters={setFilters}/>
       <div className="map-info-container">
-        <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone}/>
-        <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone}/>
+        <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
+        <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
       </div>
       <Box className='floating-button'>
         <Fab color="primary" aria-label="compare">

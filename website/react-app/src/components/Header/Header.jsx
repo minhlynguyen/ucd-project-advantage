@@ -29,7 +29,8 @@ export default function Header() {
                                 <Link to="/">Home</Link>
                             </li>
                             <li> 
-                              <Link to="/signup">Solutions</ Link>
+                              {/* <Link to="/signup">Solutions</ Link> */}
+                              <Link to="/solutions">Solutions</ Link>
                               </li>
                             <li>
                                 <Link to="/testimonials">Testimonials</Link>
