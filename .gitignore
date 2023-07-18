@@ -4,7 +4,7 @@ website/website/.env
 data-ingestions/~$taxi_zones_data_dict.xlsx
 data-ingestions/taxi_zones_data_dict.xlsx
 data-ingestions/taxi_zones.csv
-data-ingestions/.ipynb_checkpoints/
+*/.ipynb_checkpoints/
 node_modules
 *.env
 website/requirements.txt
@@ -19,3 +19,5 @@ website/requirements.txt
 *.parquet
 *.json
 *.geojson
+*.csv
+*checkpoint.ipynb
