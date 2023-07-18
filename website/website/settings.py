@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "leaflet",
     "corsheaders",
     "user_api",
+    "impression"
     # 'user_api.apps.UserApiConfig'
 ]
 
