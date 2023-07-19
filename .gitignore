@@ -1,10 +1,7 @@
 data-ingestions/.DS_Store
 .DS_Store
 website/website/.env
-data-ingestions/~$taxi_zones_data_dict.xlsx
-data-ingestions/taxi_zones_data_dict.xlsx
-data-ingestions/taxi_zones.csv
-*/.ipynb_checkpoints/
+*.xlsx
 node_modules
 *.env
 website/requirements.txt
@@ -13,11 +10,7 @@ website/requirements.txt
 website/docker-compose.yml
 website/Dockerfile
 delete dupes.py
-node_modules
-*.env
-website/requirements.txt
 *.parquet
 *.json
-*.geojson
 *.csv
 *checkpoint.ipynb
