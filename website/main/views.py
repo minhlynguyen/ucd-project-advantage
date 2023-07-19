@@ -21,9 +21,9 @@ class SolutionsView(TemplateView):
 def zones(request):
     zones = serialize('geojson',models.Zone.objects.all())
     # return zones
-    # return HttpResponse(zones,content_type='json')
+    return HttpResponse(zones,content_type='json')
     # return Response(zones,status=status.HTTP_200_OK)
-    return JsonResponse(zones,status=201,safe=False)
+    # return JsonResponse(zones,status=201,safe=False)
 
 def zones_list(request):
     """

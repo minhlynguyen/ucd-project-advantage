@@ -16,10 +16,6 @@ axios.defaults.withCredentials = true;
 // Create a user context
 const UserContext = createContext();
 
-// old one
-// import HeatmapPage from './components/HeatmapPage/HeatmapPage';
-// new one
-// import HeatmapPage from './components/HeatmapPage/new/HeatmapPage';
 function App() {
   const [currentUser, setCurrentUser] = useState();
 
@@ -42,9 +38,7 @@ function App() {
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
 
     <Router>
-      <HeaderContainer />
       <MyRoutes />
-      <Footer />
     </Router>
     </UserContext.Provider>
 
@@ -66,7 +60,6 @@ function MyRoutes() {
         <Route path="/signup" element={<SignupLoginPage/>}/>
         <Route path='/solutions' element={<SolutionsContent />} />
       </Routes>
-      
       {/* Only show Footer when not on LoginPage */}
       {location.pathname !== '/signup' && <Footer />}
     </div>
