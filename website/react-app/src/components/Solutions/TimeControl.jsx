@@ -2,6 +2,7 @@ import * as React from 'react';
 import Switch from '@mui/material/Switch';
 import { Slider, Stack, Typography } from '@mui/material';
 import DateTimeSelect from './DateTimeSelect';
+import BasicSwitch from './BasicSwitch';
 
 export default function TimeControl({setRealTime}) {
   const [checked, setChecked] = React.useState(false);

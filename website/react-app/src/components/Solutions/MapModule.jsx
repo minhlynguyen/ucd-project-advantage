@@ -14,8 +14,9 @@ import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import chroma from 'chroma-js';
+import { Box, CircularProgress } from '@mui/material';
 
-function MapModule({ zones, selectedZone, setSelectedZone }) {
+function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   // The map container div
   const mapRef = useRef(null);
   // Map instance
@@ -200,10 +201,31 @@ function MapModule({ zones, selectedZone, setSelectedZone }) {
         color: '#32435f',
         fillOpacity: 0
       });
+    } else {
+      if (geoJsonRef.current) {
+        mapInstanceRef.current.fitBounds(geoJsonRef.current.getBounds());
+      }
+      
+      // mapInstanceRef.current.setView([40.7831, -73.9712], 12);
     }
   }, [selectedZone]);
 
-  return <div ref={mapRef} className="map-module"></div>;
+  return <div ref={mapRef} className="map-module">
+
+    {isLoading && 
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1000,  // add this line
+        }}
+      >
+        <CircularProgress size={60}/>
+      </Box>
+    }
+  </div>;
 }
 
 export default MapModule;
