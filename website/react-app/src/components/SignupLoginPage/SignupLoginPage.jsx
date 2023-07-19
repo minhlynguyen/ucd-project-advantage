@@ -18,7 +18,7 @@ const client = axios.create({
 export default function SignupLoginPage() {
   // setting credentials for registration page
   const navigate = useNavigate();
-  const { setCurrentUser } = useContext(UserContext);
+  const { setCurrentUser} = useContext(UserContext);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
@@ -28,7 +28,6 @@ export default function SignupLoginPage() {
   const [addclass, setaddclass] = useState("");
   const [errorMessageRegister, setErrorMessageRegister] = useState("");
   const [errorMessageLogin, setErrorMessageLogin] = useState("");
-
   //   handling submit
   const handleSignupSubmit = (e) => {
     e.preventDefault();
@@ -49,18 +48,6 @@ export default function SignupLoginPage() {
             navigate("/");
           }).catch(function (error) {
             console.log(error.response.status);
-            // console.log("hello");
-  
-            // if (
-            //   error.response &&
-            //   (error.response.status === 500 || error.response.status === 400)
-            // ) {
-            //   // Set the error messages from the response
-            //   setErrorMessage("An error occurred during registration.");
-            // } else {
-            //   // Handle generic error
-            //   setErrorMessage("Unexpected error occurred.");
-            // }
           });
       })
       .catch(function (error) {

@@ -19,7 +19,7 @@ export default function HomePage() {
                     <p>Make Better Decisions.</p>
                 </div>
                 <div className="homepage-button-container">
-                {currentUser ? (<Link className="getstarted-button" to="/heatmap">
+                {currentUser ? (<Link className="getstarted-button" to="/solutionsp">
                               <button className="homepage-getstarted-button">Get Started</button>
                                  </Link>
                                 ) : (
