@@ -9,7 +9,8 @@ with open('../data-ingestions/draft_impression.json', 'r') as fd:
     data = json.load(fd)
     # for row in data:
         # taxi_zone = Zone.objects.get(id=row['taxi_zone'])
-    datestr = data[1]['datetime']
+    for row in data: 
+        datestr = row['datetime']
     print(type(datestr))
     datetime = datetime.strptime(datestr, '%Y-%m-%d %H:%M:%S')
     print(type(datetime))

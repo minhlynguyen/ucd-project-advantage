@@ -19,7 +19,7 @@ const UserContext = createContext();
 // old one
 // import HeatmapPage from './components/HeatmapPage/HeatmapPage';
 // new one
-import HeatmapPage from './components/HeatmapPage/new/HeatmapPage';
+// import HeatmapPage from './components/HeatmapPage/new/HeatmapPage';
 function App() {
   const [currentUser, setCurrentUser] = useState();
 
