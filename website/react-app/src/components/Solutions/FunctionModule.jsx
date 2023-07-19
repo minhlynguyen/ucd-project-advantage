@@ -31,7 +31,7 @@ import MultiSelect from './MultiSelect';
 import RangeSlider from './RangeSlider';
 import TimeControl from './TimeControl';
 import SearchBar from './SearchBar';
-import { Box, Button, Container, Grid, Slider } from '@mui/material';
+import { Box, Button, Container, Grid, Slider, Stack } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import CheckIcon from '@mui/icons-material/Check';
 import DateTimeSelect from './DateTimeSelect';
@@ -70,7 +70,7 @@ function FunctionModule( {filters, setFilters}) {
         <AccordionDetails>  
           <MultiSelect setTempFilters={setTempFilters} reset={reset}/>
 
-          <Typography variant='subtitle2'>Busiess Included:</Typography>
+          <Typography variant='subtitle2' color={"#1976d2"}>Busiess Included:</Typography>
           <Grid container>
             <Grid item xs={4}>
               <RangeSlider label={'Schools'} setTempFilters={setTempFilters} reset={reset}/>
@@ -80,8 +80,9 @@ function FunctionModule( {filters, setFilters}) {
             </Grid>
           </Grid>
 
-          <Typography variant='subtitle2'>Target Customers:</Typography>
+          <Typography variant='subtitle2' color={"#1976d2"}>Target Customers:</Typography>
           <Grid container>
+
             <Grid item xs={4}>
               <RangeSlider label={'Age'} setTempFilters={setTempFilters} reset={reset}/>
             </Grid>
@@ -100,17 +101,10 @@ function FunctionModule( {filters, setFilters}) {
           </Grid>
         </AccordionDetails>
       </Accordion>
-
-      <Grid container justifyContent="flex-start" spacing={15}>
-        <Grid item>
-          <SearchBar />
-          {/* <TimeControl /> */}
-        </Grid>
-        <Grid item>
-          {/* <SearchBar /> */}
-          <TimeControl />
-        </Grid>
-      </Grid>
+      <Stack direction="row" spacing={1}>
+        <SearchBar />
+        <TimeControl />
+      </Stack>
     </div>
   );
 }

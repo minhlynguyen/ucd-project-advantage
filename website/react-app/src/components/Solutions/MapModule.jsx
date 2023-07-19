@@ -219,9 +219,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
+          zIndex: 1000,  // add this line
         }}
       >
-        <CircularProgress />
+        <CircularProgress size={60}/>
       </Box>
     }
   </div>;

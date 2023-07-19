@@ -53,7 +53,7 @@ export default function SearchBar() {
     console.log(`Search for ${event.target.value}`);
   };
   return (
-    <Box sx={{ width: 300 }}>
+    <Box sx={{ width: 200, margin: "0px", borderRadius: "20px"}}>
 
   
     

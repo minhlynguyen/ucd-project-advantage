@@ -22,7 +22,7 @@ function ZoneCard({ zone, setSelectedZone }) {
     <Container>
       <Stack spacing={1}>
         <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-        <Skeleton variant="circular" width={40} height={40} />
+        <Skeleton variant="circular" width={30} height={30} />
         <Skeleton variant="rounded" height={60} />
       </Stack>
     </Container>;
