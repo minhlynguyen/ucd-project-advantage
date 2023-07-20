@@ -60,7 +60,8 @@ def zone_detail(request, pk):
         return JsonResponse({"status":"2","data":str(e)},status=201)
 
     if request.method == 'GET':
-        serializer = ZoneSerializer(zone)
+        # serializer = ZoneSerializer(zone)
+        serializer = ZoneSerializer(instance=zone)
         return JsonResponse({"status":"1","data":serializer.data},status=201)
 
     # elif request.method == 'PUT':
