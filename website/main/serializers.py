@@ -1,36 +1,25 @@
 from rest_framework import serializers
-from .models import Zone
-from impression.models import Impression
+from .models import Zone, ZoneDetail
+# from impression.models import Impression
+from datetime import datetime
 
 # # class AdvertiserSerializer(serializers.ModelSerializer):
 # #     class Meta:
 # #         model=models.Advertiser
 # #         fields=['user','address']
 
-# Tested: Can only return one field at a time
-
-# class ZoneSerializer(serializers.ModelSerializer):
-#     impression_in_zone = serializers.SlugRelatedField(
-#         many=True,
-#         read_only=True,
-#         slug_field='impression_history'
-#     )
-
-#     class Meta:
-#         model=models.Zone
-#         # fields='__all__'
-#         fields=['id','name','borough','geom','impression_in_zone']
-
-# Tested: Dont return detail
-
 class DetailSerializer(serializers.ModelSerializer):
+    
     class Meta:
-        model = Impression
-        fields = ['datetime','impression_history', 'impression_predict']
+        model = ZoneDetail
+        fields = '__all__'
 
 class ZoneSerializer(serializers.ModelSerializer):
-    impression_in_zone = DetailSerializer(many=True, read_only=True)
+    
+    # queryset = ZoneDetail.objects.filter(datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z"))
+
+    zone_detail = DetailSerializer(many=True, read_only=True, source="current_detail")
 
     class Meta:
         model = Zone
-        fields = ['id','name','borough','geom', 'impression_in_zone']
+        fields = ['id','name','borough','geom', 'zone_detail']

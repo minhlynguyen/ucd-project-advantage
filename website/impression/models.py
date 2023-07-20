@@ -6,7 +6,7 @@ from main.models import Zone
 # Create your models here.
 class Impression(models.Model):
     zone_time_id = models.AutoField(primary_key=True)
-    taxi_zone = models.ForeignKey(Zone,related_name='impression_in_zone',on_delete=models.RESTRICT)
+    taxi_zone = models.ForeignKey(Zone,related_name='+',on_delete=models.RESTRICT)
     datetime = models.DateTimeField(default=timezone.now)
     impression_history = models.PositiveIntegerField(default=0) # Actual history data
     impression_predict = models.PositiveIntegerField(default=0) # ML model predict
@@ -29,5 +29,5 @@ class Impression(models.Model):
     
     class Meta:
         managed = True
-        db_table = 'public\".\"impression'
+        # db_table = 'public\".\"impression'
         unique_together = (('taxi_zone','datetime'))
