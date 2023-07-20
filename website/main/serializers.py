@@ -6,7 +6,7 @@ from . import models
 # #         model=models.Advertiser
 # #         fields=['user','address']
 
-class ZonesSerializer(serializers.ModelSerializer):
+class ZoneSerializer(serializers.ModelSerializer):
     class Meta:
         model=models.Zone
         fields='__all__'
