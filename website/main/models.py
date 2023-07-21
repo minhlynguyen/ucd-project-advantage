@@ -21,6 +21,9 @@ class Zone(models.Model):
                                          datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
                                          )# .order_by("impression_predict")
 
+    def multipolygon(self):
+        return self.geom
+
     class Meta:
         managed = True
         db_table = 'maps\".\"zone'
