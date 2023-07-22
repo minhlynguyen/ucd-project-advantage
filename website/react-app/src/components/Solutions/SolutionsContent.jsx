@@ -32,9 +32,13 @@ function SolutionsContent() {
     fetchData();
   }, [filters]);
 
-  // useEffect(() => {
-  //   setIsLoading(false);
-  // }, [filteredZones]);
+  const handleClickLikeFab = () => {
+
+    const currentURL = window.location.href;
+    const urlObject = new URL(currentURL);
+    const likeUrl = new URL('/saved', urlObject);
+    window.open(likeUrl, '_blank');
+  }
 
 
   // console.log("selectedZone:", selectedZone);
@@ -49,7 +53,7 @@ function SolutionsContent() {
         <Fab color="primary" aria-label="compare">
           <DifferenceIcon />
         </Fab>
-        <Fab color='secondary' aria-label="like">
+        <Fab color='secondary' aria-label="like" onClick={handleClickLikeFab}>
           <FavoriteIcon />
         </Fab>
       </Box>
