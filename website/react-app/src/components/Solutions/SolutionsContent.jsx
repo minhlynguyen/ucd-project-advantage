@@ -22,8 +22,8 @@ function SolutionsContent() {
     const fetchData = async () => {
       console.log("filters are:", filters);
       //logic to wrap filters in request
-      // const url = "./data.json";
-      const url = "http://127.0.0.1:8000/api/zones";
+      const url = "./data.json";
+      // const url = "http://127.0.0.1:8000/api/zones";
       const response = await axios.get(url);
       const data = response.data;
       setFilteredZones(data);

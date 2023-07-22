@@ -15,6 +15,11 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import chroma from 'chroma-js';
 import { Box, CircularProgress } from '@mui/material';
+import 'mapillary-js/dist/mapillary.css';
+import { Viewer } from 'mapillary-js';
+import axios from 'axios';
+
+
 
 function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   // The map container div
@@ -31,6 +36,9 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   const currentZoneRef = useRef(null);
   // Mapping from feature id to layer
   const layerMappingRef = useRef({});
+  // Mapillary viewer instance
+  const viewerRef = useRef(null);
+
 
   // Map tile layer initialisation
   useEffect(() => {
@@ -39,8 +47,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
-      mapInstanceRef.current = map;
+      mapInstanceRef.current = map;     
     }
+    
+
   }, []);
 
 
@@ -142,6 +152,12 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
         // mapInstanceRef.current.fitBounds(e.target.getBounds());
         // Set current zone
         // setCurrentZone(e.target);
+        // // 当用户点击一个区域时，显示该区域中心的街景图像
+        // if (viewerRef.current) {
+        //   const center = e.target.getBounds().getCenter();
+        //   viewerRef.current.moveCloseTo(center.lat, center.lng);
+        // }
+
         console.log("user pick this zone in map:", e.target);
         setSelectedZone(e.target.feature);
 
@@ -210,7 +226,51 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
     }
   }, [selectedZone]);
 
+  // Initialize Mapillary viewer when the map is ready
+  // useEffect(() => {
+  //   if (mapInstanceRef.current && !viewerRef.current) {
+  //     viewerRef.current = new Viewer({
+  //       container: 'mapillary',
+  //       imageId: '3056168174613811',  // 你可以选择一个默认的街景图像的ID
+  //       accessToken: 'MLY|6295611443867695|a2b7c756ca3b62c2dc4ddbda87ee3f7d',  // 替换成你的Mapillary Client ID
+  //     });
+  //   }
+  // }, []);
+
+  // // Initialize Mapillary viewer when the map is ready
+  // useEffect(() => {
+  //   if (mapInstanceRef.current && !viewerRef.current) {
+  //     // Use Mapillary API to find the nearest image to the specified coordinates
+  //     const client_id = 'MLY|6295611443867695|a2b7c756ca3b62c2dc4ddbda87ee3f7d';  // 替换成你的Mapillary Client ID
+  //     const coordinates = '-74.0084234,40.7198226';
+  //     const radius = '100';  // 半径（米）
+
+  //     axios.get(`https://graph.mapillary.com/v3/images?client_id=${client_id}&closeto=${coordinates}&radius=${radius}`)
+  //       .then(response => {
+  //         const data = response.data;
+  //         if (data.features && data.features.length > 0) {
+  //           const imageId = data.features[0].properties.id;  // Use the ID of the first image
+
+  //           viewerRef.current = new Viewer({
+  //             container: 'mapillary',
+  //             imageId: imageId,  // 使用找到的图像的ID
+  //             accessToken: client_id,
+  //           });
+  //         } else {
+  //           console.log('No images found near the specified coordinates.');
+  //         }
+  //       })
+  //       .catch(error => {
+  //         console.error('Error occurred while fetching images from Mapillary API:', error);
+  //       });
+  //   }
+  // }, []);
+
   return <div ref={mapRef} className="map-module">
+
+    {/* 创建一个新的div来放置Mapillary的街景图像 */}
+    {/* <div id="mapillary" style={{width: '400px', height: '300px', zIndex: 1001}}></div> */}
+
 
     {isLoading && 
       <Box
