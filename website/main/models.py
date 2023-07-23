@@ -15,11 +15,10 @@ class Zone(models.Model):
     name = geomodels.CharField(max_length=45)
     borough = geomodels.CharField(max_length=13)
     geom = geomodels.MultiPolygonField()
+    current_impression = geomodels.PositiveIntegerField(default=0)
 
-    def current_detail(self):
-        return ZoneDetail.objects.filter(taxi_zone=self, 
-                                         datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
-                                         )# .order_by("impression_predict")
+    def multipolygon(self):
+        return str(self.geom)
 
     class Meta:
         managed = True
@@ -53,7 +52,7 @@ class ZoneDetail(models.Model):
         db_table = 'maps\".\"zone_detail'
         unique_together = (('taxi_zone','datetime'))
 
-# PUMA models in maps schema
+# PUMA model in maps schema
 class Puma(models.Model):
     id = geomodels.PositiveBigIntegerField(primary_key=True)
     geom = geomodels.MultiPolygonField()
@@ -61,4 +60,9 @@ class Puma(models.Model):
         managed = True
         db_table = 'maps\".\"puma'
 
-# 
+# Places model in maps schema
+# class Businesses(models.Model):
+#     id = geomodels.AutoField(primary_key=True)
+#     name = geomodels.CharField(max_length=45)
+#     geom = geomodels.PointField()
+#     taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)

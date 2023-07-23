@@ -1,9 +1,13 @@
 from django.core.management.base import BaseCommand
 from sodapy import Socrata
 from datetime import datetime
+from geopy.geocoders import Nominatim
+from geopy.extra.rate_limiter import RateLimiter
+from django.contrib.gis.geos import Point
+
 
 class Command(BaseCommand):
-
+    
     def handle(self, *args, **kwargs):
 
         help = 'Reading Business API'
@@ -15,7 +19,7 @@ class Command(BaseCommand):
                         password="mS.sMHVPLQn5*tU")
 
         # Returned as JSON from API / converted to Python list of dictionaries by sodapy.
-        results = client.get("w7w3-xahh", limit=1000)
+        results = client.get("w7w3-xahh", limit=100)
         # self.stdout.write(results)
         
         valid_business = []
@@ -33,6 +37,8 @@ class Command(BaseCommand):
 
         print((valid_business[0]))
 
+        # Adding active business to current and future database
+
         active_business = []
 
         for business in valid_business:
@@ -43,4 +49,35 @@ class Command(BaseCommand):
             except Exception as e:
                 print(e)
         
-        print((active_business[0]))
+        geolocator = Nominatim(user_agent="geoapiExercises")
+        geocode_with_delay = RateLimiter(geolocator.geocode,min_delay_seconds=1)
+
+        def geolocate(zip):
+            location = geocode_with_delay(zip)
+            return location.longitude, location.latitude
+
+        for business in active_business:
+
+            # Calculate the co-ordinates for the business
+            if business.get('longitude', 'Not provided') == 'Not provided':
+                long, lat =  geolocate(business.get('address_zip'))
+                business['longitude'] = long
+                business['latitude'] = lat
+                print("Zip code converted for Business license", business['license_nbr'])
+            else:
+                print("Co-ordinates are already provided for Business license", business['license_nbr'])
+            
+            # Define the taxi zones the business are located in
+            location = Point(business['longitude'],business['latitude'])
+            # zones = Zone.objects.all()
+            zones = list(zones)
+
+            # for zone in zones 
+
+            # print(location.within(polygon1))
+
+
+
+
+
+        # print((active_business[0]))
