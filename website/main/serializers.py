@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import Zone, ZoneDetail
 # from impression.models import Impression
 from datetime import datetime
+from django.core.serializers import serialize
+from rest_framework_gis import serializers as geoserializers
 
 # # class AdvertiserSerializer(serializers.ModelSerializer):
 # #     class Meta:
@@ -14,7 +16,7 @@ class DetailSerializer(serializers.ModelSerializer):
         model = ZoneDetail
         fields = '__all__'
 
-class ZoneSerializer(serializers.ModelSerializer):
+class ZoneSerializer(geoserializers.GeoFeatureModelSerializer):
     
     # queryset = ZoneDetail.objects.filter(datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z"))
 
@@ -22,4 +24,5 @@ class ZoneSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Zone
-        fields = ['id','name','borough','geom', 'zone_detail']
+        fields = ['id','name','borough','zone_detail']
+        geo_field = "geom"

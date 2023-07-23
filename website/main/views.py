@@ -8,10 +8,10 @@ from django.core.serializers import serialize
 from rest_framework import permissions, status
 from rest_framework.parsers import JSONParser
 from datetime import datetime
+import json
 
-
-from .serializers import ZoneSerializer
-from .models import Zone
+from .serializers import ZoneSerializer, DetailSerializer
+from .models import Zone, ZoneDetail
 
 
 # Create your views here.
@@ -27,42 +27,10 @@ def zones(request):
     List all zones in form of JsonResponse with Status code 1=DB success, 2=DB fail
     """
     try: 
-        zones = serialize('geojson',Zone.objects.all())
+        zones = serialize('geojson',Zone.objects.all().order_by('-current_impression'))
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
     return JsonResponse({"status":"1","data":zones},status=201,safe=False)
-
-def geo_zones(request):
-    """
-    List all zones in form of HttpResponse with content in GeoJson format
-    """
-    try: 
-        zones = serialize('geojson',Zone.objects.all())
-        return HttpResponse(zones,content_type='json')
-    except Exception as e:
-        return HttpResponse(str(e),status=201)
-
-def zone_list(request):
-    """
-    List all zones
-    """
-    try:
-        zones = Zone.objects.all()
-    except Exception as e:
-        # return HttpResponse(status=404)
-        return JsonResponse({"status":"2","data":str(e)},status=201)
-    
-    if request.method == 'GET':
-        serializer = ZoneSerializer(zones, many=True)
-        return JsonResponse({"status":"1","data":serializer.data}, status=201, safe=False)
-
-    # elif request.method == 'POST':
-    #     data = JSONParser().parse(request)
-    #     serializer = ZoneSerializer(data=data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return JsonResponse(serializer.data, status=201)
-    #     return JsonResponse(serializer.errors, status=400)
 
 def zone_detail(request, pk):
     """
@@ -75,7 +43,6 @@ def zone_detail(request, pk):
 
     if request.method == 'GET':
         serializer = ZoneSerializer(zone)
-        # serializer = ZoneSerializer(instance=zone)
         return JsonResponse({"status":"1","data":serializer.data},status=201)
 
     # elif request.method == 'PUT':

@@ -3,9 +3,11 @@ from sodapy import Socrata
 from datetime import datetime
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
+from django.contrib.gis.geos import Point
+
 
 class Command(BaseCommand):
-
+    
     def handle(self, *args, **kwargs):
 
         help = 'Reading Business API'
@@ -66,7 +68,15 @@ class Command(BaseCommand):
                 print("Co-ordinates are already provided for Business license", business['license_nbr'])
             
             # Define the taxi zones the business are located in
-            
+            location = Point(business['longitude'],business['latitude'])
+            # zones = Zone.objects.all()
+            zones = list(zones)
+
+            # for zone in zones 
+
+            # print(location.within(polygon1))
+
+
 
 
 
