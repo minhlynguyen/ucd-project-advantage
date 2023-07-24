@@ -61,24 +61,20 @@ class ZoneDetail(models.Model):
 class Puma(geomodels.Model):
     id = geomodels.PositiveBigIntegerField(primary_key=True)
     geom = geomodels.MultiPolygonField()
+
     class Meta:
         managed = True
         db_table = 'maps\".\"puma'
 
 # Places model in maps schema
-class Business(geomodels.Model):
-    licence_nbr = geomodels.CharField(primary_key=True,max_length=15)
-    lic_expir_dd = geomodels.DateTimeField(default="2030-01-01T00:00:00.000")
-    license_status = geomodels.CharField(max_length=8)
-    license_creation_date = geomodels.DateTimeField(default="2022-01-01T00:00:00.000")
-    industry = geomodels.CharField(max_length=50)
-    big_industry = geomodels.CharField(max_length=50)
-    business_name = geomodels.CharField(max_length=150)
-    address_building = geomodels.CharField(max_length=150)
-    address_street_name = geomodels.CharField(max_length=150)
-    address_zip = geomodels.CharField(max_length=150)
-    contact_phone = geomodels.CharField(max_length=150)
-    longitude = geomodels.FloatField(null=True)
-    latitude = geomodels.FloatField(null=True)
+class Place(geomodels.Model):
+    id = geomodels.CharField(primary_key=True,max_length=15)
+    small_cate = geomodels.CharField(max_length=50)
+    big_cate = geomodels.CharField(max_length=50)
+    name = geomodels.CharField(max_length=150)
     # taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
     geom = geomodels.PointField()
+    
+    class Meta:
+        managed = True
+        db_table = 'maps\".\"place'
