@@ -144,17 +144,12 @@ function Map({selectedZone, setSelectedZone}) {
 }
 
 function Details({zone}) {
+  console.log("zone in Details:", zone);
   return (
     <div className="DetailsCard">
       <h2>Zone Details</h2>
       <p><strong>ID:</strong> {zone.id}</p>
-      <p><strong>Busy Index:</strong> {zone.busyIndex}</p>
-      <p><strong>Coordinates:</strong></p>
-      <ul>
-        {zone.coordinates.map((coordinate, index) =>
-          <li key={index}>Lat: {coordinate[0]}, Lng: {coordinate[1]}</li>
-        )}
-      </ul>
+      <p><strong>Zone:</strong> {zone.properties.name}</p>
     </div>
   );
 }
@@ -174,9 +169,9 @@ function HeatmapPage() {
     <div className="HeatmapPage">
       <FunctionArea />
       <div className="MapArea">
-        <Map selectedZone={selectedZone} setSelectedZone={setSelectedZone} />
+        <Map zones={zones} setZones={setZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} />
         <div className={selectedZone ? "DetailsContainer" : "DetailsContainer DetailsHidden"}>
-          {selectedZone && <Details zone={zones.find(zone => zone.id === selectedZone)} />}
+          {selectedZone && <Details zone={zones.features.find(zone => zone.id === selectedZone)} />}
         </div>
       </div>
     </div>
@@ -185,3 +180,7 @@ function HeatmapPage() {
 
 
 export default HeatmapPage;
+// export default React.memo(HeatmapPage);
+
+
+
