@@ -9,6 +9,8 @@ import SignedInHeader from './components/Header/SignedInHeader/SignedInHeader'
 import Footer from './components/Footer/Footer';
 import axios from 'axios';
 import SolutionsContent from './components/Solutions/SolutionsContent';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -36,10 +38,14 @@ function App() {
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+    <ToastContainer/>
 
     <Router>
+
       <MyRoutes />
+
     </Router>
+
     </UserContext.Provider>
 
   );
@@ -54,7 +60,9 @@ function MyRoutes() {
       {/* Only show Header when not on LoginPage */}
       {/* Only show Header or SignedInHeader based on user login status */}
       {location.pathname !== '/signup' && 
-      (currentUser ? <SignedInHeader /> : <Header />)}
+    (currentUser ? <SignedInHeader /> : <Header />)}
+    {/* (currentUser ? <Header/> : <SignedInHeader />)}  */}
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignupLoginPage/>}/>

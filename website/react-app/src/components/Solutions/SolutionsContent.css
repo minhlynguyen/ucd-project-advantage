@@ -12,6 +12,7 @@
     height: 80vh;
     font-family: 'Roboto', sans-serif;
     background-color: white;
+    z-index: 1000; 
 }
 
 .function-module {

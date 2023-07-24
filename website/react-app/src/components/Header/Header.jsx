@@ -1,50 +1,48 @@
 // This Header page will include header used in the main page after user has logged in. 
 // eslint-disable-next-line no-unused-vars 
-import React, { useState, useContext } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import { UserContext } from '../../App';
 import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
 import weblogo from '../../assets/AdVantageMain.svg'
 import './Header.css';
-// import SignedInHeader from "./SignedInHeader";
+
+
 
 export default function Header() {
     const { currentUser } = useContext(UserContext);
-    const [isNavExpanded, setIsNavExpanded] = useState(false)
+    const[click, setClick] = useState(false) 
+    const handleClick = () => setClick(!click)
+    const closeMobileMenu = () => setClick(false);
 
 
     return (
         <header>          
-            <div className="header-container">
-            <FontAwesomeIcon className="dropdown-button" icon={faBars} onClick={() => {
-            setIsNavExpanded(!isNavExpanded); 
-            }}/>  
-           <img src={weblogo} className="logo" alt="AdVantage-Header-Logo" />
-           <nav>
-                <div className={`nav-components ${isNavExpanded ? "navigation-menu expanded" : "navigation-menu"}`}>
-                    <div className="nav-left">
-                        <ul>
-                            <li>
-                                <Link to="/">Home</Link>
+            <nav className="navbar">
+           <Link to="/" >  <img src={weblogo} className="navbar-logo" alt="AdVantage-Header-Logo"/></Link>
+           <div className="menu-icon" onClick={handleClick}>
+            <i className={ click ? "fas fa-times" : "fas fa-bars"} />
+           </div>
+                        <ul className={click ? 'nav-menu active' : 'nav-menu'}>
+                            <li className='nav-item'>
+                                <Link className="nav-links" to="/" onClick={closeMobileMenu}>Home</Link>
                             </li>
-                            <li> 
-                              <Link to="/signup">Solutions</ Link>
+                            <li className='nav-item'> 
+                              <Link  className="nav-links" to="/signup" onClick={closeMobileMenu}>Solutions</ Link>
                               </li>
-                            <li>
-                                <Link to="/testimonials">Testimonials</Link>
+                            <li className='nav-item'>
+                                <Link  className="nav-links" href="#testimonials">Testimonials</Link>
                             </li>
+                            {currentUser ? (<Link className="login-register-link" to="/solutions"><button className="nav-links-mobile regbutton"> Get Started </button> </Link>) 
+                            : (<Link className="login-register-link" to="/signup"><button className="nav-links-mobile regbutton"> Get Started </button> </Link>)}
+                            <Link className="login-register-link"to="/signup"><button className="nav-links-mobile loginbutton">Login</button></Link>
                         </ul>
-                    </div>
-                    <div className="nav-right">
-                    {currentUser ? (<Link className="getstarted-button" to="/solutions"><button className="getstarted-button"> Get Started </button> </Link>) 
-                    : (<Link className="getstarted-button" to="/signup"><button className="getstarted-button"> Get Started </button> </Link>)}
-                        <button className="login-button"><Link className="login-link"to="/signup">Login</Link></button>
-                    </div>
-                </div> 
+                        {currentUser ? (<Link className="login-register-link" to="/solutions"><button className="getstarted-button"> Get Started </button> </Link>) 
+                            : (<Link className="login-register-link" to="/signup"><button className="getstarted-button"> Get Started </button> </Link>)}
+                            <Link className="login-register-link"to="/signup"><button className="login-button">Login</button></Link>
+
             </nav>
-            </div>
         </header>
         
     )
+    
 }
