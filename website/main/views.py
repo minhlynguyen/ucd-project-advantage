@@ -1,17 +1,12 @@
-from django.http import HttpResponse, JsonResponse
-from rest_framework.response import Response
+from django.http import JsonResponse
 
 from django.shortcuts import render
-from rest_framework import generics
 from django.views.generic import TemplateView
 from django.core.serializers import serialize
-from rest_framework import permissions, status
-from rest_framework.parsers import JSONParser
 from datetime import datetime
-import json
 
-from .serializers import ZoneSerializer, DetailSerializer
-from .models import Zone, ZoneDetail
+from .serializers import ZoneSerializer
+from .models import Zone
 
 
 # Create your views here.

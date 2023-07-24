@@ -1,6 +1,7 @@
 # This script is to update the current impression to Taxi Zones models
 # Frequency is Every hour
 # https://stackoverflow.com/questions/1601153/django-custom-command-and-cron
+# https://medium.com/@bencleary/django-schedule-tasks-664649be2dea
 
 
 from django.core.management.base import BaseCommand
