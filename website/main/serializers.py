@@ -24,5 +24,4 @@ class ZoneSerializer(geoserializers.GeoFeatureModelSerializer):
 
     class Meta:
         model = Zone
-        fields = ['id','name','borough','zone_detail']
-        geo_field = "geom"
+        fields = ['id','name','borough','geom','zone_detail']

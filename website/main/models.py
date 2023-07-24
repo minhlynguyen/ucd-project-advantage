@@ -17,6 +17,11 @@ class Zone(models.Model):
     geom = geomodels.MultiPolygonField()
     current_impression = geomodels.PositiveIntegerField(default=0)
 
+    def current_detail(self):
+        return ZoneDetail.objects.filter(taxi_zone=self, 
+                                         datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
+                                         )#
+
     def multipolygon(self):
         return str(self.geom)
 
@@ -53,7 +58,7 @@ class ZoneDetail(models.Model):
         unique_together = (('taxi_zone','datetime'))
 
 # PUMA model in maps schema
-class Puma(models.Model):
+class Puma(geomodels.Model):
     id = geomodels.PositiveBigIntegerField(primary_key=True)
     geom = geomodels.MultiPolygonField()
     class Meta:
@@ -61,8 +66,19 @@ class Puma(models.Model):
         db_table = 'maps\".\"puma'
 
 # Places model in maps schema
-# class Businesses(models.Model):
-#     id = geomodels.AutoField(primary_key=True)
-#     name = geomodels.CharField(max_length=45)
-#     geom = geomodels.PointField()
-#     taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
+class Business(geomodels.Model):
+    licence_nbr = geomodels.CharField(primary_key=True,max_length=15)
+    lic_expir_dd = geomodels.DateTimeField(default="2030-01-01T00:00:00.000")
+    license_status = geomodels.CharField(max_length=8)
+    license_creation_date = geomodels.DateTimeField(default="2022-01-01T00:00:00.000")
+    industry = geomodels.CharField(max_length=50)
+    big_industry = geomodels.CharField(max_length=50)
+    business_name = geomodels.CharField(max_length=150)
+    address_building = geomodels.CharField(max_length=150)
+    address_street_name = geomodels.CharField(max_length=150)
+    address_zip = geomodels.CharField(max_length=150)
+    contact_phone = geomodels.CharField(max_length=150)
+    longitude = geomodels.FloatField(null=True)
+    latitude = geomodels.FloatField(null=True)
+    # taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
+    geom = geomodels.PointField()
