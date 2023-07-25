@@ -6,7 +6,7 @@ from django.core.serializers import serialize
 import datetime
 from zoneinfo import ZoneInfo
 
-from .serializers import ZoneSerializer, ZoneDataSerializer
+from .serializers import ZoneDataSerializer
 from .models import Zone, Place, ZoneDetail
 
 
@@ -27,27 +27,6 @@ def zones(request):
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
     return JsonResponse({"status":"1","data":zones},status=201,safe=False)
-
-def zone_detail(request, pk):
-    """
-    Retrieve detail of a zone
-    """
-    try:
-        zone = Zone.objects.get(pk=pk)
-    except Exception as e:
-        return JsonResponse({"status":"2","data":str(e)},status=201)
-
-    if request.method == 'GET':
-        serializer = ZoneSerializer(zone)
-        return JsonResponse({"status":"1","data":serializer.data},status=201)
-
-    # elif request.method == 'PUT':
-    #     data = JSONParser().parse(request)
-    #     serializer = ZoneSerializer(zone, data=data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return JsonResponse(serializer.data)
-    #     return JsonResponse(serializer.errors, status=400)
 
 def place_in_zone(request, id):
     """
@@ -74,6 +53,27 @@ def zone_data(request):
     
     try:
         zone = ZoneDetail.objects.filter(datetime__date=datetime.date(year, month, day))
+    except Exception as e:
+        return JsonResponse({"status":"2","data":str(e)},status=201)
+
+    if request.method == 'GET':
+        serializer = ZoneDataSerializer(zone,many=True)
+        return JsonResponse({"status":"1","data":serializer.data},status=201)
+    
+    # elif request.method == 'PUT':
+    #     data = JSONParser().parse(request)
+    #     serializer = ZoneSerializer(zone, data=data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return JsonResponse(serializer.data)
+    #     return JsonResponse(serializer.errors, status=400)
+
+def zone_detail(request, id):
+    """
+    Retrieve detail of a zone
+    """
+    try:
+        zone = ZoneDetail.objects.filter(taxi_zone_id=id)
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
 
