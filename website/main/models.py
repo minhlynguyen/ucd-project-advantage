@@ -68,13 +68,15 @@ class Puma(geomodels.Model):
 
 # Places model in maps schema
 class Place(geomodels.Model):
-    id = geomodels.CharField(primary_key=True,max_length=15)
+    id = geomodels.AutoField(primary_key=True)
+    nyc_id = geomodels.CharField(unique=True, max_length=30)
+    status = geomodels.CharField(max_length=8)
     small_cate = geomodels.CharField(max_length=50)
     big_cate = geomodels.CharField(max_length=50)
     name = geomodels.CharField(max_length=150)
     # taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
     geom = geomodels.PointField()
-    
+
     class Meta:
         managed = True
         db_table = 'maps\".\"place'
