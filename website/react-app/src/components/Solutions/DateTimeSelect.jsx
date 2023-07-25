@@ -4,6 +4,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Stack, Typography } from '@mui/material';
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+
+
 
 export default function DateTimeSelect() {
   const [dateTimeStart, setDateTimeStart] = useState('');
@@ -22,18 +25,27 @@ export default function DateTimeSelect() {
   return (
     <div className='datetime-select'>
 
-        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker
+            disablePast={true}
+            views={['year', 'month', 'day', 'hours']}
+            viewRenderers={{
+              hours: renderTimeViewClock,
+            }}
             label="Start DateTime"
             slotProps={{ textField: { size: 'small' } }}
         />
-        </LocalizationProvider> */}
-        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+        </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
+                views={['year', 'month', 'day', 'hours']}
+                viewRenderers={{
+                  hours: renderTimeViewClock,
+                }}
                 label="End DateTime"
                 slotProps={{ textField: { size: 'small' } }}
             />
-        </LocalizationProvider> */}
+        </LocalizationProvider>
             {/* <input
               type="datetime-local"
               value={dateTimeStart}
@@ -41,7 +53,7 @@ export default function DateTimeSelect() {
               className="map-form-input"
             /> */}
             {/* <Stack spacing={1} direction="row"> */}
-              <input
+              {/* <input
                 type="datetime-local"
                 value={dateTimeStart}
                 onChange={(e) => setDateTimeStart(e.target.value)}
@@ -55,7 +67,7 @@ export default function DateTimeSelect() {
                 onChange={(e) => setDateTimeEnd(e.target.value)}
                 className="map-form-input"
                 style={style}
-              />
+              /> */}
             {/* </Stack> */}
 
     </div>
