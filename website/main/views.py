@@ -53,10 +53,13 @@ def place_in_zone(request, id):
     Retrieve all places of a zone
     """
     try:
-        place = Place.objects.filter(taxi_zone_id=id,status="Active")
+        places = serialize('geojson',Place.objects.filter(taxi_zone_id=id,status="Active"))
+        # place = Place.objects.filter(taxi_zone_id=id,status="Active")
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
 
     if request.method == 'GET':
-        serializer = PlaceSerializer(place, many=True)
-        return JsonResponse({"status":"1","data":serializer.data},status=201)
+        return JsonResponse({"status":"1","data":places},status=201,safe=False)
+        # serializer = PlaceSerializer(place, many=True)
+        # return JsonResponse({"status":"1","data":serializer.data},status=201)
+        

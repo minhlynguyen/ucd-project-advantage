@@ -29,7 +29,7 @@ class Command(BaseCommand):
         businesses = client.get("w7w3-xahh", limit=150)
         hospitals = client.get("833h-xwsx", limit=150)
         schools = client.get("wg9x-4ke6", limit=150)
-        hotspots = client.get("yjub-udmw",limit=150)
+        hotspots = client.get("yjub-udmw", limit=5000)
     
         # Variables to count industry
         entertainment_and_recreation = 0
@@ -240,5 +240,5 @@ class Command(BaseCommand):
                 nyc_id = place['objectid']
                 small_cate = place.get('type','Other')
                 big_cate = "Wifi hotspot"
-                name = place.get('location_name','A '+small_cate+'wifi hotspot')
+                name = place.get('name','A '+small_cate+' Wifi Hotspot')
                 find_zone(long,lat,nyc_id,small_cate,big_cate,name)
