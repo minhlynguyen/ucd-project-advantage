@@ -1,5 +1,5 @@
-from datetime import datetime
-
+import datetime
+from zoneinfo import ZoneInfo
 from django.db import models as models
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models as geomodels
@@ -18,9 +18,20 @@ class Zone(models.Model):
     current_impression = geomodels.PositiveIntegerField(default=0)
 
     def current_detail(self):
+
+        # Use this when data is updated
+        now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
+        year = now.strftime("%Y")
+        month = now.strftime("%m")
+        day = now.strftime("%d")
+
+        year = 2023
+        month = 4
+        day = 30
         return ZoneDetail.objects.filter(taxi_zone=self, 
-                                         datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
-                                         )#
+                                        #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
+                                        datetime__date=datetime.date(year, month, day)
+                                         )#,
 
     def multipolygon(self):
         return str(self.geom)

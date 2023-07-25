@@ -19,16 +19,16 @@ class DetailSerializer(serializers.ModelSerializer):
                    'professional_services','real_estate','retail_services','transportation', 
                    'hospital', 'hotspots','school', 'total_business']
 
-class ZoneSerializer(geoserializers.GeoFeatureModelSerializer):
-# class ZoneSerializer(serializers.ModelSerializer):    
+# class ZoneSerializer(geoserializers.GeoFeatureModelSerializer):
+class ZoneSerializer(serializers.ModelSerializer):    
     # queryset = ZoneDetail.objects.filter(datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z"))
 
     zone_detail = DetailSerializer(many=True, read_only=True, source="current_detail")
 
     class Meta:
         model = Zone
-        fields = ['id','name','borough','geom','zone_detail']
-        geo_field = 'geom'
+        fields = ['id','name','borough','zone_detail']
+        # geo_field = 'geom'
 
 class PlaceSerializer(geoserializers.GeoFeatureModelSerializer):
 # class PlaceSerializer(serializers.ModelSerializer):

@@ -62,4 +62,13 @@ def place_in_zone(request, id):
         return JsonResponse({"status":"1","data":places},status=201,safe=False)
         # serializer = PlaceSerializer(place, many=True)
         # return JsonResponse({"status":"1","data":serializer.data},status=201)
-        
+
+def zone_data(request):
+    try:
+        zone = Zone.objects.all()
+    except Exception as e:
+        return JsonResponse({"status":"2","data":str(e)},status=201)
+
+    if request.method == 'GET':
+        serializer = ZoneSerializer(zone,many=True)
+        return JsonResponse({"status":"1","data":serializer.data},status=201)
