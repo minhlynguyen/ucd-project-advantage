@@ -21,13 +21,10 @@ class Zone(models.Model):
 
         # Use this when data is updated
         now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
-        year = now.strftime("%Y")
-        month = now.strftime("%m")
-        day = now.strftime("%d")
+        year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
 
-        year = 2023
-        month = 4
-        day = 30
+        # This is for testing
+        year, month, day = 2023, 4, 30
         return ZoneDetail.objects.filter(taxi_zone=self, 
                                         #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
                                         datetime__date=datetime.date(year, month, day)

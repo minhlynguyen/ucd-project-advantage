@@ -5,8 +5,8 @@ from django.views.generic import TemplateView
 from django.core.serializers import serialize
 from datetime import datetime
 
-from .serializers import ZoneSerializer, PlaceSerializer
-from .models import Zone, Place
+from .serializers import ZoneSerializer, ZoneDataSerializer
+from .models import Zone, Place, ZoneDetail
 
 
 # Create your views here.
@@ -65,10 +65,10 @@ def place_in_zone(request, id):
 
 def zone_data(request):
     try:
-        zone = Zone.objects.all()
+        zone = ZoneDetail.objects.all()
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
 
     if request.method == 'GET':
-        serializer = ZoneSerializer(zone,many=True)
+        serializer = ZoneDataSerializer(zone,many=True)
         return JsonResponse({"status":"1","data":serializer.data},status=201)

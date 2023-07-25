@@ -36,3 +36,12 @@ class PlaceSerializer(geoserializers.GeoFeatureModelSerializer):
         model = Place
         fields = ['id','big_cate','name','geom','taxi_zone']
         geo_field = 'geom'
+
+class ZoneDataSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ZoneDetail
+        fields = ['taxi_zone_id','datetime','impression_history', 'entertainment_and_recreation',
+                  'financial_services', 'food_and_beverage', 'parking_and_automotive_services',
+                  'professional_services', 'real_estate','retail_services', 'transportation',
+                  'hospital','hotspots','school','total_business','holiday']

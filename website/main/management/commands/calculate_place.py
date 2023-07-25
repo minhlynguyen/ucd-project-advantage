@@ -11,20 +11,20 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        help = 'Finding Zone'
-        # point = Point(-74.2505, 41.443)
-        # zone = Zone.objects.get(geom__contains=point)
-        # zone_list = list(zone)
-        # print(zone_list)
+        help = 'Aggregate the number of places for zone_detail'
 
-        now=datetime.now(tz=ZoneInfo("America/New_York"))
+        # Use this when data is updated
+        now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
+        year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
 
-        today = datetime.strftime(now,"%Y-%m-%d")
-        today = datetime.now(tz=ZoneInfo("America/New_York")).strftime("%Y-%m-%d")
-        print(today)
-        print(type(today))
-        year = now.strftime("%Y")
-        month = now.strftime("%m")
-        day = now.strftime("%d")
-        print (year, month, day)
-        
+        # This is for testing
+        year, month, day = 2023, 4, 30
+
+        # today = datetime.date(year, month, day)
+        # return ZoneDetail.objects.filter(taxi_zone=self, 
+        #                                 #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
+        #                                 datetime__date=datetime.date(year, month, day)
+        #                                  )#,
+
+    
+        # Rating.objects.values('location_id').filter(attribute__in=attributes).annotate(sum_score=Sum('score')).order_by('-score')
