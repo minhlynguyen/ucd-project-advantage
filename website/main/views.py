@@ -5,8 +5,8 @@ from django.views.generic import TemplateView
 from django.core.serializers import serialize
 from datetime import datetime
 
-from .serializers import ZoneSerializer
-from .models import Zone
+from .serializers import ZoneSerializer, PlaceSerializer
+from .models import Zone, Place
 
 
 # Create your views here.
@@ -47,3 +47,16 @@ def zone_detail(request, pk):
     #         serializer.save()
     #         return JsonResponse(serializer.data)
     #     return JsonResponse(serializer.errors, status=400)
+
+def place_in_zone(request, id):
+    """
+    Retrieve all places of a zone
+    """
+    try:
+        place = Place.objects.filter(taxi_zone_id=id,status="Active")
+    except Exception as e:
+        return JsonResponse({"status":"2","data":str(e)},status=201)
+
+    if request.method == 'GET':
+        serializer = PlaceSerializer(place, many=True)
+        return JsonResponse({"status":"1","data":serializer.data},status=201)
