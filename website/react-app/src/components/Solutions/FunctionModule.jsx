@@ -30,7 +30,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MultiSelect from './MultiSelect';
 import RangeSlider from './RangeSlider';
 import TimeControl from './TimeControl';
-import SearchBar from './SearchBar';
 import { Box, Button, Container, Grid, Slider, Stack } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import CheckIcon from '@mui/icons-material/Check';
@@ -64,8 +63,8 @@ function FunctionModule( {filters, setFilters}) {
   return (
     <div className='function-module'>
       <Accordion expanded={accordionExpanded} onChange={handleAccordionChange}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon /> } sx={{bgcolor: "#32435f", color: "white"}}>
-          <Typography>Filters for Zones</Typography>
+        <AccordionSummary expandIcon={<ExpandMoreIcon /> } sx={{bgcolor: "#32435f"}}>
+          <Typography sx={{color: "white"}}>Target Customers</Typography>
         </AccordionSummary>
         <AccordionDetails>  
           <MultiSelect setTempFilters={setTempFilters} reset={reset}/>
@@ -101,10 +100,9 @@ function FunctionModule( {filters, setFilters}) {
           </Grid>
         </AccordionDetails>
       </Accordion>
-      <Stack direction="row" spacing={1}>
-        <SearchBar />
+      {/* <Stack direction="row" spacing={1}> */}
         <TimeControl />
-      </Stack>
+      {/* </Stack> */}
     </div>
   );
 }

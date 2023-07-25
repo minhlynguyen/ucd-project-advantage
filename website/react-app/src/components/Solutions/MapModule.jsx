@@ -19,6 +19,12 @@ import 'mapillary-js/dist/mapillary.css';
 import { Viewer } from 'mapillary-js';
 import axios from 'axios';
 
+import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
+import 'leaflet-control-geocoder';
+import './MapModule.css';
+
+
+
 
 
 function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
@@ -26,10 +32,12 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   const mapRef = useRef(null);
   // Map instance
   const mapInstanceRef = useRef(null);
-  // Info control for brief zone info in top-right
+  // Info control for brief zone info in bottom-right
   const infoRef = useRef(null);
   // Legend control in bottom-left
   const legendRef = useRef(null);
+  // Search control in top-right
+  const geocoderRef = useRef(null);
   // Geojson layer for all zones
   const geoJsonRef = useRef(null);
   // Current zone layer
@@ -38,6 +46,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   const layerMappingRef = useRef({});
   // Mapillary viewer instance
   const viewerRef = useRef(null);
+
 
 
   // Map tile layer initialisation
@@ -69,6 +78,8 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       currentZoneRef.current = null;
 
       // set color scale and style
+      console.log("zones:", zones);
+      console.log("zones.features:", zones.features);
       const maxPk = zones.features.reduce((max, feature) => {
         return feature.properties.pk > max ? feature.properties.pk : max;
       }, zones.features[0].properties.pk);
@@ -78,7 +89,8 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       const colorScale = chroma.scale(['yellow', '008ae5']).domain([minPk, maxPk]);
       function style(feature) {
         return {
-            fillColor: colorScale(feature.properties.pk).hex(),
+            // fillColor: colorScale(feature.properties.pk).hex(),
+            fillColor: colorScale(feature.properties.current_impression).hex(),
             weight: 2,
             opacity: 1,
             color: 'white',
@@ -88,7 +100,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       }
 
       // Info Control in the corner
-      let info = L.control();
+      let info = L.control({position: 'bottomright'});
       info.onAdd = function (map) {
           this._div = L.DomUtil.create('div', 'zoneBriefInfo'); // create a div with a class "zoneBriefInfo"
           this.update();
@@ -118,7 +130,31 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
         return div;
       };
 
+      // Search Control
+      // Add geocoder control
+      let geocoder = new L.Control.Geocoder({
+        collapsed: false,
+        position: 'topright',
+        text: 'Search',
+        expand: 'click',
+      });
 
+      // geocoder.markGeocode = function(result) {
+      //   console.log("result.bbox: ",result.bbox);
+      //   mapInstanceRef.current.fitBounds(result.bbox);
+        
+      //   var marker = L.marker(result.center).addTo(map);
+      //   marker.bindPopup(result.name || result.html || result.label);
+      //   marker.openPopup();
+      // };
+      geocoder.markGeocode = function(result) {
+        mapInstanceRef.current.fitBounds(result.geocode.bbox);
+        var marker = L.marker(result.geocode.center).addTo(mapInstanceRef.current);
+        marker.bindPopup(result.geocode.name || result.geocode.html || result.geocode.label);
+        marker.openPopup();
+      };
+      
+      
       // Listeners
       // highlight when mouse in
       function highlightFeature(e) {
@@ -198,6 +234,13 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       }
       legend.addTo(mapInstanceRef.current);
       legendRef.current = legend;
+
+      if (geocoderRef.current) {
+        geocoderRef.current.remove();
+        geocoderRef.current = null;
+      }
+      geocoder.addTo(mapInstanceRef.current);
+      geocoderRef.current = geocoder;
       
     }
   }, [zones]);
