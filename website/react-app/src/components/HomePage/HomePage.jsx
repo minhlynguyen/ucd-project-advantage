@@ -15,13 +15,14 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export default function HomePage() {
+  // checking if user is loggged in
   const { currentUser } = useContext(UserContext);
 
   return (
-    <main>
-      <section className="section-1">
+    <main role="main">
+      <section className="section-1" role="information about adVantage">
         <div className="section1-content">
-          <h1>Grow your business with AdVantage</h1>
+          <h2>Grow your business with AdVantage</h2>
           <p>
             Get in data-driven support in growing your business. Find prime
             locations with high visiability when displaying your outdoor
@@ -40,15 +41,15 @@ export default function HomePage() {
           <div className="section1-homepage-button-container">
             {currentUser ? (
               <Link to="/solutionsp">
-                <button className="homepage-getstarted-button">
+                <a className="homepage-getstarted-button">
                   Start now
-                </button>
+                </a>
               </Link>
             ) : (
               <Link to="/signup">
-                <button className="homepage-getstarted-button">
+                <a className="homepage-getstarted-button">
                   Start now
-                </button>
+                </a>
               </Link>
             )}
           </div>
@@ -59,7 +60,7 @@ export default function HomePage() {
           alt="AdVantage-Header-Logo"
         />
       </section>
-      <section className="section-2">
+      <section className="section-2" role="benefits of using adVantage">
         <h2>Get the results that matter to you</h2>
 
         <div className="section2-content">
@@ -85,7 +86,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section-3" id="testimonials">
+      <section className="section-3" id="testimonials" role="testimonials">
         <h2>Testimonials</h2>
         <Carousel
           showArrows={true}
@@ -174,24 +175,19 @@ export default function HomePage() {
             </div>
         </Carousel>
       </section>
-      <section className="section-4">
-        <img
-          src={webhomepagelogo}
-          className="homepagelogo"
-          alt="AdVantage-Header-Logo"
-        />
+      <section className="section-4"  role="contacting adVantage">
 
-        <h2>
+       <h2>
           <span>Get more customers with </span> AdVantage
         </h2>
         <div className="homepage-button-container">
           {currentUser ? (
             <Link to="/solutions">
-              <button className="homepage-getstarted-button">Start now</button>
+              <a className="homepage-getstarted-button">Start now</a>
             </Link>
           ) : (
             <Link to="/signup">
-              <button className="homepage-getstarted-button">Start now</button>
+              <a className="homepage-getstarted-button">Start now</a>
             </Link>
           )}
         </div>

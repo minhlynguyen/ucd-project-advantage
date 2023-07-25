@@ -19,6 +19,7 @@ import "../Header.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// enables connection to server
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.withCredentials = true;
@@ -31,11 +32,13 @@ export default function SignedInHeader() {
   const navigate = useNavigate();
   const { setCurrentUser } = useContext(UserContext);
   const { currentUser } = useContext(UserContext);
-  const [click, setClick] = useState(false);
 
+  // handles responsive side bar
+  const [click, setClick] = useState(false);
   const handleClick = () => setClick(!click);
   const closeMobileMenu = () => setClick(false);
 
+  // submit logout functionality
   function submitLogout(e) {
     e.preventDefault();
     client.post("/user/logout", { withCredentials: true }).then(function (res) {
@@ -55,8 +58,8 @@ export default function SignedInHeader() {
   }
 
   return (
-    <header>
-      <nav className="navbar">
+    <header role="banner">
+      <nav role="navigation" className="navbar">
         <Link to="/">
           {" "}
           <img
@@ -113,16 +116,19 @@ export default function SignedInHeader() {
               {" "}
               Testimonials
             </Link>
-            </li>
-            <Link className="login-register-link" onClick={submitLogout}><button className="nav-links-mobile logoutbutton">Logout</button></Link>
-
-         
+          </li>
+          <Link className="login-register-link" onClick={submitLogout}>
+            <button className="nav-links-mobile logoutbutton">Logout</button>
+          </Link>
         </ul>
 
         <div className="dropdown-container">
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
-              <button className="IconButton" aria-label="Customise options">
+              <button
+                className="IconButton"
+                aria-label="Customise user options"
+              >
                 <FontAwesomeIcon className="profile-user" icon={faUser} />
               </button>
             </DropdownMenu.Trigger>
@@ -132,12 +138,6 @@ export default function SignedInHeader() {
                 className="DropdownMenuContent"
                 sideOffset={5}
               >
-                {/* <h3>
-                    {username}
-                    <br />
-                    <span>{email}</span>
-                  </h3> */}
-
                 <DropdownMenu.Item className="DropdownMenuItem">
                   <PersonIcon className="icon" /> Profile
                 </DropdownMenu.Item>
@@ -156,9 +156,11 @@ export default function SignedInHeader() {
                 <DropdownMenu.Item
                   onClick={submitLogout}
                   className="DropdownMenuItem"
+                  tabIndex="0"
                 >
                   <ExitIcon className="icon" /> Logout
                 </DropdownMenu.Item>
+                <DropdownMenu.Arrow className="DropdownMenuArrow" />
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>

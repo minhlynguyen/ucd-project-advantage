@@ -9,6 +9,7 @@ import "./SignupLoginPage.css";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// connecting to server 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.withCredentials = true;
@@ -18,7 +19,7 @@ const client = axios.create({
 });
 
 export default function SignupLoginPage() {
-  // setting credentials for registration page
+  // setting credentials for registration page and login page
   const navigate = useNavigate();
   const { setCurrentUser} = useContext(UserContext);
   const [loginEmail, setLoginEmail] = useState("");
@@ -30,9 +31,8 @@ export default function SignupLoginPage() {
   const [addclass, setaddclass] = useState("");
   const [errorMessageRegister, setErrorMessageRegister] = useState("");
   const [errorMessageLogin, setErrorMessageLogin] = useState("");
-  // const [isLoginSuccess, setIsLoginSuccess] = useState(true);
 
-  //   handling submit
+  //   handling registration submit
   const handleSignupSubmit = (e) => {
     e.preventDefault();
     client
@@ -79,7 +79,7 @@ export default function SignupLoginPage() {
       });
       }
   
-
+// handle login submit 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     client
@@ -120,7 +120,7 @@ export default function SignupLoginPage() {
   };
 
   return (
-    <section>
+    <section role="login and registration">
 
       <div className={`signup-login-container ${addclass}`}>
         <div className="form-container signup-container">

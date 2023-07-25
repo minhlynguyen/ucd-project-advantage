@@ -1,19 +1,23 @@
+// eslint-disable-next-line no-unused-vars
+import React, { createContext, useState, useEffect, useContext } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import HomePage from "./components/HomePage/HomePage";
+import SignupLoginPage from "./components/SignupLoginPage/SignupLoginPage";
+import Header from "./components/Header/Header";
+import SignedInHeader from "./components/Header/SignedInHeader/SignedInHeader";
+import Footer from "./components/Footer/Footer";
+import axios from "axios";
+import SolutionsContent from "./components/Solutions/SolutionsContent";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// eslint-disable-next-line no-unused-vars 
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
-import HomePage from './components/HomePage/HomePage';
-import SignupLoginPage from './components/SignupLoginPage/SignupLoginPage';
-import Header from './components/Header/Header';
-import SignedInHeader from './components/Header/SignedInHeader/SignedInHeader'
-import Footer from './components/Footer/Footer';
-import axios from 'axios';
-import SolutionsContent from './components/Solutions/SolutionsContent';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.withCredentials = true;
 // Create a user context
 const UserContext = createContext();
@@ -23,31 +27,28 @@ function App() {
 
   useEffect(() => {
     const client = axios.create({
-      baseURL: "http://127.0.0.1:8000"
+      baseURL: "http://127.0.0.1:8000",
     });
-    client.get("/user/user")
-    .then(function(res) {
-      console.log(res)
-      setCurrentUser(true);
-    })
-    .catch(function(error) {
-      console.log(error)
-      setCurrentUser(false);
-    });
+    client
+      .get("/user/user")
+      .then(function (res) {
+        console.log(res);
+        setCurrentUser(true);
+      })
+      .catch(function (error) {
+        console.log(error);
+        setCurrentUser(false);
+      });
   }, []);
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
-    <ToastContainer/>
+      <ToastContainer />
 
-    <Router>
-
-      <MyRoutes />
-
-    </Router>
-
+      <Router>
+        <MyRoutes />
+      </Router>
     </UserContext.Provider>
-
   );
 }
 
@@ -59,22 +60,20 @@ function MyRoutes() {
     <div>
       {/* Only show Header when not on LoginPage */}
       {/* Only show Header or SignedInHeader based on user login status */}
-      {location.pathname !== '/signup' && 
-    (currentUser ? <SignedInHeader /> : <Header />)}
-    {/* (currentUser ? <Header/> : <SignedInHeader />)}  */}
+      {location.pathname !== "/signup" &&
+        // (currentUser ? <SignedInHeader /> : <Header />)}
+        (currentUser ? <Header /> : <SignedInHeader />)}
 
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignupLoginPage/>}/>
-        <Route path='/solutions' element={<SolutionsContent />} />
+        <Route path="/signup" element={<SignupLoginPage />} />
+        <Route path="/solutions" element={<SolutionsContent />} />
       </Routes>
       {/* Only show Footer when not on LoginPage */}
-      {location.pathname !== '/signup' && <Footer />}
+      {location.pathname !== "/signup" && <Footer />}
     </div>
   );
 }
-
-
 
 // function App() {
 //   return (
@@ -83,7 +82,6 @@ function MyRoutes() {
 //     </Router>
 //   );
 // }
-
 
 // function MyRoutes() {
 //   let location = useLocation();
@@ -102,7 +100,7 @@ function MyRoutes() {
 
 //         <Route path="/signup" element={<SignupPage/>}/>
 //       </Routes>
-      
+
 //       {/* Only show Footer when not on LoginPage */}
 //       {location.pathname !== '/login' && <Footer />}
 //     </div>
@@ -119,4 +117,4 @@ function MyRoutes() {
 // }
 
 export default App;
-export {UserContext}
+export { UserContext };

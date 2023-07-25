@@ -6,9 +6,7 @@ import { faLinkedin, faFacebook, faTwitter} from '@fortawesome/free-brands-svg-i
 import './Footer.css'
 const Footer = () => {
   // Define the data for the footer
-//   const description =
-//     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-//   const title = "Lorem Ipsum";
+
 
   const columns = [
     {
@@ -40,10 +38,8 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="footer">
+    <footer role="footer" className="footer">
       <div className="footer-content">
-        {/* <h3>{title}</h3>
-        <p>{description}</p> */}
       </div>
       <div className="footer-columns">
         {columns.map((column, index) => (

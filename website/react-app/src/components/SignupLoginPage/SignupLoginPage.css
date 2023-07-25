@@ -76,7 +76,7 @@ justify-self: center;
     z-index: 5;
   }
 }
-
+/* overlay styling */
 .overlay-container {
   position: absolute;
   top: 0;
