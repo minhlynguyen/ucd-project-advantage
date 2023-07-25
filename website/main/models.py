@@ -74,8 +74,8 @@ class Place(geomodels.Model):
     small_cate = geomodels.CharField(max_length=50)
     big_cate = geomodels.CharField(max_length=50)
     name = geomodels.CharField(max_length=150)
-    # taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
     geom = geomodels.PointField()
+    taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
 
     class Meta:
         managed = True
