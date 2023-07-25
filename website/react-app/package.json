@@ -24,6 +24,7 @@
     "@radix-ui/react-select": "^1.2.2",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
+    "esbuild": "0.18.14",
     "leaflet": "^1.9.4",
     "leaflet-choropleth": "^1.1.4",
     "leaflet-control-geocoder": "^2.4.0",
