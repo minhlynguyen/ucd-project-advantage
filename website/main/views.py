@@ -3,7 +3,8 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.core.serializers import serialize
-from datetime import datetime
+import datetime
+from zoneinfo import ZoneInfo
 
 from .serializers import ZoneSerializer, ZoneDataSerializer
 from .models import Zone, Place, ZoneDetail
@@ -64,8 +65,15 @@ def place_in_zone(request, id):
         # return JsonResponse({"status":"1","data":serializer.data},status=201)
 
 def zone_data(request):
+    # Use this when data is updated
+    now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
+    year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+
+    # This is for testing
+    year, month, day = 2023, 4, 30
+    
     try:
-        zone = ZoneDetail.objects.all()
+        zone = ZoneDetail.objects.filter(datetime__date=datetime.date(year, month, day))
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
 
