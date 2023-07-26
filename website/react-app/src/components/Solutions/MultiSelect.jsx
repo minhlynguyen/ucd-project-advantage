@@ -11,6 +11,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useEffect } from 'react';
+import { ALL_BOROUGHS,  } from '../../constants';
 
 
 const theme = createTheme({
@@ -20,13 +21,14 @@ const theme = createTheme({
 });
 
 export default function MultiSelect({ setTempFilters, reset }) {
-    const defaultValue = allBoroughs;
+    // const defaultValue = allBoroughs;
+    const defaultValue = ALL_BOROUGHS;
     const [selectedOptions, setSelectedOptions] = React.useState(defaultValue);
 
     useEffect(() => {
         setTempFilters(prevFilters => ({
             ...prevFilters,
-            boroughs: selectedOptions.map(option => option.id)
+            boroughs: selectedOptions.map(option => option.name)
         }));
     }, []);
 
@@ -39,7 +41,8 @@ export default function MultiSelect({ setTempFilters, reset }) {
         <Autocomplete
           multiple
         //   id="select-borough"
-          options={allBoroughs}
+          // options={allBoroughs}
+          options={ALL_BOROUGHS}
           value={selectedOptions}
           disableCloseOnSelect
           getOptionLabel={(option) => option.name}
@@ -60,7 +63,7 @@ export default function MultiSelect({ setTempFilters, reset }) {
             setSelectedOptions(newSelectedOptions);
             setTempFilters(prevFilters => ({
               ...prevFilters,
-              boroughs: newSelectedOptions.map(option => option.id)
+              boroughs: newSelectedOptions.map(option => option.name)
             }));
           }}
           renderInput={(params) => (
@@ -74,10 +77,10 @@ export default function MultiSelect({ setTempFilters, reset }) {
   
 
 
-const allBoroughs = [
-  { name: 'Manhattan', id: 1 },
-  { name: 'Brooklyn', id: 2 },
-  { name: 'Queens', id: 3 },
-  { name: 'Bronx', id: 4 },
-  { name: 'Staten Island', id: 5 },
-];
+// const allBoroughs = [
+//   { name: 'Manhattan', id: 1 },
+//   { name: 'Brooklyn', id: 2 },
+//   { name: 'Queens', id: 3 },
+//   { name: 'Bronx', id: 4 },
+//   { name: 'Staten Island', id: 5 },
+// ];

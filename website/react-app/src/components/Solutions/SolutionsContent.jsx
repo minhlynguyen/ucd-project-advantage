@@ -193,10 +193,14 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
 import CompareBoard from '../Compare/CompareBoard';
 import ZoneBoard from '../Cards/ZoneBoard';
+import { ALL_BOROUGHS, ALL_AGES, ALL_INCOMES } from '../../constants';
+import SolutionsContext from './SolutionsContext';
+import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 
 function SolutionsContent() {
 
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({boroughs: ALL_BOROUGHS.map(borough => borough.name), Age: ALL_AGES.map(age => age.id), Income: ALL_INCOMES.map(income => income.id)});
+  console.log("filters111", filters);
   const [filteredZones, setFilteredZones] = useState({});
   const [selectedZone, setSelectedZone] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -207,6 +211,8 @@ function SolutionsContent() {
   const allZonesRef = useRef(null);
   const [adTime, setAdTime] = useState(['', '']);
   const [adTimeMode, setAdTimeMode] = useState(false);
+  // Set the initial state using the current time in New York
+  const [realTime, setRealTime] = useState(getCurrentTimeInNY()); // the choosen time in real time Slider 
   
 
   useEffect(() => {
@@ -226,67 +232,174 @@ function SolutionsContent() {
     fetchData();
   }, [filters]);
 
-  // // Fetch data for initialising
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const fetchData = async () => {
-  //     // const url = "./data.json";
-  //     const url = "./map-initialising.json";
-  //     // const url = "http://127.0.0.1:8000/main/zones";
-  //     const response = await axios.get(url);
-  //     const data = JSON.parse(response.data.data);
+// // Fetch data for initialising
+// useEffect(() => {
+//   setIsLoading(true);
 
-  //     // process data to the format I want here....
+//   const fetchData = async () => {
+//     try {
+//       const url1 = "http://127.0.0.1:8000/main/zones";
+//       const url2 = "http://127.0.0.1:8000/main/zones/data";
 
-  //     allZonesRef.current = data;
-  //     setIsLoading(false);
 
-  //   }
-  //   fetchData();
-  // }, []);
+//       const [response1, response2] = await Promise.all([axios.get(url1), axios.get(url2)]);
 
-  // // Filter data according to borough and calculate valid impression according to target customers
-  // useEffect(() => {
+//       if (response1.status !== 201 || response1.data.status === 2 || response2.status !== 201 || response2.data.status === 2) {
+//         throw new Error("Can't fetch data for map initialising now!");
+//       }
 
-  //   setSelectedZone(null);
 
-  //   const filter_borough = filters.boroughs; // use borough name to match
-  //   const filter_age = filters.Age; // e.g. [1, 2, 3] reps the first 3 age range
-  //   const filter_income = filters.Income; // e.g. [1, 2, 3] reps the first 3 income range
-  //   // Filter data according to borough
-  //   let filteredGeojson = {
-  //       ...allZonesRef.current,
-  //       features: allZonesRef.current.features.filter(feature => {
-  //           return filter_borough.includes(feature.properties.borough);
-  //       })
-  //   };
-  //   // Calculate valid impression according to target customers
-  //   // get the valid percentage for each feature
-  //   // change valid value
-  //   // ...
+//       const data1 = JSON.parse(response1.data.data);
+//       const data2 = response2.data.data;
 
-  //   setFilteredZones(filteredGeojson);
-  // }, [filters, allZonesRef.current]);
+//       const zoneDetailMap = {};
+//       for (let zone of data2) {
+//         zoneDetailMap[zone.id] = zone.zone_detail.map(detail => {
+//           return {
+//             time: detail.datetime,
+//             value: detail.impression_history
+//           }
+//         });
+//       }
 
-  // // chnage allZones when time range change (ad time)
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const fetchData = async () => {
-  //     // url for updating impression in allZones for ad time
-  //     const url = "";
-  //     const response = await axios.get(url);
-  //     const data = JSON.parse(response.data.data);
+//       const processedData = data1.features.map(feature => {
+//         const id = feature.properties.pk;
+//         const detail = zoneDetailMap[id] || []; 
+//         const totalValue = detail.reduce((sum, current) => sum + current.value, 0);
+//         return {
+//           ...feature,
+//           properties: {
+//             ...feature.properties,
+//             age: ['20%', '50%', '30%'],
+//             income: ['20%', '50%', '30%'],
+//             impression: {
+//               realTime: {
+//                 totalValue,
+//                 items: detail,
+//               },
+//               adTime: {
+//                 totalValue,
+//                 items: [...detail],
+//               }
+//             }
+//           }
+//         }
+//       });
 
-  //     // process data to the format I want here....
-  //     // change the impression in ad time field
-  //     // ...
+//       const processedGeojson = {
+//         type: "FeatureCollection",
+//         crs: {type: "name", properties: {name: "EPSG:4326"}},
+//         features: processedData
+//       };
 
-  //     allZonesRef.current = data;
-  //     setIsLoading(false);
+//       allZonesRef.current = processedGeojson;
+//     } catch (error) {
+//       console.error(error);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   }
 
-  //   }
+//   fetchData();
+// }, []);
 
-  // }, [adTime]);
+
+// useEffect(() => {
+//   setSelectedZone(null);
+
+//   // filters for test
+//   // const filter_borough = ['Queens']; // use borough name to match
+//   // const filter_age = [0, 1]; // e.g. [1, 2, 3] reps the first 3 age range
+//   // const filter_income = [0, 1]; // e.g. [1, 2, 3] reps the first 3 income range
+//   // real filters
+//   const filter_borough = filters.boroughs; // use borough name to match
+//   console.log("filters.boroughs", filters);
+//   const filter_age = [0, 1]; // e.g. [1, 2, 3] reps the first 3 age range
+//   const filter_income = [0, 1]; // e.g. [1, 2, 3] reps the first 3 income range
+
+
+//   // If data has not been loaded, return early to avoid errors
+//   if (!allZonesRef.current) {
+//     return;
+//   }
+
+//   // Filter data according to borough
+//   let filteredFeatures = allZonesRef.current.features.filter(feature => {
+//     return filter_borough.includes(feature.properties.borough);
+//   });
+
+//   // Calculate valid impression according to target customers
+//   // get the valid percentage for each feature
+//   filteredFeatures = filteredFeatures.map(feature => {
+//     // Convert age and income percentages to number
+//     const agePercentages = feature.properties.age.map(item => parseFloat(item) / 100);
+//     const incomePercentages = feature.properties.income.map(item => parseFloat(item) / 100);
+
+//     // Calculate valid age and income percentages
+//     const validAgePercentage = filter_age.reduce((sum, age) => sum + agePercentages[age], 0);
+//     const validIncomePercentage = filter_income.reduce((sum, income) => sum + incomePercentages[income], 0);
+
+//     // Calculate total valid percentage
+//     const validPercentage = validAgePercentage * validIncomePercentage;
+
+//     // Calculate valid impression
+//     const calculateValidImpression = (impression) => {
+//       const totalValidValue = parseFloat((validPercentage * impression.totalValue).toFixed(2));
+//       const validItems = impression.items.map(item => ({
+//         ...item,
+//         validValue: parseFloat((validPercentage * item.value).toFixed(2))
+//       }));
+//       return {
+//         ...impression,
+//         totalValidValue,
+//         items: validItems
+//       };
+//     };
+
+//     return {
+//       ...feature,
+//       properties: {
+//         ...feature.properties,
+//         impression: {
+//           realTime: calculateValidImpression(feature.properties.impression.realTime),
+//           adTime: calculateValidImpression(feature.properties.impression.adTime)
+//         }
+//       }
+//     };
+//   });
+
+//   // Create new GeoJSON
+//   const filteredGeojson = {
+//     ...allZonesRef.current,
+//     features: filteredFeatures
+//   };
+//   console.log("filteredGeojson:", filteredGeojson);
+
+//   setFilteredZones(filteredGeojson);
+// }, [filters, allZonesRef.current]);
+
+
+
+  // fetch data to chnage allZones (impression.adTime) when time range change (ad time)
+  useEffect(() => {
+    console.log("adTime:", adTime);
+    // setIsLoading(true);
+    // const fetchData = async () => {
+    //   // url for updating impression in allZones for ad time
+    //   const url = "";
+    //   const response = await axios.get(url);
+    //   const data = JSON.parse(response.data.data);
+
+    //   // process data to the format I want here....
+    //   // change the impression in ad time field
+    //   // ...
+
+    //   allZonesRef.current = data;
+    //   setIsLoading(false);
+
+    // }
+
+  }, [adTime]);
 
 
 
@@ -318,44 +431,46 @@ function SolutionsContent() {
   }
 
   return (
-    <div className="solutions-content">
-      {/* <FunctionModule filters={filters} setFilters={setFilters} /> */}
-      <FunctionModule filters={filters} setFilters={setFilters} setAdTimeMode={setAdTimeMode} adTimeMode={adTimeMode} setAdTime={setAdTime} adTime={adTime}/>
-      <div className="map-info-container">
-        <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
-        <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading} handleClickMore={handleClickMore}/>
+    <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode }}>
+      <div className="solutions-content">
+        {/* <FunctionModule filters={filters} setFilters={setFilters} /> */}
+        <FunctionModule filters={filters} setFilters={setFilters}/>
+        <div className="map-info-container">
+          <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
+          <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading} handleClickMore={handleClickMore}/>
+        </div>
+        <Box className='floating-button'>
+          <Fab color="primary" aria-label="compare" onClick={handleClickDifference}>
+            <DifferenceIcon />
+          </Fab>
+          <Fab color='secondary' aria-label="like" onClick={handleClickLikeFab}>
+            <FavoriteIcon />
+          </Fab>
+        </Box>
+
+        <Dialog open={openDialog} onClose={handleCloseDialog} fullScreen={fullScreen} maxWidth='lg'>
+          <DialogTitle>Compare Board</DialogTitle>
+          <DialogContent>
+            <CompareBoard />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Close</Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={openZoneBoard} onClose={handleCloseZoneBoard} fullScreen={fullScreen} maxWidth='lg'>
+          <DialogTitle>Zone Board</DialogTitle>
+          <DialogContent>
+            <ZoneBoard />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseZoneBoard}>Close</Button>
+          </DialogActions>
+        </Dialog>
+
+
       </div>
-      <Box className='floating-button'>
-        <Fab color="primary" aria-label="compare" onClick={handleClickDifference}>
-          <DifferenceIcon />
-        </Fab>
-        <Fab color='secondary' aria-label="like" onClick={handleClickLikeFab}>
-          <FavoriteIcon />
-        </Fab>
-      </Box>
-
-      <Dialog open={openDialog} onClose={handleCloseDialog} fullScreen={fullScreen} maxWidth='lg'>
-        <DialogTitle>Compare Board</DialogTitle>
-        <DialogContent>
-          <CompareBoard />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={openZoneBoard} onClose={handleCloseZoneBoard} fullScreen={fullScreen} maxWidth='lg'>
-        <DialogTitle>Zone Board</DialogTitle>
-        <DialogContent>
-          <ZoneBoard />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseZoneBoard}>Close</Button>
-        </DialogActions>
-      </Dialog>
-
-
-    </div>
+    </SolutionsContext.Provider>
   );
 };
 
