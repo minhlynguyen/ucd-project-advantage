@@ -22,26 +22,33 @@ class Command(BaseCommand):
         year, month, day = 2023, 4, 30
 
         # today = datetime.date(year, month, day)
-        zones = ZoneDetail.objects.filter(
+        zones = Zone.objects.all()
+        zones = list(zones)
+        print(type(zones))
+        print(type(zones[0].id))
+        zonedetail = ZoneDetail.objects.filter(
                                         #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
-                                        datetime__date=datetime.date(year, month, day)
-                                         )#
-        # zones = list(zones)
-        zone_list_detail = []
-        for zone in zones:
-            detail = {"datetime": zone.datetime,
-             "impression": zone.impression_history,
-             "entertainment_and_recreation": zone.entertainment_and_recreation,
-
-             }
-            zone_dict = {"id":zone.taxi_zone_id,"detail":detail}
-            zone_list_detail.append(zone_dict)
-            break
-        print(zone_list_detail)
+                                        datetime__date=datetime.date(year, month, day),
+                                        taxi_zone__in=zones
+                                         ).order_by('datetime').distinct()#
+        print(zonedetail[0])
         
-        serializer = ZoneDataSerializer(zones,many=True)
+        # zones = list(zones)
+        # zone_list_detail = []
+        # for zone in zones:
+        #     detail = {"datetime": zone.datetime,
+        #      "impression": zone.impression_history,
+        #      "entertainment_and_recreation": zone.entertainment_and_recreation,
 
-        print (serializer)
+        #      }
+        #     zone_dict = {"id":zone.taxi_zone_id,"detail":detail}
+        #     zone_list_detail.append(zone_dict)
+        #     break
+        # print(zone_list_detail)
+        
+        # serializer = ZoneDataSerializer(zones,many=True)
+
+        # print (serializer)
         # for data in serializer:
         #     print (data)
         #     break
