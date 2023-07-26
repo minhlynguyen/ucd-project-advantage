@@ -380,25 +380,26 @@ function SolutionsContent() {
 
 
 
-  // // fetch data to chnage allZones (impression.adTime) when time range change (ad time)
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const fetchData = async () => {
-  //     // url for updating impression in allZones for ad time
-  //     const url = "";
-  //     const response = await axios.get(url);
-  //     const data = JSON.parse(response.data.data);
+  // fetch data to chnage allZones (impression.adTime) when time range change (ad time)
+  useEffect(() => {
+    console.log("adTime:", adTime);
+    // setIsLoading(true);
+    // const fetchData = async () => {
+    //   // url for updating impression in allZones for ad time
+    //   const url = "";
+    //   const response = await axios.get(url);
+    //   const data = JSON.parse(response.data.data);
 
-  //     // process data to the format I want here....
-  //     // change the impression in ad time field
-  //     // ...
+    //   // process data to the format I want here....
+    //   // change the impression in ad time field
+    //   // ...
 
-  //     allZonesRef.current = data;
-  //     setIsLoading(false);
+    //   allZonesRef.current = data;
+    //   setIsLoading(false);
 
-  //   }
+    // }
 
-  // }, [adTime]);
+  }, [adTime]);
 
 
 
