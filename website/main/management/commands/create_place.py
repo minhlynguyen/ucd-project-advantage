@@ -242,3 +242,5 @@ class Command(BaseCommand):
                 big_cate = "Wifi hotspot"
                 name = place.get('name','A '+small_cate+' Wifi Hotspot')
                 find_zone(long,lat,nyc_id,small_cate,big_cate,name)
+        
+        

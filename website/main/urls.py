@@ -10,5 +10,4 @@ urlpatterns = [
     path('zones/<int:id>/', zone_detail),
     path('zones/<int:id>/places', place_in_zone),
     path('zones/data', zone_data),
-
 ]
