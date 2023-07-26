@@ -15,8 +15,15 @@
     z-index: 1000; 
 }
 
+/* FunctionModule*/
+
 .function-module {
     flex-shrink: 0;
+}
+
+.datetime-select {
+    display: flex;
+    align-items: center;
 }
 
 .map-info-container {

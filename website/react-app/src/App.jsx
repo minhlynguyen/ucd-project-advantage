@@ -15,6 +15,7 @@ import axios from "axios";
 import SolutionsContent from "./components/Solutions/SolutionsContent";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SavedPage from './components/SavedPage/SavedPage';
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -66,8 +67,10 @@ function MyRoutes() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignupLoginPage />} />
-        <Route path="/solutions" element={<SolutionsContent />} />
+
+        <Route path="/signup" element={<SignupLoginPage/>}/>
+        <Route path='/solutions' element={<SolutionsContent />} />
+        <Route path='/saved' element={<SavedPage />} />
       </Routes>
       {/* Only show Footer when not on LoginPage */}
       {location.pathname !== "/signup" && <Footer />}
