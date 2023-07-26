@@ -1,5 +1,5 @@
-from datetime import datetime
-
+import datetime
+from zoneinfo import ZoneInfo
 from django.db import models as models
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models as geomodels
@@ -16,6 +16,19 @@ class Zone(models.Model):
     borough = geomodels.CharField(max_length=13)
     geom = geomodels.MultiPolygonField()
     current_impression = geomodels.PositiveIntegerField(default=0)
+
+    def current_detail(self):
+
+        # Use this when data is updated
+        now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
+        year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+
+        # This is for testing
+        year, month, day = 2023, 4, 30
+        return ZoneDetail.objects.filter(taxi_zone=self, 
+                                        #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
+                                        datetime__date=datetime.date(year, month, day)
+                                         )#,
 
     def multipolygon(self):
         return str(self.geom)
@@ -53,16 +66,25 @@ class ZoneDetail(models.Model):
         unique_together = (('taxi_zone','datetime'))
 
 # PUMA model in maps schema
-class Puma(models.Model):
+class Puma(geomodels.Model):
     id = geomodels.PositiveBigIntegerField(primary_key=True)
     geom = geomodels.MultiPolygonField()
+
     class Meta:
         managed = True
         db_table = 'maps\".\"puma'
 
 # Places model in maps schema
-# class Businesses(models.Model):
-#     id = geomodels.AutoField(primary_key=True)
-#     name = geomodels.CharField(max_length=45)
-#     geom = geomodels.PointField()
-#     taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
+class Place(geomodels.Model):
+    id = geomodels.AutoField(primary_key=True)
+    nyc_id = geomodels.CharField(unique=True, max_length=30)
+    status = geomodels.CharField(max_length=8)
+    small_cate = geomodels.CharField(max_length=50)
+    big_cate = geomodels.CharField(max_length=50)
+    name = geomodels.CharField(max_length=150)
+    geom = geomodels.PointField()
+    taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
+
+    class Meta:
+        managed = True
+        db_table = 'maps\".\"place'

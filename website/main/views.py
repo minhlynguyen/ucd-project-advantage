@@ -1,17 +1,13 @@
-from django.http import HttpResponse, JsonResponse
-from rest_framework.response import Response
+from django.http import JsonResponse
 
 from django.shortcuts import render
-from rest_framework import generics
 from django.views.generic import TemplateView
 from django.core.serializers import serialize
-from rest_framework import permissions, status
-from rest_framework.parsers import JSONParser
-from datetime import datetime
-import json
+import datetime
+from zoneinfo import ZoneInfo
 
-from .serializers import ZoneSerializer, DetailSerializer
-from .models import Zone, ZoneDetail
+from .serializers import ZoneDataSerializer
+from .models import Zone, Place, ZoneDetail
 
 
 # Create your views here.
@@ -32,19 +28,38 @@ def zones(request):
         return JsonResponse({"status":"2","data":str(e)},status=201)
     return JsonResponse({"status":"1","data":zones},status=201,safe=False)
 
-def zone_detail(request, pk):
+def place_in_zone(request, id):
     """
-    Retrieve detail of a zone
+    Retrieve all places of a zone
     """
     try:
-        zone = Zone.objects.get(pk=pk)
+        places = serialize('geojson',Place.objects.filter(taxi_zone_id=id,status="Active"))
+        # place = Place.objects.filter(taxi_zone_id=id,status="Active")
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
 
     if request.method == 'GET':
-        serializer = ZoneSerializer(zone)
-        return JsonResponse({"status":"1","data":serializer.data},status=201)
+        return JsonResponse({"status":"1","data":places},status=201,safe=False)
+        # serializer = PlaceSerializer(place, many=True)
+        # return JsonResponse({"status":"1","data":serializer.data},status=201)
 
+def zone_data(request):
+    # Use this when data is updated
+    now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
+    year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+
+    # This is for testing
+    year, month, day = 2023, 4, 30
+    
+    try:
+        zone = ZoneDetail.objects.filter(datetime__date=datetime.date(year, month, day))
+    except Exception as e:
+        return JsonResponse({"status":"2","data":str(e)},status=201)
+
+    if request.method == 'GET':
+        serializer = ZoneDataSerializer(zone,many=True)
+        return JsonResponse({"status":"1","data":serializer.data},status=201)
+    
     # elif request.method == 'PUT':
     #     data = JSONParser().parse(request)
     #     serializer = ZoneSerializer(zone, data=data)
@@ -52,3 +67,16 @@ def zone_detail(request, pk):
     #         serializer.save()
     #         return JsonResponse(serializer.data)
     #     return JsonResponse(serializer.errors, status=400)
+
+def zone_detail(request, id):
+    """
+    Retrieve detail of a zone
+    """
+    try:
+        zone = ZoneDetail.objects.filter(taxi_zone_id=id)
+    except Exception as e:
+        return JsonResponse({"status":"2","data":str(e)},status=201)
+
+    if request.method == 'GET':
+        serializer = ZoneDataSerializer(zone,many=True)
+        return JsonResponse({"status":"1","data":serializer.data},status=201)
