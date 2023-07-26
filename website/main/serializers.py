@@ -18,15 +18,6 @@ class PlaceSerializer(geoserializers.GeoFeatureModelSerializer):
 
 class ZoneDataSerializer(serializers.ModelSerializer):
 
-    # def to_representation(self,obj):  
-    #     rep= super(ZoneDataSerializer,self).to_representation(obj)  
-    #     rep['taxi_zone_id']= [ customer.impression_history for customer in ZoneDetail.objects.filter(taxi_zone_id=obj.taxi_zone_id)]  
-    #     return rep  
-    
-    # class Meta:  
-    #     model = ZoneDetail  
-    #     fields = ('taxi_zone_id',)
-
     class Meta:
         model = ZoneDetail
         fields = ['taxi_zone_id','datetime','impression_history', 'entertainment_and_recreation',

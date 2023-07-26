@@ -28,10 +28,9 @@ class Command(BaseCommand):
         print(type(zones[0].id))
         zonedetail = ZoneDetail.objects.filter(
                                         #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
-                                        datetime__date=datetime.date(year, month, day),
-                                        taxi_zone__in=zones
-                                         ).order_by('datetime').distinct()#
-        print(zonedetail[0])
+                                        taxi_zone_id=266
+                                         ).order_by('datetime')#
+        print(len(zonedetail))
         
         # zones = list(zones)
         # zone_list_detail = []
