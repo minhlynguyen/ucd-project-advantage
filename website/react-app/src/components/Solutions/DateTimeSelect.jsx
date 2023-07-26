@@ -55,6 +55,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import SolutionsContext from './SolutionsContext';
 import Button from '@mui/material/Button';
+import { getTimeString } from '../../utils/dateTimeUtils';
 
 export default function DateTimeSelect() {
 
@@ -72,14 +73,19 @@ export default function DateTimeSelect() {
   };
 
   const handleConfirm = () => {
-    setAdTime([startTime, endTime]);
+    if (startTime && endTime) {
+      setAdTime([getTimeString(startTime.toDate()), getTimeString(endTime.toDate())]);
+    } else {
+      console.error('startTime or endTime is not defined');
+    }
   };
+  
   
   return (
     <div className='datetime-select'>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateTimePicker
-              disablePast={true}
+              // disablePast={true}
               views={['year', 'month', 'day', 'hours']}
               viewRenderers={{
                 hours: renderTimeViewClock,
@@ -92,7 +98,7 @@ export default function DateTimeSelect() {
         </LocalizationProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
-                disablePast={true}
+                // disablePast={true}
                 views={['year', 'month', 'day', 'hours']}
                 viewRenderers={{
                   hours: renderTimeViewClock,
