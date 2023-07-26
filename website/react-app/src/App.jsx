@@ -9,6 +9,7 @@ import SignedInHeader from './components/Header/SignedInHeader/SignedInHeader'
 import Footer from './components/Footer/Footer';
 import axios from 'axios';
 import SolutionsContent from './components/Solutions/SolutionsContent';
+import SavedPage from './components/SavedPage/SavedPage';
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -59,6 +60,7 @@ function MyRoutes() {
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignupLoginPage/>}/>
         <Route path='/solutions' element={<SolutionsContent />} />
+        <Route path='/saved' element={<SavedPage />} />
       </Routes>
       {/* Only show Footer when not on LoginPage */}
       {location.pathname !== '/signup' && <Footer />}

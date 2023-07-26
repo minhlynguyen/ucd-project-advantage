@@ -1,0 +1,16 @@
+.leaflet-control-geocoder {
+    border-radius: 10px;
+}
+
+.leaflet-control-geocoder-icon {
+    width: 25px;
+    height: 25px;
+}
+
+.leaflet-control-geocoder-form input {
+    font-size: 12px;
+    width: 150px;
+    padding: 0.5em 0.5em;
+    border-radius: 10px;
+    margin: 0;
+}
