@@ -107,7 +107,7 @@ export default function SignedInHeader() {
               </Link>
             )}
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <Link
               className="nav-links"
               to="/testimonials"
@@ -116,7 +116,7 @@ export default function SignedInHeader() {
               {" "}
               Testimonials
             </Link>
-          </li>
+          </li> */}
           <Link className="login-register-link" onClick={submitLogout}>
             <button className="nav-links-mobile logoutbutton">Logout</button>
           </Link>

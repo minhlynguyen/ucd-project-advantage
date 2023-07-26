@@ -62,7 +62,7 @@ function MyRoutes() {
       {/* Only show Header or SignedInHeader based on user login status */}
       {location.pathname !== "/signup" &&
         // (currentUser ? <SignedInHeader /> : <Header />)}
-        (currentUser ? <Header /> : <SignedInHeader />)}
+        (currentUser ? <Header /> : <SignedInHeader />)} 
 
       <Routes>
         <Route path="/" element={<HomePage />} />

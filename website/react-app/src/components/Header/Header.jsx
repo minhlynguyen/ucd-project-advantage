@@ -39,11 +39,11 @@ export default function Header() {
               Solutions
             </Link>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <Link className="nav-links" href="#testimonials">
               Testimonials
             </Link>
-          </li>
+          </li> */}
           {currentUser ? (
             <Link className="login-register-link" to="/solutions">
               <a className="nav-links-mobile regbutton"> Get Started </a>{" "}
