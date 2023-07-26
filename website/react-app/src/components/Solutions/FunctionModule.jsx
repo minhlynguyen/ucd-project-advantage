@@ -146,7 +146,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import CheckIcon from '@mui/icons-material/Check';
 import DateTimeSelect from './DateTimeSelect';
 
-function FunctionModule( {filters, setFilters, setAdTimeMode, adTimeMode, setAdTime, adTime}) {
+function FunctionModule( {filters, setFilters }) {
   // set hooks
 
   const [tempFilters, setTempFilters] = useState({});
@@ -212,7 +212,7 @@ function FunctionModule( {filters, setFilters, setAdTimeMode, adTimeMode, setAdT
         </AccordionDetails>
       </Accordion>
       {/* <Stack direction="row" spacing={1}> */}
-        <TimeControl setAdTimeMode={setAdTimeMode} adTimeMode={adTimeMode} setAdTime={setAdTime} adTime={adTime}/>
+        <TimeControl/>
       {/* </Stack> */}
     </div>
   );
