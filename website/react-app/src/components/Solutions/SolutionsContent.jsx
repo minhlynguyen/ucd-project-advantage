@@ -216,32 +216,16 @@ function SolutionsContent() {
   const [realTime, setRealTime] = useState(getCurrentTimeInNY()); // the choosen time in real time Slider 
   
 
-  // useEffect(() => {
-  //   setSelectedZone(null);
-  //   setIsLoading(true);
-  //   const fetchData = async () => {
-  //     console.log("filters are:", filters);
-  //     //logic to wrap filters in request
-  //     // const url = "./data.json";
-  //     // const url = "./map-initialising.json";
-  //     const url = "http://127.0.0.1:8000/main/zones";
-  //     const response = await axios.get(url);
-  //     const data = JSON.parse(response.data.data);
-  //     setFilteredZones(data);
-  //     setIsLoading(false);
-  //   }
-  //   fetchData();
-  // }, [filters]);
-
 // Fetch data for initialising
 useEffect(() => {
+  console.log("UseEffect: Fetch data for initialising");
   setIsLoading(true);
 
   const fetchData = async () => {
     try {
 
-      // const url = "http://127.0.0.1:8000/main/zones/data";
-      const url = "./zones_data.json";
+      const url = "http://127.0.0.1:8000/main/zones/data";
+      // const url = "./zones_data.json";
 
       const response = await axios.get(url);
       // if (response.status !== 201 || response.data.status === 2) {
@@ -306,8 +290,19 @@ useEffect(() => {
   fetchData();
 }, []);
 
-
+// Change filteredZones when filters, allZoneRef, realTime, adTimeMode change
 useEffect(() => {
+  console.log("UseEffect: Change filteredZones when filters, allZoneRef, realTime, adTimeMode change");
+  console.log("filters", filters);
+  console.log("adTimeMode:", adTimeMode);
+  console.log("realTime:", realTime);
+  console.log("allZonesRef:",allZonesRef);
+
+  // If data has not been loaded, return early to avoid errors
+  if (!allZonesRef.current) {
+    return;
+  }
+
   setSelectedZone(null);
 
   // filters for test
@@ -316,15 +311,8 @@ useEffect(() => {
   // const filter_income = [0, 1]; // e.g. [1, 2, 3] reps the first 3 income range
   // real filters
   const filter_borough = filters.boroughs; // use borough name to match
-  console.log("filters", filters);
   const filter_age = filters.Age; // e.g. [1, 2, 3] reps the first 3 age range
   const filter_income = filters.Income; // e.g. [1, 2, 3] reps the first 3 income range
-
-
-  // If data has not been loaded, return early to avoid errors
-  if (!allZonesRef.current) {
-    return;
-  }
 
   // Filter data according to borough
   let filteredFeatures = allZonesRef.current.features.filter(feature => {
@@ -345,7 +333,7 @@ useEffect(() => {
     // Calculate total valid percentage
     const validPercentage = validAgePercentage * validIncomePercentage;
 
-    // Calculate valid impression
+    // Define function to calculate valid impression
     const calculateValidImpression = (impression) => {
       const totalValidValue = parseFloat((validPercentage * impression.totalValue).toFixed(2));
       const validItems = impression.items.map(item => ({
@@ -359,13 +347,35 @@ useEffect(() => {
       };
     };
 
+    // Calculate valid impressions for realTime and adTime
+    const realTimeImpression = calculateValidImpression(feature.properties.impression.realTime);
+    const adTimeImpression = calculateValidImpression(feature.properties.impression.adTime);
+
+    // Calculate display impression
+    let displayTotal, displayValid;
+    if (adTimeMode) {
+      displayTotal = adTimeImpression.totalValue;
+      displayValid = adTimeImpression.totalValidValue;
+    } else {
+      const realTimeItem = realTimeImpression.items.find(item => item.time === '2023-04-30T22:00:00-04:00');
+      // const realTimeItem = realTimeImpression.items.find(item => item.time === realTime);
+      if (realTimeItem) {
+        displayTotal = realTimeItem.value;
+        displayValid = realTimeItem.validValue;
+      }
+    }
+
     return {
       ...feature,
       properties: {
         ...feature.properties,
         impression: {
-          realTime: calculateValidImpression(feature.properties.impression.realTime),
-          adTime: calculateValidImpression(feature.properties.impression.adTime)
+          realTime: realTimeImpression,
+          adTime: adTimeImpression,
+          display: {
+            total: displayTotal || 0,
+            valid: displayValid || 0,
+          }
         }
       }
     };
@@ -379,12 +389,13 @@ useEffect(() => {
   console.log("filteredGeojson:", filteredGeojson);
 
   setFilteredZones(filteredGeojson);
-}, [filters, allZonesRef.current]);
+}, [filters, allZonesRef.current, adTimeMode, realTime]);
 
 
-
+  // Change allZonesRef when adTime change
   // fetch data to chnage allZones (impression.adTime) when time range change (ad time)
   useEffect(() => {
+    console.log("UseEffect:Change allZonesRef when adTime change");
     console.log("adTime:", adTime);
     // setIsLoading(true);
     // const fetchData = async () => {
@@ -403,11 +414,6 @@ useEffect(() => {
     // }
 
   }, [adTime]);
-
-
-
-
-
 
   const handleClickLikeFab = () => {
 
@@ -436,7 +442,6 @@ useEffect(() => {
   return (
     <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode }}>
       <div className="solutions-content">
-        {/* <FunctionModule filters={filters} setFilters={setFilters} /> */}
         <FunctionModule filters={filters} setFilters={setFilters}/>
         <div className="map-info-container">
           <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
@@ -470,8 +475,6 @@ useEffect(() => {
             <Button onClick={handleCloseZoneBoard}>Close</Button>
           </DialogActions>
         </Dialog>
-
-
       </div>
     </SolutionsContext.Provider>
   );

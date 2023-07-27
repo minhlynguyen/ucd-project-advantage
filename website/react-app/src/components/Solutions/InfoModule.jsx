@@ -112,7 +112,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleCli
 
   // update detailMode when selectedZone change
   useEffect(() => {
-    console.log("selectedZoneRef", selectedZoneRef);
+    console.log("selectedZoneRef", selectedZoneRef.current);
     console.log("selectedZone", selectedZone);
     console.log(!selectedZoneRef && selectedZone);
     console.log(selectedZoneRef && !selectedZone);
@@ -142,7 +142,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleCli
     } else {
       setSelectedZoneDetail(null);
     }
-    console.log("selectedZoneDetail", selectedZoneDetail);
+    // console.log("selectedZoneDetail", selectedZoneDetail);
   }, [zones, selectedZone]);
 
   // update info according to changes from status and data

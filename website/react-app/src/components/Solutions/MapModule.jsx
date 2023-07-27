@@ -389,46 +389,30 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
   // Map tile layer initialisation
   useEffect(() => {
+    console.log("UseEffect:Map tile layer initialisation");
     if (mapRef.current && !mapInstanceRef.current) {
       const map = L.map(mapRef.current).setView([40.7831, -73.9712], 12);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
       mapInstanceRef.current = map;     
-    }
-    
-
+    }    
   }, []);
 
 
-  // When zones change, add new Geojson layer, info control, legend control and set listeners
+  // When zones change, add new Geojson layer, controls and set listeners
   // Refer to https://leafletjs.com/examples/choropleth/
   useEffect(() => {
+    console.log("UseEffect:When zones change, add new Geojson layer, controls and set listeners");
+    console.log("zones:", zones);
     if (Object.keys(zones).length !== 0) {
-      // Save a mapping from feature ID to layer
-      layerMappingRef.current = {};
-      //Remove the old geoJSON layer if it exists
-      if (geoJsonRef.current) {
-        mapInstanceRef.current.removeLayer(geoJsonRef.current);
-      }
+
       var geojson;
-      // Reset current zone
-      currentZoneRef.current = null;
 
       // set color scale and style
-      console.log("zones:", zones);
-      // console.log("zones.features:", zones.features);
-      // const maxPk = zones.features.reduce((max, feature) => {
-      //   return feature.properties.pk > max ? feature.properties.pk : max;
-      // }, zones.features[0].properties.pk);
-      // const minPk = zones.features.reduce((min, feature) => {
-      //   return feature.properties.pk < min ? feature.properties.pk : min;
-      // }, zones.features[0].properties.pk);
-      // const colorScale = chroma.scale(['yellow', '008ae5']).domain([minPk, maxPk]);
-
       function getColor(d) {
-        return d > 1000 ? '#08306b' :
-               d > 500  ? '#08519c' :
+        return d > 400  ? '#08306b' :
+               d > 300  ? '#08519c' :
                d > 200  ? '#2171b5' :
                d > 100  ? '#4292c6' :
                d > 50   ? '#6baed6' :
@@ -437,31 +421,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
                           '#deebf7';
       }
 
-      function getImpression(feature) {
-      
-        let impression;
-        if (adTimeMode) {
-          impression = feature.properties.impression.adTime.validTotalValue;
-        } else {  
-          const matchedElement = feature.properties.impression.realTime.items.find(item => item.time === '2023-04-30T22:00:00-04:00'); //change here when get real time data
-          // const matchedElement = feature.properties.impression.realTime.items.find(item => item.time === realTime);
-          if (!matchedElement) {
-            console.log("feature without impression:", feature);
-            impression = 0;
-          } else {
-            impression = matchedElement.validValue;
-          }
-          
-        }
-        return impression;
-      }
-
-
-
       function style(feature) {
 
         return {
-            fillColor: getColor(getImpression(feature)),
+            fillColor: getColor(feature.properties.impression.display.valid),
             // fillColor: colorScale(feature.properties.current_impression).hex(),
             weight: 2,
             opacity: 1,
@@ -479,20 +442,20 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
           return this._div;
       };
       // method that we will use to update the control based on feature properties passed
-      info.update = function (feature) {
-          this._div.innerHTML = '<h4>New York Busyness</h4>' +  (feature ?
-              '<b>' + feature.properties.name + '</b><br />' + getImpression(feature) + ' valid impression'
+      info.update = function (props) {
+          this._div.innerHTML = '<h4>New York Busyness</h4>' +  (props ?
+              '<b>' + props.name + '</b><br />' + props.impression.display.valid + ' valid impression'
               : 'Hover over a zone');
       };
 
       // Legend Control
       let legend = L.control({position: 'bottomleft'});
       legend.onAdd = function (map) {
-        var div = L.DomUtil.create('div', 'map-legend'),// create a div with a class "zoneBriefInfo"
-        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+        var div = L.DomUtil.create('div', 'map-legend'),// create a div with a class "map-legend"
+        grades = [0, 10, 20, 50, 100, 200, 300, 400],
         labels = [];
 
-        // loop through our density intervals and generate a label with a colored square for each interval
+        // loop through our intervals and generate a label with a colored square for each interval
         for (var i = 0; i < grades.length; i++) {
             div.innerHTML +=
                 '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
@@ -511,14 +474,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
         expand: 'click',
       });
 
-      // geocoder.markGeocode = function(result) {
-      //   console.log("result.bbox: ",result.bbox);
-      //   mapInstanceRef.current.fitBounds(result.bbox);
-        
-      //   var marker = L.marker(result.center).addTo(map);
-      //   marker.bindPopup(result.name || result.html || result.label);
-      //   marker.openPopup();
-      // };
       geocoder.markGeocode = function(result) {
         mapInstanceRef.current.fitBounds(result.geocode.bbox);
         var marker = L.marker(result.geocode.center).addTo(mapInstanceRef.current);
@@ -541,10 +496,8 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
           layer.bringToFront();
         }
 
-
-
         // info.update(layer.feature.properties);
-        info.update(layer.feature);
+        info.update(layer.feature.properties);
       }
       // reset style when mouse out
       function resetHighlight(e) {
@@ -567,7 +520,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
         //   viewerRef.current.moveCloseTo(center.lat, center.lng);
         // }
 
-        console.log("user pick this zone in map:", e.target);
+        console.log("user pick this zone in map:", e.target.feature);
         setSelectedZone(e.target.feature);
 
       }
@@ -577,7 +530,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
         layerMappingRef.current[feature.id] = layer;
         layer.on({
             mouseover: highlightFeature,
-            // mouseleave: resetHighlight,
             mouseout: resetHighlight,
             click: zoomToFeature
         });
@@ -591,35 +543,53 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       // store the geoJSON layer in the ref
       geoJsonRef.current = geojson;
       // Fit the map view to the geoJSON layer
-      mapInstanceRef.current.fitBounds(geojson.getBounds());
+      // mapInstanceRef.current.fitBounds(geojson.getBounds());
+      mapInstanceRef.current.setView([40.7831, -73.9712], 12);
 
-      // add info and legend controls on map
-      if (infoRef.current) {
-        infoRef.current.remove();
-        infoRef.current = null;
-      }
       info.addTo(mapInstanceRef.current);
       infoRef.current = info;
 
-      if (legendRef.current) {
-        legendRef.current.remove();
-        legendRef.current = null;
-      }
       legend.addTo(mapInstanceRef.current);
       legendRef.current = legend;
 
-      if (geocoderRef.current) {
-        geocoderRef.current.remove();
-        geocoderRef.current = null;
-      }
       geocoder.addTo(mapInstanceRef.current);
       geocoderRef.current = geocoder;
       
     }
-  }, [zones, realTime, adTimeMode]);
 
+    // remove previous geojson layer and controls and geocoder
+    return () => {
+      // Save a mapping from feature ID to layer
+      layerMappingRef.current = {};
+      // Reset current zone
+      currentZoneRef.current = null;
+      //Remove the old geoJSON layer if it exists
+      if (geoJsonRef.current) {
+        mapInstanceRef.current.removeLayer(geoJsonRef.current);
+        geoJsonRef.current = null;
+      }
+      //Remove controls and geocoder if exist
+      if (infoRef.current) {
+        infoRef.current.remove();
+        infoRef.current = null;
+      }
+      if (legendRef.current) {
+        legendRef.current.remove();
+        legendRef.current = null;
+      }
+      if (geocoderRef.current) {
+        geocoderRef.current.remove();
+        geocoderRef.current = null;
+      }
+    }
+  }, [zones]);
+
+
+
+  //What happened to the map (zones and map) when a zone is selected
   //when selectedZone change, reset pre's style and set new one's style and get a zoom level in the map
   useEffect(() => {
+    console.log("UseEffect:What happened to the map when a zone is selected");
     // return pre selected zone to normal
     if (currentZoneRef.current) {
       geoJsonRef.current.resetStyle(currentZoneRef.current); 
@@ -633,14 +603,75 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
         color: '#32435f',
         fillOpacity: 0
       });
+      // Add markers
+
     } else {
       if (geoJsonRef.current) {
-        mapInstanceRef.current.fitBounds(geoJsonRef.current.getBounds());
+        // mapInstanceRef.current.fitBounds(geoJsonRef.current.getBounds());
+        mapInstanceRef.current.setView([40.7831, -73.9712], 12);
       }
-      
-      // mapInstanceRef.current.setView([40.7831, -73.9712], 12);
     }
   }, [selectedZone]);
+  // Manage markers when a zone is selected
+  useEffect(() => {
+    console.log("UseEffect: Manage markers when a zone is selected");
+
+    // placeholder for markers
+    let markers = [];
+
+    // If there is a selected zone
+    if (selectedZone) {
+      // Create an async function to handle the async operation
+      (async () => {
+        try {
+          // Request data for markers in selected zone
+          const url = `http://127.0.0.1:8000/main/zones/${selectedZone.id}/places`;
+          const response = await axios.get(url);
+          if (response.status !== 201 || response.data.status !== "1"){
+            throw new Error("Can't fetch markers data!");
+          }
+          addMarkersToMap(response.data.data); 
+        } catch (error) {
+          console.error(error);
+        }
+      })();
+    }
+
+    const addMarkersToMap = (data) => {
+      // Parse features from data
+      const features = JSON.parse(data).features;
+
+      // For each feature, create a marker and add it to the map
+      features.forEach(feature => {
+        const marker = L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]])
+          .bindPopup(`
+            <strong>${feature.properties.name}</strong>
+            <br/>
+            Status: ${feature.properties.status}
+            <br/>
+            Big Category: ${feature.properties.big_cate}
+            <br/>
+            Small Category: ${feature.properties.small_cate}
+            <br/>
+            Zone: ${feature.properties.taxi_zone}
+            <br/>
+            pk: ${feature.properties.pk}
+          `);
+
+        markers.push(marker);
+        marker.addTo(mapInstanceRef.current);
+      });
+    }
+
+    // When the component is unmounted, or when the selected zone changes, remove all markers
+    return () => {
+      markers.forEach(marker => mapInstanceRef.current.removeLayer(marker));
+    };
+
+  }, [selectedZone]);
+
+
+  
 
   // Initialize Mapillary viewer when the map is ready
   // useEffect(() => {

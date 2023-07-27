@@ -11,7 +11,7 @@ export default function DetailedZoneCard({ zone, handleClickMore }) {
     //   height: 200,
       padding: 20
     };
-    console.log("zone in detailedzonecard componet", zone);
+    // console.log("zone in detailedzonecard componet", zone);
     return (
       (!zone) ?
   

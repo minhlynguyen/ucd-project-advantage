@@ -58,8 +58,8 @@ export default function RangeSlider({ label, setTempFilters, reset}) {
         "Income": ["0", "1000", "2000", "Any"],
     };
     const defaultValues = {
-        "Age": [0, 2],
-        "Income": [0, 2],
+        "Age": [0, 1, 2],
+        "Income": [0, 1, 2],
     };
     const defaultValue = defaultValues[label];
     const [value, setValue] = useState(defaultValue);
