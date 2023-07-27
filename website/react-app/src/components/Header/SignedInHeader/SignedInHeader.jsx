@@ -95,11 +95,11 @@ export default function SignedInHeader() {
           <li className="nav-item">
             {currentUser ? (
               <Link
-                className="nav-links"
-                to="/solutions"
+                className="nav-links saved-locations"
+                to=""
                 onClick={closeMobileMenu}
               >
-                Solutions
+                Saved Locations
               </Link>
             ) : (
               <Link className="nav-links saved-locations" to="/signup">
@@ -107,16 +107,6 @@ export default function SignedInHeader() {
               </Link>
             )}
           </li>
-          {/* <li className="nav-item">
-            <Link
-              className="nav-links"
-              to="/testimonials"
-              onClick={closeMobileMenu}
-            >
-              {" "}
-              Testimonials
-            </Link>
-          </li> */}
           <Link className="login-register-link" onClick={submitLogout}>
             <button className="nav-links-mobile logoutbutton">Logout</button>
           </Link>

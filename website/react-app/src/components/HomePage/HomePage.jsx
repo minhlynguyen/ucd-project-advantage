@@ -26,7 +26,7 @@ export default function HomePage() {
           <p>
             Get in data-driven support in growing your business. Find prime
             locations with high visiability when displaying your outdoor
-            advertisment
+            advertisments.
           </p>
           <p className="contact-homepage">
             {" "}
@@ -40,7 +40,7 @@ export default function HomePage() {
           <p className="smaller-text">Monday - Friday, 9am-6pm</p>
           <div className="section1-homepage-button-container">
             {currentUser ? (
-              <Link to="/solutionsp">
+              <Link to="/solutions">
                 <a className="homepage-getstarted-button">
                   Start now
                 </a>
@@ -100,7 +100,7 @@ export default function HomePage() {
               <h3>Elite Fitness</h3>
               <h4>success with AdVantage</h4>
               <p className="testimonial-text">
-                Using adVantage was a game-changer for our marketing efforts!
+                Using AdVantage was a game-changer for our marketing efforts!
                 With its powerful analytics and optimization tools, we were able
                 to identify the most effective ad campaigns and channels. The
                 platform is user-friendly interface made it easy for our team to
@@ -126,7 +126,7 @@ export default function HomePage() {
               <h4>Rapid Growth with AdVantage</h4>
               <p className="testimonial-text">
                 When we launched our startup, we knew that getting our
-                advertising strategy right was crucial for success. adVantage
+                advertising strategy right was crucial for success. AdVantage
                 came to the rescue! It provided us with valuable insights into
                 our target audience and allowed us to experiment with different
                 ad creatives and placements
@@ -153,7 +153,7 @@ export default function HomePage() {
               <p className="testimonial-text">
                 As a non-profit organization with a limited budget, we needed an
                 advertising solution that could help us reach a wider audience
-                and drive donations. adVantage delivered beyond our
+                and drive donations. AdVantage delivered beyond our
                 expectations! Its audience targeting tools helped us connect
                 with individuals who were genuinely interested in our cause.
               </p>

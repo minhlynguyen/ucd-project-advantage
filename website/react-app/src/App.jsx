@@ -16,15 +16,23 @@ import SolutionsContent from "./components/Solutions/SolutionsContent";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SavedPage from './components/SavedPage/SavedPage';
+import ScrollToTop from "./components/ScrollToTop";
+import webhomepagelogo from "./assets/AdVantageMainLoader.svg";
+import './App.css'
+import DotLoader from "react-spinners/DotLoader"
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.withCredentials = true;
+
 // Create a user context
 const UserContext = createContext();
 
+
 function App() {
   const [currentUser, setCurrentUser] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     const client = axios.create({
@@ -39,14 +47,36 @@ function App() {
       .catch(function (error) {
         console.log(error);
         setCurrentUser(false);
+      }).finally(() => {
+        // Simulate a 5-second delay before setting isLoading to false
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 3000);
       });
+
   }, []);
+
+
+  if (currentUser === null || isLoading) {
+    return (
+      <div className="loader-container">
+        {/* <h3>Get Ahead, Get AdVantage</h3> */}
+        <img className="loadingpagelogo" src={webhomepagelogo} alt="Loading..." />
+          {/* Loading spinner */}
+          <DotLoader className="loadingpagespinner" color="#050505" />
+
+      </div>
+    );
+  }
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
       <ToastContainer />
 
       <Router>
+      <ScrollToTop />
+
+
         <MyRoutes />
       </Router>
     </UserContext.Provider>
@@ -62,8 +92,8 @@ function MyRoutes() {
       {/* Only show Header when not on LoginPage */}
       {/* Only show Header or SignedInHeader based on user login status */}
       {location.pathname !== "/signup" &&
-        // (currentUser ? <SignedInHeader /> : <Header />)}
-        (currentUser ? <Header /> : <SignedInHeader />)} 
+        (currentUser ? <SignedInHeader /> : <Header />)}
+        {/* (currentUser ? <Header /> : <SignedInHeader />)}  */}
 
       <Routes>
         <Route path="/" element={<HomePage />} />

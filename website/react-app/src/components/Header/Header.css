@@ -74,6 +74,11 @@ nav .nav-btn {
   cursor: pointer;
 }
 
+.nav-links:hover{
+  color: #32435f;
+
+}
+
 /* navbar login and registeration buttons*/
 
 /* when user is not logged in */
@@ -165,6 +170,8 @@ nav .nav-btn {
 .profile-user {
   width: 1.9em;
   height: 1.9em;
+  color: #32435f;
+
 }
 
 .icon {
@@ -181,9 +188,6 @@ nav .nav-btn {
   align-items: center;
   justify-content: center;
   background-color: white;
-}
-.IconButton:focus {
-  box-shadow: 0 0 0 2px black;
 }
 
 .DropdownMenuItem[data-highlighted] {
