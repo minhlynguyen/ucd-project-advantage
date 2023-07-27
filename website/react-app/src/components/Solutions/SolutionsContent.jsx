@@ -196,6 +196,7 @@ import ZoneBoard from '../Cards/ZoneBoard';
 import { ALL_BOROUGHS, ALL_AGES, ALL_INCOMES } from '../../constants';
 import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
+import mapGeomData from "./map-initialising.json";
 
 function SolutionsContent() {
 
@@ -215,168 +216,170 @@ function SolutionsContent() {
   const [realTime, setRealTime] = useState(getCurrentTimeInNY()); // the choosen time in real time Slider 
   
 
-  useEffect(() => {
-    setSelectedZone(null);
-    setIsLoading(true);
-    const fetchData = async () => {
-      console.log("filters are:", filters);
-      //logic to wrap filters in request
-      // const url = "./data.json";
-      // const url = "./map-initialising.json";
-      const url = "http://127.0.0.1:8000/main/zones";
+  // useEffect(() => {
+  //   setSelectedZone(null);
+  //   setIsLoading(true);
+  //   const fetchData = async () => {
+  //     console.log("filters are:", filters);
+  //     //logic to wrap filters in request
+  //     // const url = "./data.json";
+  //     // const url = "./map-initialising.json";
+  //     const url = "http://127.0.0.1:8000/main/zones";
+  //     const response = await axios.get(url);
+  //     const data = JSON.parse(response.data.data);
+  //     setFilteredZones(data);
+  //     setIsLoading(false);
+  //   }
+  //   fetchData();
+  // }, [filters]);
+
+// Fetch data for initialising
+useEffect(() => {
+  setIsLoading(true);
+
+  const fetchData = async () => {
+    try {
+
+      // const url = "http://127.0.0.1:8000/main/zones/data";
+      const url = "./zones_data.json";
+
       const response = await axios.get(url);
-      const data = JSON.parse(response.data.data);
-      setFilteredZones(data);
+      // if (response.status !== 201 || response.data.status === 2) {
+      //   throw new Error("Can't fetch data for map initialising now!");
+      // }
+      if (response.status !== 201 && response.status !== 304 && response.status !== 200 || response.data.status === 2) {
+        throw new Error("Can't fetch data for map initialising now!");
+      }
+      
+
+      const data1 = JSON.parse(mapGeomData.data);
+      const data2 = response.data.data;
+
+      const zoneDetailMap = {};
+      for(let key in data2) {
+        zoneDetailMap[Number(key)] = data2[key].detail.map(detail => {
+          return {
+            time: detail.datetime,
+            value: detail.impression_history
+          }
+        });
+      }
+
+      const processedData = data1.features.map(feature => {
+        const id = feature.properties.pk;
+        const detail = zoneDetailMap[id] || []; 
+        const totalValue = detail.reduce((sum, current) => sum + current.value, 0);
+        return {
+          ...feature,
+          properties: {
+            ...feature.properties,
+            age: ['20%', '50%', '30%'],
+            income: ['20%', '50%', '30%'],
+            impression: {
+              realTime: {
+                totalValue,
+                items: detail,
+              },
+              adTime: {
+                totalValue,
+                items: [...detail],
+              }
+            }
+          }
+        }
+      });
+
+      const processedGeojson = {
+        type: "FeatureCollection",
+        crs: {type: "name", properties: {name: "EPSG:4326"}},
+        features: processedData
+      };
+
+      allZonesRef.current = processedGeojson;
+    } catch (error) {
+      console.error(error);
+    } finally {
       setIsLoading(false);
     }
-    fetchData();
-  }, [filters]);
+  }
 
-// // Fetch data for initialising
-// useEffect(() => {
-//   setIsLoading(true);
-
-//   const fetchData = async () => {
-//     try {
-//       const url1 = "http://127.0.0.1:8000/main/zones";
-//       const url2 = "http://127.0.0.1:8000/main/zones/data";
+  fetchData();
+}, []);
 
 
-//       const [response1, response2] = await Promise.all([axios.get(url1), axios.get(url2)]);
+useEffect(() => {
+  setSelectedZone(null);
 
-//       if (response1.status !== 201 || response1.data.status === 2 || response2.status !== 201 || response2.data.status === 2) {
-//         throw new Error("Can't fetch data for map initialising now!");
-//       }
-
-
-//       const data1 = JSON.parse(response1.data.data);
-//       const data2 = response2.data.data;
-
-//       const zoneDetailMap = {};
-//       for (let zone of data2) {
-//         zoneDetailMap[zone.id] = zone.zone_detail.map(detail => {
-//           return {
-//             time: detail.datetime,
-//             value: detail.impression_history
-//           }
-//         });
-//       }
-
-//       const processedData = data1.features.map(feature => {
-//         const id = feature.properties.pk;
-//         const detail = zoneDetailMap[id] || []; 
-//         const totalValue = detail.reduce((sum, current) => sum + current.value, 0);
-//         return {
-//           ...feature,
-//           properties: {
-//             ...feature.properties,
-//             age: ['20%', '50%', '30%'],
-//             income: ['20%', '50%', '30%'],
-//             impression: {
-//               realTime: {
-//                 totalValue,
-//                 items: detail,
-//               },
-//               adTime: {
-//                 totalValue,
-//                 items: [...detail],
-//               }
-//             }
-//           }
-//         }
-//       });
-
-//       const processedGeojson = {
-//         type: "FeatureCollection",
-//         crs: {type: "name", properties: {name: "EPSG:4326"}},
-//         features: processedData
-//       };
-
-//       allZonesRef.current = processedGeojson;
-//     } catch (error) {
-//       console.error(error);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   }
-
-//   fetchData();
-// }, []);
+  // filters for test
+  // const filter_borough = ['Queens']; // use borough name to match
+  // const filter_age = [0, 1]; // e.g. [1, 2, 3] reps the first 3 age range
+  // const filter_income = [0, 1]; // e.g. [1, 2, 3] reps the first 3 income range
+  // real filters
+  const filter_borough = filters.boroughs; // use borough name to match
+  console.log("filters", filters);
+  const filter_age = filters.Age; // e.g. [1, 2, 3] reps the first 3 age range
+  const filter_income = filters.Income; // e.g. [1, 2, 3] reps the first 3 income range
 
 
-// useEffect(() => {
-//   setSelectedZone(null);
+  // If data has not been loaded, return early to avoid errors
+  if (!allZonesRef.current) {
+    return;
+  }
 
-//   // filters for test
-//   // const filter_borough = ['Queens']; // use borough name to match
-//   // const filter_age = [0, 1]; // e.g. [1, 2, 3] reps the first 3 age range
-//   // const filter_income = [0, 1]; // e.g. [1, 2, 3] reps the first 3 income range
-//   // real filters
-//   const filter_borough = filters.boroughs; // use borough name to match
-//   console.log("filters.boroughs", filters);
-//   const filter_age = [0, 1]; // e.g. [1, 2, 3] reps the first 3 age range
-//   const filter_income = [0, 1]; // e.g. [1, 2, 3] reps the first 3 income range
+  // Filter data according to borough
+  let filteredFeatures = allZonesRef.current.features.filter(feature => {
+    return filter_borough.includes(feature.properties.borough);
+  });
 
+  // Calculate valid impression according to target customers
+  // get the valid percentage for each feature
+  filteredFeatures = filteredFeatures.map(feature => {
+    // Convert age and income percentages to number
+    const agePercentages = feature.properties.age.map(item => parseFloat(item) / 100);
+    const incomePercentages = feature.properties.income.map(item => parseFloat(item) / 100);
 
-//   // If data has not been loaded, return early to avoid errors
-//   if (!allZonesRef.current) {
-//     return;
-//   }
+    // Calculate valid age and income percentages
+    const validAgePercentage = filter_age.reduce((sum, age) => sum + agePercentages[age], 0);
+    const validIncomePercentage = filter_income.reduce((sum, income) => sum + incomePercentages[income], 0);
 
-//   // Filter data according to borough
-//   let filteredFeatures = allZonesRef.current.features.filter(feature => {
-//     return filter_borough.includes(feature.properties.borough);
-//   });
+    // Calculate total valid percentage
+    const validPercentage = validAgePercentage * validIncomePercentage;
 
-//   // Calculate valid impression according to target customers
-//   // get the valid percentage for each feature
-//   filteredFeatures = filteredFeatures.map(feature => {
-//     // Convert age and income percentages to number
-//     const agePercentages = feature.properties.age.map(item => parseFloat(item) / 100);
-//     const incomePercentages = feature.properties.income.map(item => parseFloat(item) / 100);
+    // Calculate valid impression
+    const calculateValidImpression = (impression) => {
+      const totalValidValue = parseFloat((validPercentage * impression.totalValue).toFixed(2));
+      const validItems = impression.items.map(item => ({
+        ...item,
+        validValue: parseFloat((validPercentage * item.value).toFixed(2))
+      }));
+      return {
+        ...impression,
+        totalValidValue,
+        items: validItems
+      };
+    };
 
-//     // Calculate valid age and income percentages
-//     const validAgePercentage = filter_age.reduce((sum, age) => sum + agePercentages[age], 0);
-//     const validIncomePercentage = filter_income.reduce((sum, income) => sum + incomePercentages[income], 0);
+    return {
+      ...feature,
+      properties: {
+        ...feature.properties,
+        impression: {
+          realTime: calculateValidImpression(feature.properties.impression.realTime),
+          adTime: calculateValidImpression(feature.properties.impression.adTime)
+        }
+      }
+    };
+  });
 
-//     // Calculate total valid percentage
-//     const validPercentage = validAgePercentage * validIncomePercentage;
+  // Create new GeoJSON
+  const filteredGeojson = {
+    ...allZonesRef.current,
+    features: filteredFeatures
+  };
+  console.log("filteredGeojson:", filteredGeojson);
 
-//     // Calculate valid impression
-//     const calculateValidImpression = (impression) => {
-//       const totalValidValue = parseFloat((validPercentage * impression.totalValue).toFixed(2));
-//       const validItems = impression.items.map(item => ({
-//         ...item,
-//         validValue: parseFloat((validPercentage * item.value).toFixed(2))
-//       }));
-//       return {
-//         ...impression,
-//         totalValidValue,
-//         items: validItems
-//       };
-//     };
-
-//     return {
-//       ...feature,
-//       properties: {
-//         ...feature.properties,
-//         impression: {
-//           realTime: calculateValidImpression(feature.properties.impression.realTime),
-//           adTime: calculateValidImpression(feature.properties.impression.adTime)
-//         }
-//       }
-//     };
-//   });
-
-//   // Create new GeoJSON
-//   const filteredGeojson = {
-//     ...allZonesRef.current,
-//     features: filteredFeatures
-//   };
-//   console.log("filteredGeojson:", filteredGeojson);
-
-//   setFilteredZones(filteredGeojson);
-// }, [filters, allZonesRef.current]);
+  setFilteredZones(filteredGeojson);
+}, [filters, allZonesRef.current]);
 
 
 

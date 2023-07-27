@@ -345,7 +345,7 @@
 
 // export default MapModule;
 
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import chroma from 'chroma-js';
@@ -357,6 +357,8 @@ import axios from 'axios';
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 import 'leaflet-control-geocoder';
 import './MapModule.css';
+import SolutionsContext from './SolutionsContext';
+import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 
 
 
@@ -382,6 +384,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   // Mapillary viewer instance
   const viewerRef = useRef(null);
 
+  const {realTime, adTime, adTimeMode} = useContext(SolutionsContext);
 
 
   // Map tile layer initialisation
@@ -414,18 +417,52 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
       // set color scale and style
       console.log("zones:", zones);
-      console.log("zones.features:", zones.features);
-      const maxPk = zones.features.reduce((max, feature) => {
-        return feature.properties.pk > max ? feature.properties.pk : max;
-      }, zones.features[0].properties.pk);
-      const minPk = zones.features.reduce((min, feature) => {
-        return feature.properties.pk < min ? feature.properties.pk : min;
-      }, zones.features[0].properties.pk);
-      const colorScale = chroma.scale(['yellow', '008ae5']).domain([minPk, maxPk]);
+      // console.log("zones.features:", zones.features);
+      // const maxPk = zones.features.reduce((max, feature) => {
+      //   return feature.properties.pk > max ? feature.properties.pk : max;
+      // }, zones.features[0].properties.pk);
+      // const minPk = zones.features.reduce((min, feature) => {
+      //   return feature.properties.pk < min ? feature.properties.pk : min;
+      // }, zones.features[0].properties.pk);
+      // const colorScale = chroma.scale(['yellow', '008ae5']).domain([minPk, maxPk]);
+
+      function getColor(d) {
+        return d > 1000 ? '#08306b' :
+               d > 500  ? '#08519c' :
+               d > 200  ? '#2171b5' :
+               d > 100  ? '#4292c6' :
+               d > 50   ? '#6baed6' :
+               d > 20   ? '#9ecae1' :
+               d > 10   ? '#c6dbef' :
+                          '#deebf7';
+      }
+
+      function getImpression(feature) {
+      
+        let impression;
+        if (adTimeMode) {
+          impression = feature.properties.impression.adTime.validTotalValue;
+        } else {  
+          const matchedElement = feature.properties.impression.realTime.items.find(item => item.time === '2023-04-30T22:00:00-04:00'); //change here when get real time data
+          // const matchedElement = feature.properties.impression.realTime.items.find(item => item.time === realTime);
+          if (!matchedElement) {
+            console.log("feature without impression:", feature);
+            impression = 0;
+          } else {
+            impression = matchedElement.validValue;
+          }
+          
+        }
+        return impression;
+      }
+
+
+
       function style(feature) {
+
         return {
-            // fillColor: colorScale(feature.properties.pk).hex(),
-            fillColor: colorScale(feature.properties.current_impression).hex(),
+            fillColor: getColor(getImpression(feature)),
+            // fillColor: colorScale(feature.properties.current_impression).hex(),
             weight: 2,
             opacity: 1,
             color: 'white',
@@ -442,9 +479,9 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
           return this._div;
       };
       // method that we will use to update the control based on feature properties passed
-      info.update = function (props) {
-          this._div.innerHTML = '<h4>New York Busyness</h4>' +  (props ?
-              '<b>' + props.name + '</b><br />' + props.pk + ' impression'
+      info.update = function (feature) {
+          this._div.innerHTML = '<h4>New York Busyness</h4>' +  (feature ?
+              '<b>' + feature.properties.name + '</b><br />' + getImpression(feature) + ' valid impression'
               : 'Hover over a zone');
       };
 
@@ -452,13 +489,13 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       let legend = L.control({position: 'bottomleft'});
       legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'map-legend'),// create a div with a class "zoneBriefInfo"
-        grades = [0, 10, 20, 50, 100, 200],
+        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
         labels = [];
 
         // loop through our density intervals and generate a label with a colored square for each interval
         for (var i = 0; i < grades.length; i++) {
             div.innerHTML +=
-                '<i style="background:' + colorScale(grades[i] + 1).hex() + '"></i> ' +
+                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
                 grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
         }
 
@@ -506,7 +543,8 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
 
 
-        info.update(layer.feature.properties);
+        // info.update(layer.feature.properties);
+        info.update(layer.feature);
       }
       // reset style when mouse out
       function resetHighlight(e) {
@@ -578,7 +616,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       geocoderRef.current = geocoder;
       
     }
-  }, [zones]);
+  }, [zones, realTime, adTimeMode]);
 
   //when selectedZone change, reset pre's style and set new one's style and get a zoom level in the map
   useEffect(() => {

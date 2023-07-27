@@ -1,6 +1,5 @@
-import { utcToZonedTime, zonedTimeToUtc, format } from 'date-fns-tz';
 
-// change a JS date object to the pre-defined string
+// change a JS date object to the pre-defined string (hour precision)
 export const getTimeString = (date) => {
 
     const year = date.getFullYear();
@@ -11,7 +10,7 @@ export const getTimeString = (date) => {
     return `${year}-${month}-${day}T${hour}:00:00-04:00`;
 };
 
-// Function to get the current NYC date time as a pre-defined string (hour precision)
+// Function to get the current NYC date time as a pre-defined string
 export const getCurrentTimeInNY = () => {
     const currentTime = new Date();
     const nyTime = new Date(currentTime.toLocaleString('en-US', { timeZone: 'America/New_York' }));
@@ -43,18 +42,3 @@ export const setHourInTimeString = (timeString, newHour) => {
 };
 
 
-// conversion between time zones
-
-// local -> NYC
-export const convertLocalToNYTime = (date) => {
-  const nyTimeZone = 'America/New_York';
-  const nyTime = utcToZonedTime(date, nyTimeZone);
-  return format(nyTime, 'yyyy-MM-dd\'T\'HH:mm:ssXXX', { timeZone: nyTimeZone });
-}
-
-// NYC -> local
-export const convertNYToLocalTime = (dateString) => {
-  const nyTimeZone = 'America/New_York';
-  const localDate = zonedTimeToUtc(dateString, nyTimeZone);
-  return format(localDate, 'yyyy-MM-dd\'T\'HH:mm:ssXXX');
-}
