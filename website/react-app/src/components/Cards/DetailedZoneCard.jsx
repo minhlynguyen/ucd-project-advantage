@@ -20,10 +20,10 @@ export default function DetailedZoneCard({ zone, handleClickMore }) {
         <Paper className='detailed-zone-card' elevation={2} style={paperStyle}>
           <h3>{zone.properties.name}</h3>
           <Typography>Borough: {zone.properties.borough}</Typography>
-          <Typography>Total Impression: 100</Typography>
-          <Typography>Target Impression: 60</Typography>
-          <Typography>Average Income: 3000</Typography>
-          <Typography>Average Age: 45</Typography>
+          <Typography>Total Impression: {zone.properties.impression.display.total}</Typography>
+          <Typography>Target Impression: {zone.properties.impression.display.valid}</Typography>
+          <Typography>Average Income: {zone.properties.average_income}</Typography>
+          <Typography>Average Age: {zone.properties.average_age}</Typography>
           <Typography>Total Business: 20</Typography>
 
           <Box display="flex" justifyContent="flex-end">

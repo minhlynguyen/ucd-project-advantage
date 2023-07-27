@@ -359,8 +359,11 @@ import 'leaflet-control-geocoder';
 import './MapModule.css';
 import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
+import { Icon } from 'leaflet';
 
-
+import 'leaflet.markercluster/dist/leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 
 
@@ -383,6 +386,8 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   const layerMappingRef = useRef({});
   // Mapillary viewer instance
   const viewerRef = useRef(null);
+  // marker cluster
+  const clusterRef = useRef(L.markerClusterGroup());
 
   const {realTime, adTime, adTimeMode} = useContext(SolutionsContext);
 
@@ -395,6 +400,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
+      map.addLayer(clusterRef.current);
       mapInstanceRef.current = map;     
     }    
   }, []);
@@ -514,10 +520,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
         // mapInstanceRef.current.fitBounds(e.target.getBounds());
         // Set current zone
         // setCurrentZone(e.target);
-        // // 当用户点击一个区域时，显示该区域中心的街景图像
+        // 当用户点击一个区域时，显示该区域中心的街景图像
         // if (viewerRef.current) {
         //   const center = e.target.getBounds().getCenter();
-        //   viewerRef.current.moveCloseTo(center.lat, center.lng);
+        //   viewerRef.current.moveTo(center.lat, center.lng);
         // }
 
         console.log("user pick this zone in map:", e.target.feature);
@@ -615,7 +621,9 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   // Manage markers when a zone is selected
   useEffect(() => {
     console.log("UseEffect: Manage markers when a zone is selected");
-
+    if (!mapInstanceRef.current) {
+      return;
+    }
     // placeholder for markers
     let markers = [];
 
@@ -643,7 +651,8 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
       // For each feature, create a marker and add it to the map
       features.forEach(feature => {
-        const marker = L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]])
+        const icon = new Icon({ iconUrl: '/museum.png', iconSize: [40, 40]});
+        const marker = L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], {icon})
           .bindPopup(`
             <strong>${feature.properties.name}</strong>
             <br/>
@@ -659,13 +668,14 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
           `);
 
         markers.push(marker);
-        marker.addTo(mapInstanceRef.current);
+        clusterRef.current.addLayer(marker);
       });
     }
 
     // When the component is unmounted, or when the selected zone changes, remove all markers
     return () => {
-      markers.forEach(marker => mapInstanceRef.current.removeLayer(marker));
+      markers.forEach(marker => clusterRef.current.removeLayer(marker));
+
     };
 
   }, [selectedZone]);
@@ -674,15 +684,16 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   
 
   // Initialize Mapillary viewer when the map is ready
-  // useEffect(() => {
-  //   if (mapInstanceRef.current && !viewerRef.current) {
-  //     viewerRef.current = new Viewer({
-  //       container: 'mapillary',
-  //       imageId: '3056168174613811',  // 你可以选择一个默认的街景图像的ID
-  //       accessToken: 'MLY|6295611443867695|a2b7c756ca3b62c2dc4ddbda87ee3f7d',  // 替换成你的Mapillary Client ID
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (mapInstanceRef.current && !viewerRef.current) {
+      viewerRef.current = new Viewer({
+        container: 'mapillary',
+        imageId: '3056168174613811',  // 你可以选择一个默认的街景图像的ID
+        accessToken: 'MLY|6295611443867695|a2b7c756ca3b62c2dc4ddbda87ee3f7d',  // 替换成你的Mapillary Client ID
+        isNavigable: true,
+      });
+    }
+  }, []);
 
   // // Initialize Mapillary viewer when the map is ready
   // useEffect(() => {
@@ -714,10 +725,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   // }, []);
 
   return <div ref={mapRef} className="map-module">
-
-    {/* 创建一个新的div来放置Mapillary的街景图像 */}
-    {/* <div id="mapillary" style={{width: '400px', height: '300px', zIndex: 1001}}></div> */}
-
 
     {isLoading && 
       <Box

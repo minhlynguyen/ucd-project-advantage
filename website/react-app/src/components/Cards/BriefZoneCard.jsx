@@ -42,9 +42,8 @@ export default function BriefZoneCard({ zone, setSelectedZone }) {
         <h3>{zone.properties.name}</h3>
         {/* <Typography>ID: {zone.id}</Typography> */}
         <Typography>Borough: {zone.properties.borough}</Typography>
-        <Typography>Total Impression: 100</Typography>
-        {/* <Typography>Target Impression: 60</Typography> */}
-        <Typography>Target Impression: {zone.properties.pk}</Typography>
+        <Typography>Total Impression: {zone.properties.impression.display.total}</Typography>
+        <Typography>Target Impression: {zone.properties.impression.display.valid}</Typography>
         <Box display="flex" justifyContent="flex-end">
           <IconButton aria-label="Locate" onClick={handleClick(zone)}><LocationOnIcon /></IconButton>
           <IconButton aria-label="Add to compare"><DifferenceIcon /></IconButton>

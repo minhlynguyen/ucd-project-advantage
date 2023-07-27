@@ -31,6 +31,7 @@
     "leaflet-choropleth": "^1.1.4",
     "leaflet-control-geocoder": "^2.4.0",
     "leaflet.awesome-markers": "^2.0.5",
+    "leaflet.markercluster": "^1.5.3",
     "mapbox-gl": "^2.15.0",
     "mapillary-js": "^4.1.1",
     "react": "^18.2.0",

@@ -19,4 +19,17 @@ export const ALL_INCOMES = [
     { income: '19-30', id: 1 },
     { income: '30+', id: 2 },
 ];
-  
+
+export const BIG_CATE = [
+    "entertainment_and_recreation",
+    "financial_services",
+    "food_and_beverage",
+    "parking_and_automotive_services",
+    "professional_services",
+    "real_estate",
+    "retail_services",
+    "transportation",
+    "hospital",
+    "hotspots",
+    "school"
+];

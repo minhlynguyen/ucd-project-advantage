@@ -259,6 +259,8 @@ useEffect(() => {
             ...feature.properties,
             age: ['20%', '50%', '30%'],
             income: ['20%', '50%', '30%'],
+            average_age: 45,
+            average_income: 1000,
             impression: {
               realTime: {
                 totalValue,
@@ -446,6 +448,10 @@ useEffect(() => {
         <div className="map-info-container">
           <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
           <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading} handleClickMore={handleClickMore}/>
+          {selectedZone ?
+            <div id="mapillary" style={{display: 'block'}}></div> :
+            <div id="mapillary" style={{display: 'none'}}></div>
+          }
         </div>
         <Box className='floating-button'>
           <Fab color="primary" aria-label="compare" onClick={handleClickDifference}>

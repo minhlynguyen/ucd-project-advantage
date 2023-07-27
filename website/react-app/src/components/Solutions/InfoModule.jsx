@@ -112,10 +112,10 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleCli
 
   // update detailMode when selectedZone change
   useEffect(() => {
-    console.log("selectedZoneRef", selectedZoneRef.current);
-    console.log("selectedZone", selectedZone);
-    console.log(!selectedZoneRef && selectedZone);
-    console.log(selectedZoneRef && !selectedZone);
+    // console.log("selectedZoneRef", selectedZoneRef.current);
+    // console.log("selectedZone", selectedZone);
+    // console.log(!selectedZoneRef && selectedZone);
+    // console.log(selectedZoneRef && !selectedZone);
     if (!selectedZoneRef.current && selectedZone) {
       setDetailMode(true);
     }
@@ -129,7 +129,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleCli
   useEffect(() => {
 
     if (Object.keys(zones).length !== 0) {
-      const sortedZonesArray = zones.features.sort((a, b) => a.properties.pk - b.properties.pk).slice(0, 5);
+      const sortedZonesArray = zones.features.sort((b, a) => a.properties.impression.display.valid - b.properties.impression.display.valid).slice(0, 5);
       setSortedZones(sortedZonesArray);
     } else {
       setSortedZones([]);
