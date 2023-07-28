@@ -102,7 +102,7 @@ import DetailedZoneCard from '../Cards/DetailedZoneCard';
 
 
 
-function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleClickMore }) {
+function InfoModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
   const [sortedZones, setSortedZones] = useState([]);
   const [selectedZoneDetail, setSelectedZoneDetail] = useState(null);
@@ -150,10 +150,10 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleCli
     // console.log();
     if (detailMode) {
       if (isLoading) {
-        const skeleton = <DetailedZoneCard zone={null} handleClickMore={handleClickMore}/>;
+        const skeleton = <DetailedZoneCard zone={null}/>;
         setInfo(skeleton);
       } else {
-        const detailedZoneCard = <DetailedZoneCard zone={selectedZoneDetail} handleClickMore={handleClickMore}/>;
+        const detailedZoneCard = <DetailedZoneCard zone={selectedZoneDetail}/>;
         setInfo(detailedZoneCard);
       }
 

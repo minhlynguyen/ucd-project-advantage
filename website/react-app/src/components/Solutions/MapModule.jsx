@@ -360,6 +360,7 @@ import './MapModule.css';
 import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 import { Icon } from 'leaflet';
+import { BIG_CATE_ICONS } from '../../constants';
 
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -651,7 +652,11 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
       // For each feature, create a marker and add it to the map
       features.forEach(feature => {
-        const icon = new Icon({ iconUrl: '/museum.png', iconSize: [40, 40]});
+        // const icon = new Icon({ iconUrl: '/museum.png', iconSize: [40, 40]});
+        const big_cate = feature.properties.big_cate.toLowerCase();
+        const icon_url = BIG_CATE_ICONS[big_cate];
+        const url = icon_url ? icon_url : '/museum.png';
+        const icon = new Icon({ iconUrl: url, iconSize: [40, 40]});
         const marker = L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], {icon})
           .bindPopup(`
             <strong>${feature.properties.name}</strong>
@@ -674,7 +679,12 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
     // When the component is unmounted, or when the selected zone changes, remove all markers
     return () => {
-      markers.forEach(marker => clusterRef.current.removeLayer(marker));
+      markers.forEach(
+        (marker) => {
+          clusterRef.current.removeLayer(marker);
+          mapInstanceRef.current.removeLayer(marker);
+        }
+        );
 
     };
 

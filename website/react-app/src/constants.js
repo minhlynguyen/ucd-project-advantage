@@ -1,5 +1,4 @@
 // constants.js
-
 export const ALL_BOROUGHS = [
     { name: 'Manhattan', id: 1 },
     { name: 'Brooklyn', id: 2 },
@@ -33,3 +32,18 @@ export const BIG_CATE = [
     "hotspots",
     "school"
 ];
+
+export const BIG_CATE_ICONS = {
+    "entertainment_and_recreation": '/museum.png',
+    "financial_services": '/museum.png',
+    "food_and_beverage": '/museum.png',
+    "parking_and_automotive_services": '/museum.png',
+    "professional_services": '/museum.png',
+    "real_estate": '/museum.png',
+    "retail_services": '/museum.png',
+    "transportation": '/museum.png',
+    "hospital": '/museum.png',
+    "wifi hotspot": '/markers/wifi.png',
+    // "hotspots": '/museum.png',
+    "school": '/museum.png'
+};

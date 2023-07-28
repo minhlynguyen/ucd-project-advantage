@@ -1,10 +1,31 @@
-import * as React from 'react';
+// import * as React from 'react';
+import React, { useEffect, useRef, useState }  from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import SolutionsContext from '../Solutions/SolutionsContext';
+import { convertToBriefDateString } from '../../utils/dateTimeUtils';
+import axios from 'axios';
+import { BIG_CATE } from '../../constants';
+import { Line, Pie, Bar } from 'react-chartjs-2';
 
-export default function CompareDetail() {
+import { Chart as ChartJS, LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement } from 'chart.js';
+
+ChartJS.register(LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement);
+
+export default function CompareDetail({setConfirmMode}) {
+  const { adTimeMode } = React.useContext(SolutionsContext);
+  const [businessData, setBusinessData] = useState(null);
+  const [totalBusiness, setTotalBusiness] = useState(null);
+  
+  const zoneID1 = 5;
+  const zoneID2 = 134;
+
+  const handleBack = () => {
+    setConfirmMode(true);
+  };
+  
 
   return (
     // <Container sx={{ mt: 4, mb: 4, height: '60vh'}}>
@@ -66,6 +87,9 @@ export default function CompareDetail() {
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
           <Typography>Business Distribution / table or graph?</Typography>
           </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Button variant='outlined' onClick={() => handleBack()}>BACK</Button>
         </Grid>
       </Grid>
     // </Container>

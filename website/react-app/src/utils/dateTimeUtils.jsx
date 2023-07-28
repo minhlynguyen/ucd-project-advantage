@@ -41,4 +41,19 @@ export const setHourInTimeString = (timeString, newHour) => {
     return timeString.replace(/T\d{2}:/, `T${paddedHour}:`);
 };
 
-
+// Function to convert '2023-04-30T22:00:00-04:00' to '2023/04/30 22:00'
+export const convertToBriefDateString = (inputString) => {
+    const dateRegex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}):\d{2}-\d{2}:\d{2}$/;
+    const match = inputString.match(dateRegex);
+  
+    if (match) {
+      const year = match[1];
+      const month = match[2];
+      const day = match[3];
+      const time = match[4];
+  
+      return `${year}/${month}/${day} ${time}`;
+    } else {
+      throw new Error('Invalid date string format.');
+    }
+}

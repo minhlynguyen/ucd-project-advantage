@@ -4,9 +4,11 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import SolutionsContext from '../Solutions/SolutionsContext';
 
-export default function DetailedZoneCard({ zone, handleClickMore }) {
+export default function DetailedZoneCard({ zone }) {
     // zone is a feature for now
+    const { handleClickMore } = React.useContext(SolutionsContext);
     const paperStyle = {
     //   height: 200,
       padding: 20
@@ -19,7 +21,7 @@ export default function DetailedZoneCard({ zone, handleClickMore }) {
   
         <Paper className='detailed-zone-card' elevation={2} style={paperStyle}>
           <h3>{zone.properties.name}</h3>
-          <Typography>Borough: {zone.properties.borough}</Typography>
+          <Typography style={{ fontStyle: 'italic', color: 'grey' }}>Borough: {zone.properties.borough}</Typography>
           <Typography>Total Impression: {zone.properties.impression.display.total}</Typography>
           <Typography>Target Impression: {zone.properties.impression.display.valid}</Typography>
           <Typography>Average Income: {zone.properties.average_income}</Typography>
@@ -29,7 +31,7 @@ export default function DetailedZoneCard({ zone, handleClickMore }) {
           <Box display="flex" justifyContent="flex-end">
             <IconButton aria-label="Add to compare"><DifferenceIcon /></IconButton>
             <IconButton aria-label="Save"><FavoriteIcon /></IconButton>
-            <IconButton aria-label="More" onClick={handleClickMore}><MoreHorizIcon /></IconButton>
+            <IconButton aria-label="More" onClick={() => handleClickMore(zone)}><MoreHorizIcon /></IconButton>
           </Box>
 
         </Paper>

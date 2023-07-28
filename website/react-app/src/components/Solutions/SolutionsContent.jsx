@@ -187,7 +187,7 @@ import MapModule from './MapModule';
 import InfoModule from './InfoModule';
 import axios from 'axios';
 // import { Box, Fab } from '@mui/material';
-import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery } from '@mui/material';
+import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge } from '@mui/material';
 import { useTheme } from '@mui/system';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
@@ -206,7 +206,7 @@ function SolutionsContent() {
   const [selectedZone, setSelectedZone] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false); // compare dialog
-  const [openZoneBoard, setOpenZoneBoard] = useState(false); // zone board dialog
+  const [openZoneBoard, setOpenZoneBoard] = useState(null); // zone board dialog
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const allZonesRef = useRef(null);
@@ -434,30 +434,35 @@ useEffect(() => {
     setOpenDialog(false);
   }
 
-  const handleClickMore = () => {
-    setOpenZoneBoard(true);
-  }
+  const handleClickMore = (zone) => {
+    console.log("zone:", zone);
+    setOpenZoneBoard(zone);
+  }  
 
   const handleCloseZoneBoard = () => {
-    setOpenZoneBoard(false);
+    setOpenZoneBoard(null);
   }
 
   return (
-    <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode }}>
+    <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, handleClickMore, filteredZones }}>
       <div className="solutions-content">
         <FunctionModule filters={filters} setFilters={setFilters}/>
         <div className="map-info-container">
           <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
-          <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading} handleClickMore={handleClickMore}/>
+          <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
           {selectedZone ?
             <div id="mapillary" style={{display: 'block'}}></div> :
             <div id="mapillary" style={{display: 'none'}}></div>
           }
         </div>
         <Box className='floating-button'>
+          
           <Fab color="primary" aria-label="compare" onClick={handleClickDifference}>
-            <DifferenceIcon />
+            <Badge badgeContent={2} color="primary">
+              <DifferenceIcon />
+              </Badge>
           </Fab>
+          
           <Fab color='secondary' aria-label="like" onClick={handleClickLikeFab}>
             <FavoriteIcon />
           </Fab>
@@ -473,10 +478,11 @@ useEffect(() => {
           </DialogActions>
         </Dialog>
 
-        <Dialog open={openZoneBoard} onClose={handleCloseZoneBoard} fullScreen={fullScreen} maxWidth='lg'>
+        <Dialog open={!!openZoneBoard} onClose={handleCloseZoneBoard} fullScreen={fullScreen} maxWidth='lg'>
           <DialogTitle>Zone Board</DialogTitle>
           <DialogContent>
-            <ZoneBoard />
+            {openZoneBoard ? <ZoneBoard zone={openZoneBoard} /> : null}
+            {/* <ZoneBoard zone={openZoneBoard} />  */}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseZoneBoard}>Close</Button>
