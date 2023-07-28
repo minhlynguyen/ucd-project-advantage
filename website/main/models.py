@@ -42,7 +42,7 @@ class ZoneDetail(models.Model):
     datetime = models.DateTimeField(default=timezone.now)
     impression_history = models.PositiveIntegerField(null=True) # Actual history data
     impression_predict = models.PositiveIntegerField(null=True) # ML model predict
-    year_month = models.CharField(max_length=7)                       
+    month = models.CharField(max_length=2,null=True)                       
     week = models.CharField(max_length=1)
     hour = models.CharField(max_length=2)
     borough = models.CharField(max_length=13,null=True)

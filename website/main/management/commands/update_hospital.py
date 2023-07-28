@@ -48,7 +48,7 @@ class Command(BaseCommand):
             try:
                 # If exist, print a message
                 obj = Place.objects.get(nyc_id=place['phone'])
-                print("Hospital with phone number", place['phone'], 'updated')
+                print("Hospital with phone number", obj.nyc_id, 'existed')
             
             except Place.DoesNotExist:
 

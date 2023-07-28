@@ -48,7 +48,7 @@ class Command(BaseCommand):
             try:
                 # Check whether the hotspot is already in database
                 obj = Place.objects.get(nyc_id=place['objectid'])
-                print("Wifi hotspot with code", place['objectid'], 'updated')
+                print("Wifi hotspot with code", obj.nyc_id, 'existed')
 
             except Place.DoesNotExist: 
 
