@@ -3,6 +3,7 @@
 # https://medium.com/@bencleary/django-schedule-tasks-664649be2dea
 
 from django.core import management
+import datetime
 
 class Command(management.BaseCommand):
     
@@ -30,5 +31,7 @@ class Command(management.BaseCommand):
         update_school()
         update_hospital()
         update_wifi()
-        management.call_command('calculate_hospital_school_wifi')
         
+        for i in range(60): 
+            datetime_item = datetime.now()+datetime.timedelta(days=i)
+            management.call_command('calculate_hospital_school_wifi',datetime_item.strftime("%Y-%m-%d"))
