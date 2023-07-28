@@ -9,10 +9,12 @@
 .solutions-content {
     display: flex;
     flex-direction: column;
-    height: 80vh;
+    /* height: 80vh; */
     font-family: 'Roboto', sans-serif;
     background-color: white;
     z-index: 1000; 
+    padding-top: 80px;
+    /* padding-bottom: 262px; */
 }
 
 /* FunctionModule*/
@@ -31,6 +33,7 @@
     flex-direction: row;
     flex-grow: 1;
     position: relative;
+    height: 750px;
 }
 
 
