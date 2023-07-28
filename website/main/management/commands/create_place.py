@@ -1,7 +1,5 @@
 # This script is to update the active businesses,hospital,schools,wifi hotspot
 # Frequency is Every day
-# https://stackoverflow.com/questions/1601153/django-custom-command-and-cron
-# https://medium.com/@bencleary/django-schedule-tasks-664649be2dea
 
 from django.core.management.base import BaseCommand
 from sodapy import Socrata
@@ -25,9 +23,9 @@ class Command(BaseCommand):
 
         # Returned as JSON from API / converted to Python list of dictionaries by sodapy.
         businesses = client.get("w7w3-xahh", limit=150)
-        hospitals = client.get("833h-xwsx", limit=150)
-        schools = client.get("wg9x-4ke6", limit=150)
-        hotspots = client.get("yjub-udmw", limit=5000)
+        hospitals = client.get("833h-xwsx")
+        schools = client.get("wg9x-4ke6")
+        hotspots = client.get("yjub-udmw")
     
         # Variables to count industry
         entertainment_and_recreation = 0

@@ -24,20 +24,9 @@ class Command(BaseCommand):
             return datetime_list
 
     def calculate_business(self,date):
-        """Update detail of a zone"""
-        # Use this when data is updated
-        # now=timezone.now()
-        # year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+        """Calculate the number of business in a zone"""
 
-        # This is for testing
-        # year, month, day = 2023, 4, 30
-        
-        # date = datetime.strptime(date, '%Y-%m-%d')
-        
-        # place_detail = Place.objects.filter('last_update' == date )
-        # datetime.strptime(datestr, '%Y-%m-%d %H:%M:%S')
-        
-        # Agregate number of business by taxi_zone_id and big_cate
+        # Get the datetime object from input string
         date_obj = datetime.strptime(date, '%Y-%m-%d')
         
         # Get the most updated number of businesses
@@ -68,12 +57,7 @@ class Command(BaseCommand):
             real_estate = 0
             retail_services = 0
             transportation = 0
-            hospital = 0
-            hotspots = 0
-            school = 0
             total_business = 0
-            print(item)
-            print(item['taxi_zone_id'],item['big_cate'],item['id__count'])
             match item['big_cate']:
                 case "Entertainment and Recreation":
                     entertainment_and_recreation = item['id__count']
@@ -91,20 +75,16 @@ class Command(BaseCommand):
                     retail_services = item['id__count']
                 case "Transportation":                    
                     transportation = item['id__count']
-                case "Health Care":
-                    hospital = item['id__count']
-                case "Wifi hotspot":
-                    hotspots = item['id__count']
-                case "Education":
-                    school = item['id__count']                
+                                  
             total_business = (entertainment_and_recreation + financial_services + food_and_beverage + parking_and_automotive_services + 
                               professional_services + real_estate + retail_services + transportation)
-            # Check if a record in already in database
-            # year_month = 
 
+            
             for datetime_item in datetime_item_list:
                 try:
+                    # Check if a record in already in database
                     obj = ZoneDetail.objects.get(taxi_zone_id=item['taxi_zone_id'],datetime=make_aware(datetime_item))
+                    
                     # If exists, update latest calculation:
                     obj.year_month = year_month
                     obj.week = week
@@ -118,16 +98,16 @@ class Command(BaseCommand):
                     obj.real_estate = real_estate
                     obj.retail_services = retail_services
                     obj.transportation = transportation
-                    obj.hospital = hospital
-                    obj.hotspots = hotspots
-                    obj.school = school
                     obj.total_business = total_business           
                     obj.holiday = holiday
                     obj.save()
                     print('Zone detail item updated')
+                
                 except ZoneDetail.DoesNotExist:
+
+                    # If exists, create new object
                     obj = ZoneDetail(
-                        taxi_zone_id = item['taxi_zone_id'],
+                        taxi_zone = zone,
                         datetime = make_aware(datetime_item),
                         year_month = year_month,
                         week = week,
@@ -141,19 +121,12 @@ class Command(BaseCommand):
                         real_estate = real_estate,
                         retail_services = retail_services,
                         transportation = transportation,
-                        hospital = hospital,
-                        hotspots = hotspots,
-                        school = school,
                         total_business = total_business,           
                         holiday = holiday
                     )
                     obj.save()
                     print('Zone detail item created')
-        # Generate 24 rows of data corresponding to 24 hours 
-
-        # Add/edit records in zone_detail table
         
-
     def add_arguments(self , parser):
         parser.add_argument('date' , nargs='?' , type=str, 
         help='Date of zone detail you want to update the number of places',

@@ -15,7 +15,6 @@ class Zone(models.Model):
     name = geomodels.CharField(max_length=45)
     borough = geomodels.CharField(max_length=13)
     geom = geomodels.MultiPolygonField()
-    current_impression = geomodels.PositiveIntegerField(default=0)
 
     def current_detail(self):
 
@@ -42,7 +41,7 @@ class ZoneDetail(models.Model):
     taxi_zone = models.ForeignKey(Zone,related_name='zone_detail',on_delete=models.RESTRICT)
     datetime = models.DateTimeField(default=timezone.now)
     impression_history = models.PositiveIntegerField(null=True) # Actual history data
-    impression_predict = models.PositiveIntegerField(default=0) # ML model predict
+    impression_predict = models.PositiveIntegerField(null=True) # ML model predict
     year_month = models.CharField(max_length=7)                       
     week = models.CharField(max_length=1)
     hour = models.CharField(max_length=2)
