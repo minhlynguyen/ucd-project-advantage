@@ -1,51 +1,75 @@
-// This Header page will include header used in the main page after user has logged in. 
-// eslint-disable-next-line no-unused-vars 
-import React, { useState, useContext } from 'react'
-import { UserContext } from '../../App';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import weblogo from '../../assets/AdVantageMain.svg'
-import './Header.css';
-// import SignedInHeader from "./SignedInHeader";
+// This Header page will include header used in the main page after user has logged in.
+// eslint-disable-next-line no-unused-vars
+import React, { useState, useRef, useContext } from "react";
+import { UserContext } from "../../App";
+import { Link } from "react-router-dom";
+import weblogo from "../../assets/AdVantageMain.svg";
+import "./Header.css";
 
 export default function Header() {
-    const { currentUser } = useContext(UserContext);
-    const [isNavExpanded, setIsNavExpanded] = useState(false)
+  // checking if the user is logged in our not
+  const { currentUser } = useContext(UserContext);
+  // handles responsiveness of the page
+  const [click, setClick] = useState(false);
+  const handleClick = () => setClick(!click);
+  const closeMobileMenu = () => setClick(false);
 
-
-    return (
-        <header>          
-            <div className="header-container">
-            <FontAwesomeIcon className="dropdown-button" icon={faBars} onClick={() => {
-            setIsNavExpanded(!isNavExpanded); 
-            }}/>  
-           <img src={weblogo} className="logo" alt="AdVantage-Header-Logo" />
-           <nav>
-                <div className={`nav-components ${isNavExpanded ? "navigation-menu expanded" : "navigation-menu"}`}>
-                    <div className="nav-left">
-                        <ul>
-                            <li>
-                                <Link to="/">Home</Link>
-                            </li>
-                            <li> 
-                              {/* <Link to="/signup">Solutions</ Link> */}
-                              <Link to="/solutions">Solutions</ Link>
-                              </li>
-                            <li>
-                                <Link to="/testimonials">Testimonials</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="nav-right">
-                    {currentUser ? (<Link className="getstarted-button" to="/heatmap"><button className="getstarted-button"> Get Started </button> </Link>) 
-                    : (<Link className="getstarted-button" to="/signup"><button className="getstarted-button"> Get Started </button> </Link>)}
-                        <button className="login-button"><Link className="login-link"to="/signup">Login</Link></button>
-                    </div>
-                </div> 
-            </nav>
-            </div>
-        </header>
-        
-    )
+  return (
+    <header role="banner">
+      <nav role="navigation" className="navbar">
+        <Link to="/">
+          {" "}
+          <img
+            src={weblogo}
+            className="navbar-logo"
+            alt="AdVantage-Header-Logo"
+          />
+        </Link>
+        <div className="menu-icon" onClick={handleClick}>
+          <i className={click ? "fas fa-times" : "fas fa-bars"} />
+        </div>
+        <ul className={click ? "nav-menu active" : "nav-menu"}>
+          <li className="nav-item">
+            <Link className="nav-links" to="/" onClick={closeMobileMenu}>
+              Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-links" to="/signup" onClick={closeMobileMenu}>
+              Solutions
+            </Link>
+          </li>
+          {/* <li className="nav-item">
+            <Link className="nav-links" href="#testimonials">
+              Testimonials
+            </Link>
+          </li> */}
+          {currentUser ? (
+            <Link className="login-register-link" to="/solutions">
+              <a className="nav-links-mobile regbutton"> Get Started </a>{" "}
+            </Link>
+          ) : (
+            <Link className="login-register-link" to="/signup">
+              <a className="nav-links-mobile regbutton"> Get Started </a>{" "}
+            </Link>
+          )}
+          <Link className="login-register-link" to="/signup">
+            <a className="nav-links-mobile loginbutton">Login</a>
+          </Link>
+        </ul>
+        {currentUser ? (
+          <Link className="login-register-link" to="/solutions">
+            <a className="getstarted-button"> Get Started </a>{" "}
+          </Link>
+        ) : (
+          <Link className="login-register-link" to="/signup">
+            <a className="getstarted-button"> Get Started </a>{" "}
+          </Link>
+        )}
+        <Link className="login-register-link" to="/signup">
+          <a className="login-button">Login</a>
+        </Link>
+      </nav>
+    </header>
+  );
 }
