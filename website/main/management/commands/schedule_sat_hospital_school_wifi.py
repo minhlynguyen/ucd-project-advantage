@@ -27,8 +27,8 @@ class Command(management.BaseCommand):
             Default is 4000, which is 10-30% greater than the average number of wifi hotspots in NYC"""
             management.call_command('update_wifi',limit)
 
-        update_school(10)
-        update_hospital(10)
-        update_wifi(10)
+        update_school()
+        update_hospital()
+        update_wifi()
         management.call_command('calculate_hospital_school_wifi')
         
