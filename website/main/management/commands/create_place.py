@@ -1,13 +1,9 @@
 # This script is to update the active businesses,hospital,schools,wifi hotspot
 # Frequency is Every day
-# https://stackoverflow.com/questions/1601153/django-custom-command-and-cron
-# https://medium.com/@bencleary/django-schedule-tasks-664649be2dea
 
 from django.core.management.base import BaseCommand
 from sodapy import Socrata
 from datetime import datetime
-from geopy.geocoders import Nominatim
-from geopy.extra.rate_limiter import RateLimiter
 from django.contrib.gis.geos import Point
 import pgeocode
 
@@ -27,9 +23,9 @@ class Command(BaseCommand):
 
         # Returned as JSON from API / converted to Python list of dictionaries by sodapy.
         businesses = client.get("w7w3-xahh", limit=150)
-        hospitals = client.get("833h-xwsx", limit=150)
-        schools = client.get("wg9x-4ke6", limit=150)
-        hotspots = client.get("yjub-udmw", limit=5000)
+        hospitals = client.get("833h-xwsx")
+        schools = client.get("wg9x-4ke6")
+        hotspots = client.get("yjub-udmw")
     
         # Variables to count industry
         entertainment_and_recreation = 0
@@ -45,24 +41,18 @@ class Command(BaseCommand):
         school = 0
         others = 0
 
-        # Tool to convert ZIP to co-ordinates
-        # geolocator = Nominatim(user_agent="geoapiExercises")
-        # geocode_with_delay = RateLimiter(geolocator.geocode,min_delay_seconds=1)
         nomi = pgeocode.Nominatim('us')
         def geolocate(zip):
             """Turn ZIP code to longitude and latitude"""
             location = nomi.query_postal_code(zip)
-            # location = geocode_with_delay(zip)
             return location.longitude, location.latitude
         
         def find_zone(long,lat,nyc_id,small_cate,big_cate,name):
             """Find the taxi_zones that contain a place
             Then create a Place object accordingly"""
-            
             point = Point(float(long),float(lat),srid=4326)
-            zone = Zone.objects.filter(geom__bbcontains=point)
+            zone = Zone.objects.filter(geom__contains_properly=point)
             zone_list = list(zone)
-                # print("Business license", business['license_nbr'], "is in", zone_list[0])
             if len(zone_list) > 0:    
                 # Create a new object and write to database
                 obj = Place(

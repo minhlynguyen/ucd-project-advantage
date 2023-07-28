@@ -4,6 +4,22 @@ from main.models import Zone, ZoneDetail
 from django.contrib.gis.geos import Point 
 from zoneinfo import ZoneInfo
 from main.serializers import ZoneDataSerializer
+import pickle
+import pandas as pd
+import numpy as np
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
+#Import package matplotlib for visualisation/plotting
+# import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
+from sklearn import metrics
+from sklearn.tree import export_graphviz
+import xgboost as xgb
+from xgboost import XGBRegressor
+import time
 
 
 from django.core.management.base import BaseCommand
@@ -14,47 +30,47 @@ class Command(BaseCommand):
 
         help = 'Aggregate the number of places for zone_detail'
 
-        # Use this when data is updated
-        now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
-        year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+        # # Rating.objects.values('location_id').filter(attribute__in=attributes).annotate(sum_score=Sum('score')).order_by('-score')
+        # # https://stackoverflow.com/questions/13403609/how-to-group-by-and-aggregate-with-django
 
-        # This is for testing
-        year, month, day = 2023, 4, 30
+        # test loading the model: DONE
+        loaded_model = pickle.load(open('../data-analytics/model_2/basic_XGboost_model_2.2.pkl', 'rb'))
+        # print(loaded_model)
 
-        # today = datetime.date(year, month, day)
-        zones = Zone.objects.all()
-        zones = list(zones)
-        print(type(zones))
-        print(type(zones[0].id))
-        zonedetail = ZoneDetail.objects.filter(
-                                        #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
-                                        taxi_zone_id=266
-                                         ).order_by('datetime')#
-        print(len(zonedetail))
+        # get the data from database
+        # zone = ZoneDetail.objects.filter(impression_predict__isnull=True)
+        zone = ZoneDetail.objects.all()
+        df = pd.DataFrame(list(zone.values('entertainment_and_recreation', 'financial_services', 
+                                           'food_and_beverage', 'parking_and_automotive_services',
+                                           'professional_services', 'real_estate', 'retail_services', 
+                                           'transportation', 'hospital', 'hotspots', 'school',
+                                           'total')))
+        print(df.head(5))
+
+
+
+
+
+
+
+
+
+        # def get_dummy_variable(data, categories):
+        #     dummy_dict = {}
+        #     for category in categories:
+        #         dummy_list = [1 if item == category else 0 for item in data]
+        #         dummy_dict[category] = dummy_list
+        #     return dummy_dict
+
+        #     # Example usage:
+        # data = ['entertainment_and_recreation','real_estate']
+        # categories = ['entertainment_and_recreation', 'financial_services', 'food_and_beverage', 'parking_and_automotive_services',
+        #                 'professional_services', 'real_estate', 'retail_services', 'transportation', 'hospital', 'hotspots', 'school']
+        # dummy_variables = get_dummy_variable(data, categories)
+
+        # for category, dummy_list in dummy_variables.items():
+            # print(f"{category}: {dummy_list}")
+
         
-        # zones = list(zones)
-        # zone_list_detail = []
-        # for zone in zones:
-        #     detail = {"datetime": zone.datetime,
-        #      "impression": zone.impression_history,
-        #      "entertainment_and_recreation": zone.entertainment_and_recreation,
-
-        #      }
-        #     zone_dict = {"id":zone.taxi_zone_id,"detail":detail}
-        #     zone_list_detail.append(zone_dict)
-        #     break
-        # print(zone_list_detail)
-        
-        # serializer = ZoneDataSerializer(zones,many=True)
-
-        # print (serializer)
-        # for data in serializer:
-        #     print (data)
-        #     break
-
-
-
-
-    
-        # Rating.objects.values('location_id').filter(attribute__in=attributes).annotate(sum_score=Sum('score')).order_by('-score')
-        # https://stackoverflow.com/questions/13403609/how-to-group-by-and-aggregate-with-django
+        # predictions = loaded_model.predict(input)
+        # print(predictions)
