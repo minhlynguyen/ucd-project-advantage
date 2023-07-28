@@ -42,7 +42,7 @@ function SolutionsContent() {
   // Set the initial state using the current time in New York
   const [realTime, setRealTime] = useState(getCurrentTimeInNY()); // the choosen time in real time Slider
   const [compareZones, setCompareZones] = useState([null, null]);// zones selected to be compared
-  const [openAlert, setOpenAlert] = useState(false); 
+
   
 
 // Fetch data for initialising
@@ -280,15 +280,9 @@ useEffect(() => {
   const handleCloseZoneBoard = () => {
     setOpenZoneBoard(null);
   }
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenAlert(false);
-  };
 
   return (
-    <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, handleClickMore, filteredZones, compareZones, setCompareZones, setOpenCompareBoard, setOpenAlert }}>
+    <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, handleClickMore, filteredZones, compareZones, setCompareZones, setOpenCompareBoard }}>
       <div className="solutions-content">
         <FunctionModule filters={filters} setFilters={setFilters}/>
         <div className="map-info-container">
@@ -302,7 +296,7 @@ useEffect(() => {
         <Box className='floating-button'>
           
           <Fab color="primary" aria-label="compare" onClick={handleClickDifference}>
-            <Badge badgeContent={2} color="primary">
+            <Badge badgeContent={compareZones.filter(zone => zone !== null).length} color="primary">
               <DifferenceIcon />
               </Badge>
           </Fab>
@@ -332,12 +326,6 @@ useEffect(() => {
             <Button onClick={handleCloseZoneBoard}>Close</Button>
           </DialogActions>
         </Dialog>
-
-        <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleSnackbarClose}>
-          <Alert onClose={handleSnackbarClose} severity="warning">
-            You have already added two items for comparison!
-          </Alert>
-        </Snackbar>
       </div>
     </SolutionsContext.Provider>
   );

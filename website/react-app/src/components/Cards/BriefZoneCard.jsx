@@ -4,43 +4,58 @@ import React, { useEffect, useRef, useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import SolutionsContext from '../Solutions/SolutionsContext';
 
-
+const paperStyle = {
+  padding: 20,
+  'paddingTop': '5px',
+  'paddingBottom': '5px'
+};
 
 export default function BriefZoneCard({ zone, setSelectedZone }) {
   // zone is a feature for now
-  // const [openAlert, setOpenAlert] = useState(false);
-  const { compareZones, setCompareZones, setOpenAlert } = React.useContext(SolutionsContext);
-  const paperStyle = {
-    // height: 135,
-    padding: 20,
-    'paddingTop': '5px',
-    'paddingBottom': '5px'
-  };
+
+  const { compareZones, setCompareZones } = React.useContext(SolutionsContext);
+  const isCompared = compareZones.includes(zone);
+
 
   const handleClickLocate = (clickedZone) => {
     return () => setSelectedZone(clickedZone);
   };
 
-
-
   const handleClickCompare = (clickedZone) => {
     return () => {
-      // Check if there is a null element in the compareZones array
-      const index = compareZones.findIndex(item => item === null);
-
-      if (index !== -1) {
-        // If there is a null element, replace it with the clickedZone
+      if (isCompared) {
+        const index = compareZones.indexOf(clickedZone);
         const newCompareZones = [...compareZones];
-        newCompareZones[index] = clickedZone;
+        newCompareZones[index] = null;
         setCompareZones(newCompareZones);
+
       } else {
-        // If there is no null element, show the Snackbar
-        setOpenAlert(true);
+        // Check if there is a null element in the compareZones array
+        const index = compareZones.findIndex(item => item === null);
+        if (index !== -1) {
+          // If there is a null element, replace it with the clickedZone
+          const newCompareZones = [...compareZones];
+          newCompareZones[index] = clickedZone;
+          setCompareZones(newCompareZones);
+        } else {
+          // If there is no null element, show the Snackbar
+          toast.error('Currently only supports comparing two zones.', {
+            position: 'bottom-center',
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          
+        }
       }
+
     };
   };
 
@@ -66,7 +81,10 @@ export default function BriefZoneCard({ zone, setSelectedZone }) {
         <Typography>Target Impression: {zone.properties.impression.display.valid}</Typography>
         <Box display="flex" justifyContent="flex-end">
           <IconButton aria-label="Locate" onClick={handleClickLocate(zone)}><LocationOnIcon /></IconButton>
-          <IconButton aria-label="Add to compare" onClick={handleClickCompare(zone)}><DifferenceIcon /></IconButton>
+          <IconButton aria-label="Add to compare" onClick={handleClickCompare(zone)}>
+            {/* <DifferenceIcon /> */}
+            <DifferenceIcon color={isCompared ? "primary" : "inherit"} />
+          </IconButton>
           <IconButton aria-label="Save"><FavoriteIcon /></IconButton>
         </Box>
       </Paper>        
