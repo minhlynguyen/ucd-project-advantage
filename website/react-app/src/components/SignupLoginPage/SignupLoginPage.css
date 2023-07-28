@@ -76,7 +76,7 @@ justify-self: center;
     z-index: 5;
   }
 }
-
+/* overlay styling */
 .overlay-container {
   position: absolute;
   top: 0;
@@ -106,6 +106,8 @@ justify-self: center;
   width: 200%;
   transform: translateX(0);
   transition: transform 0.6s ease-in-out;
+  
+
 }
 
 .signup-login-container.right-panel-active .overlay{
@@ -158,17 +160,6 @@ h2 {
 }
 
 
-/* industry option and input */
-/* select {
-  font-size: 1.3rem;
-  background-color: #e1dcd9;
-  border: none;
-  border-radius: 5px;
-  padding: 1em;
-  box-shadow: rgba(0, 0, 0, 0.16) 5px 2px 6px;
-  height: 3.59em;
-} */
-
 /* password and email container */
 
 input {
@@ -177,7 +168,7 @@ input {
   padding: 1em 1em;
   font-size: 1.3rem;
   margin: 0.5em 0;
-  width: 100%;
+  max-width: 30vw; 
 }
 
 .FormMessage {
@@ -191,7 +182,8 @@ input {
   color: crimson;
 }
 /* button */
-.signup-login-container button {
+.register-button,
+.loginpage-button{
   cursor: pointer;
   border: 1.5px solid #32435f;
   background-color: #32435f;
@@ -216,7 +208,21 @@ input {
   outline: none;
 }
 
-button .ghost {
-  background-color: transparent;
-  border-color: #ffffff;
+.ghost {
+  white-space: nowrap; /* Prevents text from wrapping to a new line */
+  cursor: pointer;
+  border: 1.5px solid #32435f;
+  background-color: #32435f;
+  color: #ffffff;
+  border-radius: 20px;
+  letter-spacing: 0.2rem;
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding: 0.5em;
+  transition: all 240ms ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 5px 12px;
+  text-transform: uppercase;
+
+
+
 }
