@@ -4,6 +4,7 @@
 
 from django.core import management
 import datetime
+from django.utils import timezone
 
 class Command(management.BaseCommand):
     
@@ -33,5 +34,5 @@ class Command(management.BaseCommand):
         update_wifi()
         
         for i in range(60): 
-            datetime_item = datetime.now()+datetime.timedelta(days=i)
+            datetime_item = timezone.now()+datetime.timedelta(days=i)
             management.call_command('calculate_hospital_school_wifi',datetime_item.strftime("%Y-%m-%d"))

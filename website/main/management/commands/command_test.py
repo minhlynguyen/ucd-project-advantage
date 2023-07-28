@@ -27,21 +27,28 @@ from django.core.management.base import BaseCommand
 class Command(BaseCommand):
 
     def handle(self,*args, **kwargs):
-        zones = Zone.objects.all()
-        pumas = Puma.objects.all()
-        for zone in zones:
-            zone_geom = zone.geom
-            for puma in pumas:
-                puma_geom = puma.geom
-                if zone_geom.intersects(puma_geom): 
-                    try: 
-                        intersection=zone_geom.intersection(puma_geom)   
-                        zonepuma = ZonePuma(
-                            zone = zone,
-                            puma = puma,
-                            intersection = intersection.area
-                        )
-                        zonepuma.save()
-                        print("Interection of zone", zone.id, "and puma", puma.id, "is created")
-                    except Exception as e:
-                        print(e)
+        # zones = Zone.objects.all()
+        # pumas = Puma.objects.all()
+        # for zone in zones:
+        #     zone_geom = zone.geom
+        #     for puma in pumas:
+        #         puma_geom = puma.geom
+        #         if zone_geom.intersects(puma_geom): 
+        #             try: 
+        #                 intersection=zone_geom.intersection(puma_geom)   
+        #                 zonepuma = ZonePuma(
+        #                     zone = zone,
+        #                     puma = puma,
+        #                     intersection = intersection.area
+        #                 )
+        #                 zonepuma.save()
+        #                 print("Interection of zone", zone.id, "and puma", puma.id, "is created")
+        #             except Exception as e:
+        #                 print(e)
+
+        # loaded_model = pickle.load(open('../website/main/final_XGboost_model.pkl', 'rb'))
+
+        datetime_item = timezone.now()+datetime.timedelta(days=10)
+        print(datetime_item)
+        dtstr = datetime_item.strftime("%Y-%m-%d")
+        print(dtstr)
