@@ -58,36 +58,43 @@ export default function RangeSlider({ label, setTempFilters, reset}) {
         "Income": ["0", "1000", "2000", "Any"],
     };
     const defaultValues = {
-        "Age": [0, 2, 2],
-        "Income": [0, 2, 2],
+        "Age": [0, 3],
+        "Income": [0, 3],
     };
     const defaultValue = defaultValues[label];
     const [value, setValue] = useState(defaultValue);
 
+    function convertValueToRange(value) {
+
+        const result = [];
+        for (let i = value[0]; i <= (value[1] - 1); i++) {
+          result.push(i);
+        }
+        return result;
+
+    }
+
     const handleChange = (event, newValue) => {
-        // here I can change to the format I want
-        const processed_value = [newValue[0], newValue[1] - 1];
-        setValue(processed_value);
+        setValue(newValue);
         setTempFilters(prevFilters => ({
             ...prevFilters,
-            [label]: processed_value
+            [label]: convertValueToRange(newValue)
         }));
-        // setValue(newValue);
-        // setTempFilters(prevFilters => ({
-        //     ...prevFilters,
-        //     [label]: newValue
-        // }));
     };
 
     useEffect(() => {
         setTempFilters(prevFilters => ({
             ...prevFilters,
-            [label]: value
+            [label]: convertValueToRange(value)
         }));
     }, []);
 
     useEffect(() => {
         setValue(defaultValue);
+        setTempFilters(prevFilters => ({
+            ...prevFilters,
+            [label]: convertValueToRange(defaultValue)
+          }));
     }, [reset]);
 
     return (

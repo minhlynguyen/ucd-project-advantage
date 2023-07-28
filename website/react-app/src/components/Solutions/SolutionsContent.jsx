@@ -211,6 +211,7 @@ function SolutionsContent() {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const allZonesRef = useRef(null);
   const [adTime, setAdTime] = useState(['', '']);
+  // const [adTime, setAdTime] = useState([new Date(), new Date()]);
   const [adTimeMode, setAdTimeMode] = useState(false);
   // Set the initial state using the current time in New York
   const [realTime, setRealTime] = useState(getCurrentTimeInNY()); // the choosen time in real time Slider 

@@ -24,7 +24,7 @@ export default function DetailedZoneCard({ zone, handleClickMore }) {
           <Typography>Target Impression: {zone.properties.impression.display.valid}</Typography>
           <Typography>Average Income: {zone.properties.average_income}</Typography>
           <Typography>Average Age: {zone.properties.average_age}</Typography>
-          <Typography>Total Business: 20</Typography>
+          {/* <Typography>Total Business: 20</Typography> */}
 
           <Box display="flex" justifyContent="flex-end">
             <IconButton aria-label="Add to compare"><DifferenceIcon /></IconButton>
