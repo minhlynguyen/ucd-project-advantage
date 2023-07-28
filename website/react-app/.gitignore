@@ -27,3 +27,5 @@ __pycache__/
 __pycache__2/
 *.pyc
 *.parquet
+
+!/public/map-initialising.json

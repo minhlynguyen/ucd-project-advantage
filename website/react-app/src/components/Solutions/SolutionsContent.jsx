@@ -196,7 +196,7 @@ import ZoneBoard from '../Cards/ZoneBoard';
 import { ALL_BOROUGHS, ALL_AGES, ALL_INCOMES } from '../../constants';
 import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
-import mapGeomData from "./map-initialising.json";
+// import mapGeomData from "./map-initialising.json";
 
 function SolutionsContent() {
 
@@ -237,8 +237,18 @@ useEffect(() => {
       }
       
 
-      const data1 = JSON.parse(mapGeomData.data);
+      // const data1 = JSON.parse(mapGeomData.data);
       const data2 = response.data.data;
+
+
+      const urlMapGeomData = "./map-initialising.json"; 
+      const responseMapGeomData = await axios.get(urlMapGeomData);
+
+      if (!responseMapGeomData.data) {
+        throw new Error("Can't fetch map-initialising.json now!");
+      }
+
+      const data1 = JSON.parse(responseMapGeomData.data.data);
 
       const zoneDetailMap = {};
       for(let key in data2) {
