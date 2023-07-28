@@ -39,7 +39,7 @@ class Command(BaseCommand):
         datetime_item_list = self.generate_24_hour_datetimes(date)
 
         # Define the holiday type of input date
-        us_holidays = dict(holidays.US(years=[2022, 2023, 2024, 2025]))
+        us_holidays = dict(holidays.US(years=[2022, 2023]))
         holiday = us_holidays.get(date_obj, "No")
 
         # Define month and week

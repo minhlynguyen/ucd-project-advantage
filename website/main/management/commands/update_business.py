@@ -30,7 +30,7 @@ class Command(BaseCommand):
             """Find the taxi_zones that contain a place
             Then create a Place object accordingly"""
             point = Point(float(long),float(lat),srid=4326)
-            zone = Zone.objects.filter(geom__bbcontains=point)
+            zone = Zone.objects.filter(geom__contains_properly=point)
             zone_list = list(zone)
             if len(zone_list) > 0:    
                 # Create a new object and write to database

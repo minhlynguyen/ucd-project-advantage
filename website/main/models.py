@@ -68,11 +68,46 @@ class ZoneDetail(models.Model):
 # PUMA model in maps schema
 class Puma(geomodels.Model):
     id = geomodels.PositiveBigIntegerField(primary_key=True)
+    median_income = geomodels.IntegerField(null=True)
+    females_under_5 = geomodels.FloatField(null=True)
+    females_5_14 = geomodels.FloatField(null=True)
+    females_15_24 = geomodels.FloatField(null=True)
+    females_25_34 = geomodels.FloatField(null=True)	
+    females_35_44 = geomodels.FloatField(null=True)	
+    females_45_54 = geomodels.FloatField(null=True)	
+    females_55_64 = geomodels.FloatField(null=True)	
+    females_65_74 = geomodels.FloatField(null=True)	
+    females_75_84 = geomodels.FloatField(null=True)	
+    females_85 = geomodels.FloatField(null=True)	
+    males_under_5 = geomodels.FloatField(null=True)	
+    males_5_14 = geomodels.FloatField(null=True)
+    males_15_24 = geomodels.FloatField(null=True)	
+    males_25_34 = geomodels.FloatField(null=True)	
+    males_35_44 = geomodels.FloatField(null=True)	
+    males_45_54 = geomodels.FloatField(null=True)	
+    males_55_64 = geomodels.FloatField(null=True)	
+    males_65_74 = geomodels.FloatField(null=True)	
+    males_75_84	= geomodels.FloatField(null=True)
+    males_85 = geomodels.FloatField(null=True)	
+    main_demographic = geomodels.CharField(null=True, max_length=13)
     geom = geomodels.MultiPolygonField()
-
+    
     class Meta:
         managed = True
         db_table = 'maps\".\"puma'
+
+# Models to calculate intersection among Zones and Pumas
+
+class ZonePuma(geomodels.Model):
+    id = geomodels.AutoField(primary_key=True)
+    zone = geomodels.ForeignKey(Zone,related_name='zone',on_delete=geomodels.RESTRICT)
+    puma = geomodels.ForeignKey(Puma,related_name='puma',on_delete=geomodels.RESTRICT)
+    intersection = geomodels.FloatField()
+
+    class Meta:
+        managed = True
+        db_table = 'maps\".\"zone_puma'
+        unique_together = (('zone','puma'))
 
 # Places model in maps schema
 class Place(geomodels.Model):
