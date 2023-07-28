@@ -34,49 +34,75 @@ def place_in_zone(request, id):
     """
     try:
         places = serialize('geojson',Place.objects.filter(taxi_zone_id=id,status="Active"))
-        # place = Place.objects.filter(taxi_zone_id=id,status="Active")
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
 
     if request.method == 'GET':
         return JsonResponse({"status":"1","data":places},status=201,safe=False)
-        # serializer = PlaceSerializer(place, many=True)
-        # return JsonResponse({"status":"1","data":serializer.data},status=201)
+
 
 def zone_data(request):
+    """
+    Retrieve history detail of a zone
+    """
     # Use this when data is updated
-    now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
-    year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+    # now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
+    # year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
 
     # This is for testing
     year, month, day = 2023, 4, 30
     
     try:
-        zone = ZoneDetail.objects.filter(datetime__date=datetime.date(year, month, day))
+        zone = ZoneDetail.objects.filter(datetime__date=datetime.date(year, month, day)).order_by("taxi_zone_id")
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
 
     if request.method == 'GET':
+        # Use lambda function to modify the structure of the data dictionary
         serializer = ZoneDataSerializer(zone,many=True)
-        return JsonResponse({"status":"1","data":serializer.data},status=201)
-    
-    # elif request.method == 'PUT':
-    #     data = JSONParser().parse(request)
-    #     serializer = ZoneSerializer(zone, data=data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return JsonResponse(serializer.data)
-    #     return JsonResponse(serializer.errors, status=400)
+        data = serializer.data
+        data = {
+            item["taxi_zone_id"]: {
+                "detail": [
+                    {
+                        k: v
+                        for k, v in entry.items()
+                        if k != "taxi_zone_id"
+                    }
+                for entry in data
+                if entry["taxi_zone_id"] == item["taxi_zone_id"]
+                ]
+            }
+            for item in data
+        }
+        return JsonResponse({"status":"1","data":data},status=201)
 
 def zone_detail(request, id):
     """
-    Retrieve detail of a zone
+    Retrieve history detail of a zone
     """
     try:
-        zone = ZoneDetail.objects.filter(taxi_zone_id=id)
+        zone = ZoneDetail.objects.filter(taxi_zone_id=id).order_by('datetime')
+        if len(zone)==0:
+            return JsonResponse({"status":"2","data":"Zone does not exist"},status=201)
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
 
     if request.method == 'GET':
         serializer = ZoneDataSerializer(zone,many=True)
-        return JsonResponse({"status":"1","data":serializer.data},status=201)
+        data = serializer.data
+        data = {
+            item["taxi_zone_id"]: {
+                "detail": [
+                    {
+                        k: v
+                        for k, v in entry.items()
+                        if k != "taxi_zone_id"
+                    }
+                for entry in data
+                if entry["taxi_zone_id"] == item["taxi_zone_id"]
+                ]
+            }
+            for item in data
+        }
+        return JsonResponse({"status":"1","data":data},status=201)

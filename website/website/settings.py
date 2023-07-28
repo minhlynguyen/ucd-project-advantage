@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "leaflet",
     "corsheaders",
     "user_api",
+    'django_extensions',
     # "impression"
     # 'user_api.apps.UserApiConfig'
 ]

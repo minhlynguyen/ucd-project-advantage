@@ -9,14 +9,15 @@ from django.utils.translation import gettext_lazy as _
 class AppUserManager(BaseUserManager):
 	def create_user(self, email, password=None, **extra_fields):
 		if not email:
-			raise ValueError('An email is required.')
+			raise ValueError(_('An email is required.'))
 		if not password:
-			raise ValueError('A password is required.')
+			raise ValueError(__('A password is required.'))
 		email = self.normalize_email(email)
 		user = self.model(email=email)
 		user.set_password(password)
 		user.save()
 		return user
+	
 	def create_superuser(self, email, password=None, **extra_fields):
 		if not email:
 			raise ValueError('An email is required.')
@@ -27,6 +28,7 @@ class AppUserManager(BaseUserManager):
 		user.is_staff = True
 		user.save()
 		return user
+		# return self.create_user(email, user_name, first_name, password, **extra_fields)
 
 # https://testdriven.io/blog/django-custom-user-model/
 class AppUser(AbstractBaseUser, PermissionsMixin):
@@ -43,7 +45,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 	USERNAME_FIELD = "email"
 	# REQUIRED_FIELDS = ['username']
 	REQUIRED_FIELDS = []
-	objects = AppUserManager()
+	objects = AppUserManager() # Tell the model to utilize the AppUser Manager
 	
 	class Meta:
 		managed = True
