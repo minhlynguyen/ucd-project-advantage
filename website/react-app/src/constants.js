@@ -8,10 +8,28 @@ export const ALL_BOROUGHS = [
   ];
 
 export const ALL_AGES = [
-    { age: '0-18', id: 0 },
-    { age: '19-30', id: 1 },
-    { age: '30+', id: 2 },
+    { age: 'Females Under 5', id: 0 },
+    { age: 'Females 5-14', id: 1 },
+    { age: 'Females 15-24', id: 2 },
+    { age: 'Females 25-34', id: 3 },
+    { age: 'Females 35-44', id: 4 },
+    { age: 'Females 45-54', id: 5 },
+    { age: 'Females 55-64', id: 6 },
+    { age: 'Females 65-74', id: 7 },
+    { age: 'Females 75-84', id: 8 },
+    { age: 'Females 85+', id: 9 },
+    { age: 'Males Under 5', id: 10 },
+    { age: 'Males 5-14', id: 11 },
+    { age: 'Males 15-24', id: 12 },
+    { age: 'Males 25-34', id: 13 },
+    { age: 'Males 35-44', id: 14 },
+    { age: 'Males 45-54', id: 15 },
+    { age: 'Males 55-64', id: 16 },
+    { age: 'Males 65-74', id: 17 },
+    { age: 'Males 75-84', id: 18 },
+    { age: 'Males 85+', id: 19 },
 ];
+  
 
 export const ALL_INCOMES = [
     { income: '0-18', id: 0 },

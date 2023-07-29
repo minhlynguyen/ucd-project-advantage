@@ -16,11 +16,6 @@ import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 
 
-// Added for Snackbar
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 function SolutionsContent() {
 
   const [filters, setFilters] = 
@@ -42,8 +37,6 @@ function SolutionsContent() {
   // Set the initial state using the current time in New York
   const [realTime, setRealTime] = useState(getCurrentTimeInNY()); // the choosen time in real time Slider
   const [compareZones, setCompareZones] = useState([null, null]);// zones selected to be compared
-
-  
 
 // Fetch data for initialising
 useEffect(() => {
@@ -96,7 +89,11 @@ useEffect(() => {
           ...feature,
           properties: {
             ...feature.properties,
-            age: ['20%', '50%', '30%'],
+            age: [
+              0.07, 0.05, 0.04, 0.06, 0.05, 0.04, 0.06, 0.05, 0.04, 0.05, 
+              0.07, 0.06, 0.04, 0.05, 0.05, 0.04, 0.06, 0.04, 0.05, 0.06
+            ],
+            // age: ['20%', '50%', '30%'],
             income: ['20%', '50%', '30%'],
             average_age: 45,
             average_income: 1000,
@@ -164,7 +161,8 @@ useEffect(() => {
   // get the valid percentage for each feature
   filteredFeatures = filteredFeatures.map(feature => {
     // Convert age and income percentages to number
-    const agePercentages = feature.properties.age.map(item => parseFloat(item) / 100);
+    // const agePercentages = feature.properties.age.map(item => parseFloat(item) / 100);
+    const agePercentages = feature.properties.age.map(item => item);
     const incomePercentages = feature.properties.income.map(item => parseFloat(item) / 100);
 
     // Calculate valid age and income percentages
