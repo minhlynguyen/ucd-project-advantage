@@ -43,7 +43,6 @@ class Command(BaseCommand):
 
         # Define year_month and week
         month = date_obj.strftime("%-m")
-        hour = datetime_item.strftime("%-H")
         week = date_obj.weekday()
 
         for item in counts:
@@ -87,7 +86,7 @@ class Command(BaseCommand):
                         datetime = make_aware(datetime_item),
                         month = month,
                         week = week,
-                        hour = hour,
+                        hour = datetime_item.strftime("%-H"),
                         borough = borough,
                         hospital = hospital,
                         hotspots = hotspots,
