@@ -8,7 +8,7 @@ class Command(management.BaseCommand):
     
     def handle(self, *args, **kwargs):
         
-        management.call_command('update_business','1') # 300000 is the maximum number of businesses to be read from the NYC API. Change to smaller number for testing
+        management.call_command('update_business','300000') # 300000 is the maximum number of businesses to be read from the NYC API. Change to smaller number for testing
         
         for i in range(60): 
             datetime_item = timezone.now()+datetime.timedelta(days=i)

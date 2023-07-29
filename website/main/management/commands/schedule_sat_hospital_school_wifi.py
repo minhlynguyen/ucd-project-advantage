@@ -7,32 +7,33 @@ import datetime
 from django.utils import timezone
 
 class Command(management.BaseCommand):
-    
-    def handle(self, *args, **kwargs):
-        
-        def update_school(limit=1000):
-            """Update school info in Place, then in ZoneDetail table
-            Take limit as the maximum number of requests to send to NYC database
-            Default is 1000, which is 10-30% greater than the average number of schools in NYC"""
-            management.call_command('update_hospital',limit) 
-        # management.call_command('calculate_business')
+    def update_school(self, limit=1000):
+        """Update school info in Place, then in ZoneDetail table
+        Take limit as the maximum number of requests to send to NYC database
+        Default is 1000, which is 10-30% greater than the average number of schools in NYC"""
+        management.call_command('update_hospital',limit) 
+    # management.call_command('calculate_business')
 
-        def update_hospital(limit=100):
-            """Update hospital info in Place, then in ZoneDetail table
-            Take limit as the maximum number of requests to send to NYC database
-            Default is 100, which is 10-30% greater than the average number of hospitals in NYC"""
-            management.call_command('update_school',limit) 
+    def update_hospital(self, limit=100):
+        """Update hospital info in Place, then in ZoneDetail table
+        Take limit as the maximum number of requests to send to NYC database
+        Default is 100, which is 10-30% greater than the average number of hospitals in NYC"""
+        management.call_command('update_school',limit) 
 
-        def update_wifi(limit=4000):
-            """Update wifi hotspots info in Place, then in ZoneDetail table
-            Take limit as the maximum number of requests to send to NYC database
-            Default is 4000, which is 10-30% greater than the average number of wifi hotspots in NYC"""
-            management.call_command('update_wifi',limit)
+    def update_wifi(self, limit=4000):
+        """Update wifi hotspots info in Place, then in ZoneDetail table
+        Take limit as the maximum number of requests to send to NYC database
+        Default is 4000, which is 10-30% greater than the average number of wifi hotspots in NYC"""
+        management.call_command('update_wifi',limit)
 
-        update_school()
-        update_hospital()
-        update_wifi()
-        
+    def aggregate(self):
         for i in range(60): 
             datetime_item = timezone.now()+datetime.timedelta(days=i)
             management.call_command('calculate_hospital_school_wifi',datetime_item.strftime("%Y-%m-%d"))
+
+    def handle(self, *args, **kwargs):
+        
+        self.update_school()
+        self.update_hospital()
+        self.update_wifi()
+        self.aggregate()
