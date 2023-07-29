@@ -9,7 +9,6 @@ urlpatterns = [
     # path('admin/super', admin.site.urls)
     path('zones/<int:id>/', zone_detail),
     path('zones/<int:id>/places', place_in_zone),
-    # path('zones/data/1', zone_data_1, name="data"), # Option 1
-    path('zones/data/', zone_data, name="data"), # Option 2
+    path('zones/data/', zone_data, name="data"), 
 
 ]

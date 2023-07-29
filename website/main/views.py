@@ -46,14 +46,14 @@ def zone_data(request):
     Retrieve history detail of a zone
     """
     # Use this when data is updated
-    # now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
-    # year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+    now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
+    year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
 
     # This is for testing
-    year, month, day = 2023, 4, 30
+    # year, month, day = 2023, 4, 30
     
     try:
-        zone = ZoneDetail.objects.filter(datetime__date=datetime.date(year, month, day)).order_by("taxi_zone_id")
+        zone = ZoneDetail.objects.filter(datetime__date=datetime.date(int(year), int(month), int(day))).order_by("taxi_zone_id","datetime")
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
 

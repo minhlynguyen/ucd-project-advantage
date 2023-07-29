@@ -42,6 +42,8 @@ class ZoneDetail(models.Model):
     datetime = models.DateTimeField(default=timezone.now)
     impression_history = models.PositiveIntegerField(null=True) # Actual history data
     impression_predict = models.PositiveIntegerField(null=True) # ML model predict
+    place_last_update = models.DateTimeField(default=timezone.now)
+    prediction_last_update = models.DateTimeField(default=timezone.now,null=True)
     month = models.CharField(max_length=2,null=True)                       
     week = models.CharField(max_length=1)
     hour = models.CharField(max_length=2)
@@ -58,7 +60,7 @@ class ZoneDetail(models.Model):
     hotspots = models.PositiveIntegerField(default=0)
     school = models.PositiveIntegerField(default=0)
     total_business = models.PositiveIntegerField(default=0)           
-    holiday = models.CharField(max_length=50)
+    holiday = models.CharField(max_length=50,null=True)
     
     class Meta:
         managed = True
