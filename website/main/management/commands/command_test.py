@@ -48,7 +48,7 @@ class Command(BaseCommand):
 
         # loaded_model = pickle.load(open('../website/main/final_XGboost_model.pkl', 'rb'))
 
-        datetime_item = timezone.now()+datetime.timedelta(days=10)
+        datetime_item = timezone.now()+datetime.timedelta(hours=9)
         print(datetime_item)
-        dtstr = datetime_item.strftime("%Y-%m-%d")
+        dtstr = datetime_item.strftime("%-H")
         print(dtstr)

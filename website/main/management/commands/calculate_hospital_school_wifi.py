@@ -42,7 +42,8 @@ class Command(BaseCommand):
         holiday = us_holidays.get(date_obj, "No")
 
         # Define year_month and week
-        month = date_obj.strftime("%m")
+        month = date_obj.strftime("%-m")
+        hour = datetime_item.strftime("%-H")
         week = date_obj.weekday()
 
         for item in counts:
@@ -68,10 +69,10 @@ class Command(BaseCommand):
                     obj = ZoneDetail.objects.get(taxi_zone_id=item['taxi_zone_id'],datetime=make_aware(datetime_item))
                     
                     # If exists, update latest calculation:
-                    obj.month = month
-                    obj.week = week
-                    obj.hour = datetime_item.strftime("%H")
-                    obj.borough = borough
+                    # obj.month = month
+                    # obj.week = week
+                    # obj.hour = hour
+                    # obj.borough = borough
                     obj.hospital = hospital
                     obj.school = school
                     obj.hotspots = hotspots
@@ -86,7 +87,7 @@ class Command(BaseCommand):
                         datetime = make_aware(datetime_item),
                         month = month,
                         week = week,
-                        hour = datetime_item.strftime("%H"),
+                        hour = hour,
                         borough = borough,
                         hospital = hospital,
                         hotspots = hotspots,

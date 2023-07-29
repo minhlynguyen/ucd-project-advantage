@@ -43,7 +43,8 @@ class Command(BaseCommand):
         holiday = us_holidays.get(date_obj, "No")
 
         # Define month and week
-        month = date_obj.strftime("%m")
+        month = date_obj.strftime("%-m")
+        hour = datetime_item.strftime("%-H")
         week = date_obj.weekday()
 
         for item in counts:
@@ -86,10 +87,10 @@ class Command(BaseCommand):
                     obj = ZoneDetail.objects.get(taxi_zone_id=item['taxi_zone_id'],datetime=make_aware(datetime_item))
                     
                     # If exists, update latest calculation:
-                    obj.month = month
-                    obj.week = week
-                    obj.hour = datetime_item.strftime("%H")
-                    obj.borough = borough
+                    # obj.month = month
+                    # obj.week = week
+                    # obj.hour = datetime_item.strftime("%H")
+                    # obj.borough = borough
                     obj.entertainment_and_recreation = entertainment_and_recreation
                     obj.financial_services = financial_services
                     obj.food_and_beverage = food_and_beverage
@@ -99,7 +100,7 @@ class Command(BaseCommand):
                     obj.retail_services = retail_services
                     obj.transportation = transportation
                     obj.total_business = total_business           
-                    obj.holiday = holiday
+                    # obj.holiday = holiday
                     obj.save()
                     print('Zone detail item updated')
                 
@@ -111,7 +112,7 @@ class Command(BaseCommand):
                         datetime = make_aware(datetime_item),
                         month = month,
                         week = week,
-                        hour = datetime_item.strftime("%H"),
+                        hour = hour,
                         borough = borough,
                         entertainment_and_recreation = entertainment_and_recreation,
                         financial_services = financial_services,

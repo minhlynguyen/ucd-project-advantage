@@ -127,7 +127,7 @@ class Command(BaseCommand):
 
                             # Convert ZIP code to coordinates
                             if business.get('longitude', 'Not provided') == 'Not provided':
-                                long, lat =  geolocate(business.get('address_zip'))
+                                long, lat = geolocate(business.get('address_zip'))
                                 business['longitude'] = long
                                 business['latitude'] = lat
                                 # print("Zip code", business['address_zip'], "converted to", long, lat, "for Business license", business['license_nbr'])
