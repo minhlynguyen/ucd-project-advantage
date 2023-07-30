@@ -4,7 +4,7 @@ import FunctionModule from './FunctionModule';
 import MapModule from './MapModule';
 import InfoModule from './InfoModule';
 import axios from 'axios';
-import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge, Snackbar } from '@mui/material';
+import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge, Snackbar, Grid } from '@mui/material';
 import { useTheme } from '@mui/system';
 import MuiAlert from '@mui/material/Alert';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -14,6 +14,8 @@ import ZoneBoard from '../Cards/ZoneBoard';
 import { ALL_BOROUGHS, ALL_AGES, ALL_INCOMES } from '../../constants';
 import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
+
+
 
 
 function SolutionsContent() {
@@ -31,6 +33,7 @@ function SolutionsContent() {
   const [openZoneBoard, setOpenZoneBoard] = useState(null); // zone board dialog
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const allZonesRef = useRef(null);
   const [adTime, setAdTime] = useState(['', '']);
   const [adTimeMode, setAdTimeMode] = useState(false);
@@ -90,8 +93,8 @@ useEffect(() => {
           properties: {
             ...feature.properties,
             age: [
-              0.07, 0.05, 0.04, 0.06, 0.05, 0.04, 0.06, 0.05, 0.04, 0.05, 
-              0.07, 0.06, 0.04, 0.05, 0.05, 0.04, 0.06, 0.04, 0.05, 0.06
+              7, 5, 4, 6, 5, 4, 6, 5, 4, 5, 
+              7, 6, 4, 5, 5, 4, 6, 4, 5, 6
             ],
             // age: ['20%', '50%', '30%'],
             income: ['20%', '50%', '30%'],
@@ -279,18 +282,92 @@ useEffect(() => {
     setOpenZoneBoard(null);
   }
 
+  // return (
+  //   <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, handleClickMore, filteredZones, compareZones, setCompareZones, setOpenCompareBoard }}>
+  //     <div className="solutions-content">
+  //       <FunctionModule filters={filters} setFilters={setFilters}/>
+  //       <div className="map-info-container">
+  //         <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
+  //         <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
+  //         {selectedZone ?
+  //           <div id="mapillary" style={{display: 'block'}}></div> :
+  //           <div id="mapillary" style={{display: 'none'}}></div>
+  //         }
+  //       </div>
+  //       <Box className='floating-button'>
+          
+  //         <Fab color="primary" aria-label="compare" onClick={handleClickDifference}>
+  //           <Badge badgeContent={compareZones.filter(zone => zone !== null).length} color="primary">
+  //             <DifferenceIcon />
+  //             </Badge>
+  //         </Fab>
+          
+  //         <Fab color='secondary' aria-label="like" onClick={handleClickLikeFab}>
+  //           <FavoriteIcon />
+  //         </Fab>
+  //       </Box>
+
+  //       <Dialog open={openCompareBoard} onClose={handleCloseCompareBoard} fullScreen={fullScreen} maxWidth='lg'>
+  //         <DialogTitle>Compare Board</DialogTitle>
+  //         <DialogContent>
+  //           <CompareBoard />
+  //         </DialogContent>
+  //         <DialogActions>
+  //           <Button onClick={handleCloseCompareBoard}>Close</Button>
+  //         </DialogActions>
+  //       </Dialog>
+
+  //       <Dialog open={!!openZoneBoard} onClose={handleCloseZoneBoard} fullScreen={fullScreen} maxWidth='lg'>
+  //         <DialogTitle>Zone Board</DialogTitle>
+  //         <DialogContent>
+  //           {openZoneBoard ? <ZoneBoard zone={openZoneBoard} /> : null}
+  //           {/* <ZoneBoard zone={openZoneBoard} />  */}
+  //         </DialogContent>
+  //         <DialogActions>
+  //           <Button onClick={handleCloseZoneBoard}>Close</Button>
+  //         </DialogActions>
+  //       </Dialog>
+  //     </div>
+  //   </SolutionsContext.Provider>
+  // );
+
   return (
     <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, handleClickMore, filteredZones, compareZones, setCompareZones, setOpenCompareBoard }}>
+      
       <div className="solutions-content">
+      
+
         <FunctionModule filters={filters} setFilters={setFilters}/>
+
+
         <div className="map-info-container">
-          <MapModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
-          <InfoModule zones={filteredZones} selectedZone={selectedZone} setSelectedZone={setSelectedZone} isLoading={isLoading}/>
-          {selectedZone ?
-            <div id="mapillary" style={{display: 'block'}}></div> :
-            <div id="mapillary" style={{display: 'none'}}></div>
-          }
-        </div>
+      <Grid container>
+        <Grid item xs={12} md={12} lg={9}>
+          <MapModule 
+            zones={filteredZones} 
+            selectedZone={selectedZone} 
+            setSelectedZone={setSelectedZone} 
+            isLoading={isLoading} 
+            style={{ height: isMobile ? '380px' : '750px' }} // change the height based on the screen size
+          />
+        </Grid>
+        <Grid item xs={12} md={12} lg={3}>
+          <InfoModule 
+            zones={filteredZones} 
+            selectedZone={selectedZone} 
+            setSelectedZone={setSelectedZone} 
+            isLoading={isLoading} 
+          />
+        </Grid>
+      </Grid>
+
+      {/* {selectedZone ?
+        <div id="mapillary" style={{display: 'block'}}></div> :
+        <div id="mapillary" style={{display: 'none'}}></div>
+      } */}
+    </div>
+
+
         <Box className='floating-button'>
           
           <Fab color="primary" aria-label="compare" onClick={handleClickDifference}>
@@ -327,6 +404,7 @@ useEffect(() => {
       </div>
     </SolutionsContext.Provider>
   );
+
 };
 
 export default SolutionsContent;

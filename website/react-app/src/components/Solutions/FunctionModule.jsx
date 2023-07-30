@@ -154,17 +154,13 @@ function FunctionModule( {filters, setFilters }) {
   // const [realTime, setRealTime] = useState(false)
   const [accordionExpanded, setAccordionExpanded] = useState(false);
 
-
-  console.log("tempFilters in functionModule:", tempFilters);
   // handle events
   const handleReset = () => {
     setReset(prevReset => !prevReset);  // Toggle the value of reset
   }
 
   const handleApplyClick = () => {//map doesn't refresh？
-    const requestBody = tempFilters;
-    setFilters(requestBody);//need to refresh map even the filters are the same. (or cancel selected zone)
-    console.log('POST request body:', requestBody);
+    setFilters(tempFilters);//need to refresh map even the filters are the same. (or cancel selected zone)
     setAccordionExpanded(false);
   };
   const handleAccordionChange = (event, isExpanded) => {
@@ -178,7 +174,7 @@ function FunctionModule( {filters, setFilters }) {
           <Typography sx={{color: "white"}}>Target Customers</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <MultiSelect setTempFilters={setTempFilters} reset={reset}/>
+          <MultiSelect setTempFilters={setTempFilters} reset={reset} type={'boroughs'}/>
           <Grid container>
             <Grid item xs={12} md={6} lg={6}>
               <RangeSlider label={'Age'} setTempFilters={setTempFilters} reset={reset}/>
