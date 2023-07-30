@@ -40,6 +40,7 @@ class Migration(migrations.Migration):
                 puma.main_demographic = row[22]
                 puma.save()
                 print('puma',row[0],'updated')
+            fd.close()
 
     dependencies = [
         ('main', '0013_puma_females_15_24_puma_females_25_34_and_more'),

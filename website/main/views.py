@@ -106,3 +106,7 @@ def zone_detail(request, id):
             for item in data
         }
         return JsonResponse({"status":"1","data":data},status=201)
+
+# def zone_census(request):
+#     try:
+#         Zone.objects.

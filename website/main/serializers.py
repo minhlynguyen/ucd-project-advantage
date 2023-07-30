@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ZoneDetail, Place
+from .models import ZoneDetail, Place, ZonePuma
 # from impression.models import Impression
 from django.core.serializers import serialize
 from rest_framework_gis import serializers as geoserializers
@@ -25,3 +25,12 @@ class ZoneDataSerializer(serializers.ModelSerializer):
                   'professional_services', 'real_estate','retail_services', 'transportation',
                   'hospital','hotspots','school','total_business','holiday']
         
+
+class ZonePumaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ZonePuma
+        fields = ['taxi_zone_id','datetime','impression_predict', 'entertainment_and_recreation',
+                  'financial_services', 'food_and_beverage', 'parking_and_automotive_services',
+                  'professional_services', 'real_estate','retail_services', 'transportation',
+                  'hospital','hotspots','school','total_business','holiday']
