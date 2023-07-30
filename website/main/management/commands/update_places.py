@@ -228,9 +228,9 @@ class Command(BaseCommand):
                 self.find_zone(long,lat,nyc_id,small_cate,big_cate,name)
 
     def add_arguments(self , parser):
-        parser.add_argument('limit' , nargs='+' , type=int, 
+        parser.add_argument('limit' , nargs='?' , type=int, default=300000,
         help='Specify the limit of data to read from NYC API as an argument. On average, there are fewer than 300K businesses.',
-        default=300000)
+        )
 
     def handle(self, *args, **kwargs):
         limit = kwargs['limit']
