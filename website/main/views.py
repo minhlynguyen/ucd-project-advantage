@@ -18,27 +18,12 @@ def zone_census(request):
     List all zones with its census data. Status code 1=DB success, 2=DB fail
     """
     try: 
-        census = ZonePuma.objects.all()
+        census = ZoneCensusSerializer()
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
     
     if request.method == 'GET':
-        serializer = ZoneCensusSerializer(census,many=True)
-        data = serializer.data
-
-        # Create the result_dict with 'zone_id' as key and the modified dictionary as value
-        result = []
-
-        for d in data:
-            females_sum = sum(d[key] for key in ['females_under_5', 'females_5_14', 'females_15_24', 'females_25_34',
-                                                'females_35_44', 'females_45_54', 'females_55_64', 'females_65_74',
-                                                'females_75_84', 'females_85','males_under_5','males_5_14','males_15_24',
-                                                'males_25_34','males_35_44','males_45_54','males_55_64','males_65_74','males_75_84'])
-            males_85 = 100.0 - females_sum
-            d['males_85'] = males_85
-            result.append({d['zone_id']: {k: v for k, v in d.items() if k != 'zone_id'}})
-
-        return JsonResponse({"status":"1","data":result},status=201,safe=False)
+        return JsonResponse({"status":"1","data":census},status=201,safe=False)
 
 # @login_required
 def place_in_zone(request, id):

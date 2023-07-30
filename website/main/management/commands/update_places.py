@@ -165,13 +165,17 @@ class Command(BaseCommand):
             except Place.DoesNotExist:
 
                 # If not exist, create a new object
-                long = place['location_1']['longitude']
-                lat = place['location_1']['latitude']
-                nyc_id = place['phone']
-                small_cate = place.get('facility_type','Others')
-                big_cate = "Health Care",
-                name = place.get('facility_name','A '+small_cate),
-                self.find_zone(long,lat,nyc_id,small_cate,big_cate,name)
+                try: 
+                    long = place['location_1']['longitude']
+                    lat = place['location_1']['latitude']
+                    nyc_id = place['phone']
+                    small_cate = place.get('facility_type','Others')
+                    big_cate = "Health Care",
+                    name = place.get('facility_name','A '+small_cate),
+                    self.find_zone(long,lat,nyc_id,small_cate,big_cate,name)
+                except Exception as e:
+                    print(e)
+                    
 
     def update_school(self, limit):
 
