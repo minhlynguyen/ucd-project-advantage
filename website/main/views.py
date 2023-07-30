@@ -12,7 +12,7 @@ from .models import Place, ZoneDetail, ZonePuma
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import generics
 
-@login_required
+# @login_required
 def zone_census(request):
     """
     List all zones with its census data. Status code 1=DB success, 2=DB fail
@@ -40,7 +40,7 @@ def zone_census(request):
 
         return JsonResponse({"status":"1","data":result},status=201,safe=False)
 
-@login_required
+# @login_required
 def place_in_zone(request, id):
     """
     Retrieve all places of a zone. Status code 1=DB success, 2=DB fail
@@ -53,7 +53,7 @@ def place_in_zone(request, id):
     if request.method == 'GET':
         return JsonResponse({"status":"1","data":places},status=201,safe=False)
 
-@login_required
+# @login_required
 def zone_data(request):
     """
     Retrieve history detail of a zone
@@ -90,7 +90,7 @@ def zone_data(request):
         }
         return JsonResponse({"status":"1","data":data},status=201)
 
-@login_required
+# @login_required
 def zone_detail(request, id):
     """
     Retrieve history detail of a zone
