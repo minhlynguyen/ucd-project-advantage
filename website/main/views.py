@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 import datetime
 from zoneinfo import ZoneInfo
 
-from .serializers import ZoneDataSerializer, ZoneCensusSerializer
+from .serializers import ZoneDataSerializer, zone_census_serializer
 from .models import Place, ZoneDetail, ZonePuma
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import generics
@@ -18,7 +18,7 @@ def zone_census(request):
     List all zones with its census data. Status code 1=DB success, 2=DB fail
     """
     try: 
-        census = ZoneCensusSerializer()
+        census = zone_census_serializer()
     except Exception as e:
         return JsonResponse({"status":"2","data":str(e)},status=201)
     

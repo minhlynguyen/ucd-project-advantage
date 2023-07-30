@@ -22,34 +22,20 @@ class ZoneDataSerializer(serializers.ModelSerializer):
                   'professional_services', 'real_estate','retail_services', 'transportation',
                   'hospital','hotspots','school','total_business','holiday']
         
-
-# class ZoneCensusSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = ZonePuma
-#         fields = ['zone_id','median_income','females_under_5','females_5_14','females_15_24', 'females_25_34',
-#                   'females_35_44','females_45_54','females_55_64','females_65_74','females_75_84','females_85',
-#                   'males_under_5','males_5_14','males_15_24','males_25_34','males_35_44','males_45_54',
-#                   'males_55_64','males_65_74','males_75_84','males_85']
-
-def find_main_group(d):
-
-    """Find the key with highest value in the list of age group"""
-
-    id_value = next(iter(d))
-    inner_dict = d[id_value]
+def find_key_with_highest_value(zone_data):
+    if not isinstance(zone_data, dict):
+        return None
 
     # Filter out 'median_income' key from consideration
-    filtered_keys = [key for key in inner_dict if key != 'median_income']
+    filtered_keys = [key for key in zone_data if key != 'median_income']
 
     # Find the key with the highest value using the max function with a custom key function
-    main_group = max(filtered_keys, key=lambda k: inner_dict[k])
+    key_with_highest_value = max(filtered_keys, key=lambda k: zone_data[k])
 
-    # Add the key with the highest value back to the inner dictionary
-    inner_dict['main_group'] = main_group
-    return d
+    # Add a pair of 'key_with_highest_value': name of the key back to the zone_data dictionary
+    zone_data['main_group'] = key_with_highest_value
 
-def ZoneCensusSerializer():
+def zone_census_serializer():
 
     full_zone = ZonePuma.objects.filter(median_income__isnull=False).aggregate(Avg('median_income'),
                                                             Avg('females_under_5'),Avg('females_5_14'),
@@ -100,7 +86,8 @@ def ZoneCensusSerializer():
                                                     Sum('males_75_84'),Sum('males_85')
                                                     )
 
-    data = []
+    # data = []
+    data = {}
     
     for d in agg:
         othes_sum = sum(d[key] for key in ['females_under_5__sum', 'females_5_14__sum', 'females_15_24__sum', 
@@ -112,11 +99,13 @@ def ZoneCensusSerializer():
                                             'males_65_74__sum','males_75_84__sum'])
         males_85__sum = 100.0 - othes_sum
         d['males_85__sum'] = males_85__sum
-        data.append({d['zone']: {k[:-5]: v for k, v in d.items() if k != 'zone'}})
+        # data.append({d['zone']: {k[:-5]: v for k, v in d.items() if k != 'zone'}})
+        data[str(d['zone'])] = {k[:-5]: v for k, v in d.items() if k != 'zone'}
 
-    result = [find_main_group(d) for d in data]
+    for zone_id, zone_data in data.items():
+        find_key_with_highest_value(zone_data)
 
-    return(result)
+    return(data)
 
 
 
