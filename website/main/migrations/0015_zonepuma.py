@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='ZonePuma',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('intersection', models.FloatField()),
+                ('area', models.FloatField()),
                 ('puma', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='puma', to='main.puma')),
                 ('zone', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='zone', to='main.zone')),
             ],

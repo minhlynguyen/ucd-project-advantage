@@ -42,6 +42,8 @@ class ZoneDetail(models.Model):
     datetime = models.DateTimeField(default=timezone.now)
     impression_history = models.PositiveIntegerField(null=True) # Actual history data
     impression_predict = models.PositiveIntegerField(null=True) # ML model predict
+    place_last_update = models.DateTimeField(default=timezone.now)
+    prediction_last_update = models.DateTimeField(default=timezone.now,null=True)
     month = models.CharField(max_length=2,null=True)                       
     week = models.CharField(max_length=1)
     hour = models.CharField(max_length=2)
@@ -58,7 +60,7 @@ class ZoneDetail(models.Model):
     hotspots = models.PositiveIntegerField(default=0)
     school = models.PositiveIntegerField(default=0)
     total_business = models.PositiveIntegerField(default=0)           
-    holiday = models.CharField(max_length=50)
+    holiday = models.CharField(max_length=50,null=True)
     
     class Meta:
         managed = True
@@ -100,9 +102,30 @@ class Puma(geomodels.Model):
 
 class ZonePuma(geomodels.Model):
     id = geomodels.AutoField(primary_key=True)
-    zone = geomodels.ForeignKey(Zone,related_name='zone',on_delete=geomodels.RESTRICT)
-    puma = geomodels.ForeignKey(Puma,related_name='puma',on_delete=geomodels.RESTRICT)
-    intersection = geomodels.FloatField()
+    zone = geomodels.ForeignKey(Zone,related_name='zone_puma',on_delete=geomodels.RESTRICT)
+    puma = geomodels.ForeignKey(Puma,related_name='puma_zone',on_delete=geomodels.RESTRICT)
+    intersection = geomodels.FloatField(null=True)
+    median_income = geomodels.FloatField(null=True)
+    females_under_5 = geomodels.FloatField(null=True)
+    females_5_14 = geomodels.FloatField(null=True)
+    females_15_24 = geomodels.FloatField(null=True)
+    females_25_34 = geomodels.FloatField(null=True)	
+    females_35_44 = geomodels.FloatField(null=True)	
+    females_45_54 = geomodels.FloatField(null=True)	
+    females_55_64 = geomodels.FloatField(null=True)	
+    females_65_74 = geomodels.FloatField(null=True)	
+    females_75_84 = geomodels.FloatField(null=True)	
+    females_85 = geomodels.FloatField(null=True)	
+    males_under_5 = geomodels.FloatField(null=True)	
+    males_5_14 = geomodels.FloatField(null=True)
+    males_15_24 = geomodels.FloatField(null=True)	
+    males_25_34 = geomodels.FloatField(null=True)	
+    males_35_44 = geomodels.FloatField(null=True)	
+    males_45_54 = geomodels.FloatField(null=True)	
+    males_55_64 = geomodels.FloatField(null=True)	
+    males_65_74 = geomodels.FloatField(null=True)	
+    males_75_84	= geomodels.FloatField(null=True)
+    males_85 = geomodels.FloatField(null=True)
 
     class Meta:
         managed = True
