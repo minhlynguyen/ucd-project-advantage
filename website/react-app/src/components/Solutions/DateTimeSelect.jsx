@@ -1,17 +1,68 @@
-import {React, useState} from 'react';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import {React, useState, useContext} from 'react';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+// import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+// import SolutionsContext from './SolutionsContext';
+
+
+
+// export default function DateTimeSelect() {
+
+//   const { adTime, setAdTime } = useContext(SolutionsContext);
+  
+//   const style = {
+//     border: '1px solid #ccc', 
+//     borderRadius: '10px', 
+//     'fontSize': '12px',
+//     'backgroundColor': 'white',
+//     width: "20",
+//     padding: "0.5em"
+
+//   }
+    
+//   return (
+//     <div className='datetime-select'>
+//         <LocalizationProvider dateAdapter={AdapterDayjs}>
+//           <DateTimePicker
+//               disablePast={true}
+//               views={['year', 'month', 'day', 'hours']}
+//               viewRenderers={{
+//                 hours: renderTimeViewClock,
+//               }}
+//               label="Start DateTime"
+//               slotProps={{ textField: { size: 'small' } }}
+//           />
+//         </LocalizationProvider>
+//         <LocalizationProvider dateAdapter={AdapterDayjs}>
+//             <DateTimePicker
+//                 views={['year', 'month', 'day', 'hours']}
+//                 viewRenderers={{
+//                   hours: renderTimeViewClock,
+//                 }}
+//                 label="End DateTime"
+//                 slotProps={{ textField: { size: 'small' } }}
+//             />
+//         </LocalizationProvider>
+//     </div>
+//   );
+// }
+
+import {React, useState, useContext} from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { Stack, Typography } from '@mui/material';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
-
-
+import SolutionsContext from './SolutionsContext';
+import Button from '@mui/material/Button';
+import { getTimeString } from '../../utils/dateTimeUtils';
 
 export default function DateTimeSelect() {
-  const [dateTimeStart, setDateTimeStart] = useState('');
-  const [dateTimeEnd, setDateTimeEnd] = useState('');
-  
+
+  const { adTime, setAdTime } = useContext(SolutionsContext);
+  const [startTime, setStartTime] = useState(adTime[0]);
+  const [endTime, setEndTime] = useState(adTime[1]);
+
   const style = {
     border: '1px solid #ccc', 
     borderRadius: '10px', 
@@ -19,57 +70,47 @@ export default function DateTimeSelect() {
     'backgroundColor': 'white',
     width: "20",
     padding: "0.5em"
+  };
 
-  }
-    
+  const handleConfirm = () => {
+    if (startTime && endTime) {
+      setAdTime([getTimeString(startTime.toDate()), getTimeString(endTime.toDate())]);
+    } else {
+      console.error('startTime or endTime is not defined');
+    }
+  };
+  
+  
   return (
     <div className='datetime-select'>
-
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateTimePicker
-            disablePast={true}
-            views={['year', 'month', 'day', 'hours']}
-            viewRenderers={{
-              hours: renderTimeViewClock,
-            }}
-            label="Start DateTime"
-            slotProps={{ textField: { size: 'small' } }}
-        />
+          <DateTimePicker
+              // disablePast={true}
+              views={['year', 'month', 'day', 'hours']}
+              viewRenderers={{
+                hours: renderTimeViewClock,
+              }}
+              label="Start DateTime"
+              slotProps={{ textField: { size: 'small' } }}
+              value={startTime}
+              onChange={setStartTime}
+          />
         </LocalizationProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
+                // disablePast={true}
                 views={['year', 'month', 'day', 'hours']}
                 viewRenderers={{
                   hours: renderTimeViewClock,
                 }}
                 label="End DateTime"
                 slotProps={{ textField: { size: 'small' } }}
+                value={endTime}
+                onChange={setEndTime}
             />
         </LocalizationProvider>
-            {/* <input
-              type="datetime-local"
-              value={dateTimeStart}
-              onChange={(e) => setDateTimeStart(e.target.value)}
-              className="map-form-input"
-            /> */}
-            {/* <Stack spacing={1} direction="row"> */}
-              {/* <input
-                type="datetime-local"
-                value={dateTimeStart}
-                onChange={(e) => setDateTimeStart(e.target.value)}
-                className="map-form-input"
-                style={style}
-              />
-              <span>-</span>
-              <input
-                type="datetime-local"
-                value={dateTimeEnd}
-                onChange={(e) => setDateTimeEnd(e.target.value)}
-                className="map-form-input"
-                style={style}
-              /> */}
-            {/* </Stack> */}
-
+        <Button onClick={handleConfirm}>Confirm</Button>
     </div>
   );
 }
+
