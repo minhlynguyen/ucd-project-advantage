@@ -7,7 +7,7 @@ import os
 class Command(BaseCommand):
     help = "Aggregate data"
 
-    def handle(self):
+    def handle(self, *args, **options):
         # Database connection details
         self.db_host = "database-1.cvwut6jnqsvn.us-east-1.rds.amazonaws.com"
         self.db_name = "advantage-db"
