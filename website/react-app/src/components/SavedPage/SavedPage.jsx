@@ -126,8 +126,8 @@ export default function SavedPage() {
         <Box
           sx={{
             bgcolor: 'background.paper',
-            pt: 4,
-            pb: 2,
+            pt: 14,
+            // pb: 2,
           }}
         >
           <Container maxWidth="sm">

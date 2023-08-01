@@ -6,7 +6,10 @@ import { UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import weblogo from "../../assets/AdVantage.svg";
 import "./SignupLoginPage.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+// connecting to server 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.withCredentials = true;
@@ -16,9 +19,9 @@ const client = axios.create({
 });
 
 export default function SignupLoginPage() {
-  // setting credentials for registration page
+  // setting credentials for registration page and login page
   const navigate = useNavigate();
-  const { setCurrentUser } = useContext(UserContext);
+  const { setCurrentUser} = useContext(UserContext);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
@@ -26,8 +29,10 @@ export default function SignupLoginPage() {
   const [userName, setUsername] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [addclass, setaddclass] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  //   handling submit
+  const [errorMessageRegister, setErrorMessageRegister] = useState("");
+  const [errorMessageLogin, setErrorMessageLogin] = useState("");
+
+  //   handling registration submit
   const handleSignupSubmit = (e) => {
     e.preventDefault();
     client
@@ -44,38 +49,37 @@ export default function SignupLoginPage() {
           })
           .then(function () {
             setCurrentUser(true);
+            toast.success('Registeration successful.', {
+              position: 'top-right',
+              autoClose: 1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
             navigate("/");
           }).catch(function (error) {
             console.log(error.response.status);
-            console.log("hello");
-  
-            if (
-              error.response &&
-              (error.response.status === 500 || error.response.status === 400)
-            ) {
-              // Set the error messages from the response
-              setErrorMessage("An error occurred during registration.");
-            } else {
-              // Handle generic error
-              setErrorMessage("Unexpected error occurred.");
-            }
           });
       })
-      .catch(function (error) {
-        if (
-          error.response &&
-          (error.response.status === 500 || error.response.status === 400)
-        ) {
-          // Set the error messages from the response
-          setErrorMessage("An error occurred during registration.");
+      .catch(function (error) {  
+      if (!error?.response) {
+        setErrorMessageRegister("No Server Response.")
+      }
+      else if (error.response?.status === 400){
+        setErrorMessageRegister("Invalid Username, Password or Email");
+
+      } else if (error.response?.status === 401) {
+            setErrorMessageRegister("Unauthorized");
         } else {
           // Handle generic error
-          setErrorMessage("Unexpected error occurred during registration.");
+          setErrorMessageRegister("Registration failed.");
         }
       });
       }
   
-
+// handle login submit 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     client
@@ -83,28 +87,47 @@ export default function SignupLoginPage() {
         email: loginEmail,
         password: loginPassword,
       })
-      .then(function () {
+      .then(function (res) {
         setCurrentUser(true);
+        // setIsLoginSuccess(true); // Update the state to true for login success
+        // console.log('Login successful. isLoginSuccess:', isLoginSuccess);
+        console.log(res.data.userName)
+        toast.success('Login successful.', {
+          position: 'top-right',
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         navigate("/");
       })
-      .catch(function (error) {
-          if (error.response && error.response.data && error.response.data.errors) {
-            // Set the error messages from the response
-            setErrorMessage(error.response.data.errors);
+      .catch(function (error) {  
+        if (!error?.response) {
+          setErrorMessageLogin("No Server Response.")
+        }
+        else if (error.response?.status === 400){
+          setErrorMessageLogin("Invalid Password or Email");
+  
+        } else if (error.response?.status === 401) {
+              setErrorMessageLogin("Unauthorized");
           } else {
             // Handle generic error
-            setErrorMessage('An error occurred during login. Please try again');
+            setErrorMessageLogin("Login failed.");
           }
-        
-      });
+        });
   };
+
   return (
-    <section>
+    <section role="login and registration">
+
       <div className={`signup-login-container ${addclass}`}>
         <div className="form-container signup-container">
+
           <Form.Root className="FormRoot" onSubmit={handleSignupSubmit}>
             <div className="register-content">
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
+            {errorMessageRegister && <div className="error-message">{errorMessageRegister}</div>}
 
 
               <h2>Register</h2>
@@ -138,7 +161,6 @@ export default function SignupLoginPage() {
                   Please provide a valid email
                 </Form.Message>
               </div>
-              {/* <span className="input-icon"><FontAwesomeIcon icon={faEnvelope} beat/></span> */}
               <Form.Control asChild>
                 <input
                   type="email"
@@ -163,7 +185,6 @@ export default function SignupLoginPage() {
                   </Form.Message>
                 )}
               </div>
-              {/* <span  className="input-icon"><FontAwesomeIcon icon={faLock} beat/></span> */}
               <Form.Control asChild>
                 <input
                   type="password"
@@ -193,7 +214,7 @@ export default function SignupLoginPage() {
         <div className="form-container login-container">
           <Form.Root className="FormRoot" onSubmit={handleLoginSubmit}>
             <div className="login-content">
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
+            {errorMessageLogin && <div className="error-message">{errorMessageLogin}</div>}
               <h2>Login</h2>
             </div>
             <Form.Field className="FormField" name="email">
@@ -222,11 +243,6 @@ export default function SignupLoginPage() {
                 <Form.Message className="FormMessage" match="valueMissing">
                   Please enter your password
                 </Form.Message>
-                {!isPasswordValid && (
-                  <Form.Message className="FormMessage" htmlFor="password">
-                    Please provide a password with a minimum of 8 characters.
-                  </Form.Message>
-                )}
               </div>
               <Form.Control asChild>
                 <input
@@ -246,7 +262,7 @@ export default function SignupLoginPage() {
             </Form.Field>
             <Form.Submit asChild>
               <div className="login-button-container">
-                <button type="submit" className="login-button">
+                <button type="submit" className="loginpage-button">
                   Login
                 </button>
               </div>
