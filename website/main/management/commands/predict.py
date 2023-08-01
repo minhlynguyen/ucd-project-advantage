@@ -1,16 +1,16 @@
 import pandas as pd
 from django.core.management.base import BaseCommand
-from django.db.models import Count, Q
-#Import package matplotlib for visualisation/plotting
-# import matplotlib.pyplot as plt
+from django.db.models import Q
 from django.utils import timezone
-import time
-import pickle
+import pickle, datetime, holidays, warnings
 from main.models import ZoneDetail
-import datetime
-from django.utils.timezone import make_aware
-from zoneinfo import ZoneInfo
-import holidays
+
+def fxn():
+    warnings.warn("deprecated", DeprecationWarning)
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
 
 class Command(BaseCommand):
