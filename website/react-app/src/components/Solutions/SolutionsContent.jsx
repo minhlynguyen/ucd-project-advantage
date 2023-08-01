@@ -166,9 +166,6 @@ useEffect(() => {
   filteredFeatures = filteredFeatures.filter(feature => {
     return ((feature.properties.average_income >= filter_income[0]) && (feature.properties.average_income <= filter_income[1]));
   });
-  // filteredFeatures = allZonesRef.current.features.filter(feature => {
-  //   return ((feature.properties.average_income >= filter_income[0]) && (feature.properties.average_income <= filter_income[1]));
-  // });
 
   // Calculate valid impression according to target customers
   // get the valid percentage for each feature
@@ -221,7 +218,8 @@ useEffect(() => {
           display: {
             total: displayTotal || 0,
             valid: displayValid || 0,
-          }
+          },
+          targetPerc: validPercentage,
         }
       }
     };
@@ -258,19 +256,35 @@ useEffect(() => {
         }
         const data = JSON.parse(response.data.data);
 
-        // process data to the format I want here....
-        // change the impression in ad time field
-        // ...
-        // const processedData = 
+        // change the total impression in ad time field (the valid impression would be changed in other useEffect automatically)
+        const updatedFeatures = allZonesRef.current.features.map(feature => ({
+          ...feature,
+          properties: {
+            ...feature.properties,
+            impression: {
+              ...feature.properties.impression,
+              adTime: {
+                ...feature.properties.impression.adTime,
+                totalValue: data[String(feature.id)]
+              }
+            }
+          }
+        }));
+        
+        // Update allZonesRef data
+        allZonesRef.current = {
+          ...allZonesRef.current,
+          features: updatedFeatures
+        };
 
-        allZonesRef.current = data;
       } catch (error) {
         console.log(error);
       } finally {
         setIsLoading(false);
       }
-
     }
+
+    // fetchData();
 
   }, [adTime]);
 

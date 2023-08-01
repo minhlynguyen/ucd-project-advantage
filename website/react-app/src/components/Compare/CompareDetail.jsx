@@ -20,6 +20,7 @@ export default function CompareDetail({setConfirmMode}) {
   const { adTimeMode, compareZones} = React.useContext(SolutionsContext);
   const [businessData, setBusinessData] = useState(null);
   const [totalBusiness, setTotalBusiness] = useState([null, null]);
+  const [impressionData, setImpressionData] = useState(compareZones);
   const zone1 = compareZones[0];
   const zone2 = compareZones[1];
   
@@ -45,6 +46,51 @@ export default function CompareDetail({setConfirmMode}) {
     setConfirmMode(true);
   };
 
+  // fetch data for line chart
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const url1 = '';
+        const url2 = '';
+        const [response1, response2] = await Promise.all([axios.get(url1), axios.get(url2)]);
+        if (response1.status !== 201 || response1.data.status !== "1" || response2.status !== 201 || response2.data.status !== "1") {
+          throw new Error("Can't fetch data for Line Graph now! Error:");
+        }
+        
+        const data = [response1.data.data, response2.data.data];
+        const copyImpressionData = [...impressionData];
+        data.forEach((d, i) => {
+          const zone = compareZones[i];
+          const impressionItems = d.map(item => {
+            return {
+              time: item.datetime,
+              value: item.impression_predict || 0, // if detail has no impression_predict or impression_predict is null, let it be 0
+              validValue: item.impression_predict ? parseFloat((item.impression_predict * zone.properties.impression.targetPerc).toFixed(2)) : 0
+            };
+          });
+          const processedData = {
+            ...zone,
+            properties: {
+              ...zone.properties,
+              impression: {
+                ...zone.properties.impression,
+                adTime: {
+                  ...zone.properties.impression.adTime,
+                  items: impressionItems
+                }
+              }
+            }
+          };
+          copyImpressionData[i] = processedData;
+        } );
+        setImpressionData(copyImpressionData);
+      } catch(error) {
+        console.log( error);
+      }
+    };
+    // fetchData();
+  }, []);
+  // for bar chart
   useEffect(() => {
 
     Promise.all([
@@ -102,7 +148,8 @@ export default function CompareDetail({setConfirmMode}) {
               alignItems: 'center'
             }}
           >
-            <Line data={getLineData(adTimeMode ? 'Ad' : 'Real', zone1, zone2)} options={getLineOptions(adTimeMode ? 'Ad' : 'Real')} />
+            {/* <Line data={getLineData(adTimeMode ? 'Ad' : 'Real', zone1, zone2)} options={getLineOptions(adTimeMode ? 'Ad' : 'Real')} /> */}
+            <Line data={getLineData(adTimeMode ? 'Ad' : 'Real', impressionData[0], impressionData[1])} options={getLineOptions(adTimeMode ? 'Ad' : 'Real')} />
           </Paper>
         </Grid>
 

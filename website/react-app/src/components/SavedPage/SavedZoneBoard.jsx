@@ -15,7 +15,7 @@ import { getBarData, getBarOptions, getLineData, getLineOptions, getPieDataForGe
 ChartJS.register(LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement);
 
 
-export default function ZoneBoard({zone}) {
+export default function SavedZoneBoard({zone}) {
   console.log("zone in ZoneBoard:", zone);
   const { adTimeMode } = React.useContext(SolutionsContext);
   const [businessData, setBusinessData] = useState(null);
