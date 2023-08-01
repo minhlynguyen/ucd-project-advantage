@@ -82,7 +82,9 @@ def zone_census_serializer():
         data[str(d['zone'])] = {k[:-5]: v for k, v in d.items() if k != 'zone'}
 
     for zone in blank_zone:
-        data[zone.id] = {'females_under_5': full_zone['females_under_5__avg'],        
+        data[zone.id] = {'median_income': full_zone['median_income__avg'],
+                        'females_under_5': full_zone['females_under_5__avg'],        
+                         'females_5_14': full_zone['females_5_14'],        
                         'females_15_24' : full_zone['females_15_24__avg'],
                         'females_25_34' : full_zone['females_25_34__avg'],
                         'females_35_44' : full_zone['females_35_44__avg'],
@@ -92,6 +94,7 @@ def zone_census_serializer():
                         'females_75_84' : full_zone['females_75_84__avg'],
                         'females_85' : full_zone['females_85__avg'],
                         'males_under_5' : full_zone['males_under_5__avg'],
+                        'males_5_14' : full_zone['males_5_14__avg'],
                         'males_15_24' : full_zone['males_15_24__avg'],
                         'males_25_34' : full_zone['males_25_34__avg'],
                         'males_35_44' : full_zone['males_35_44__avg'],
