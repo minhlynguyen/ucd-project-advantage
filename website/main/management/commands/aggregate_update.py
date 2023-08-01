@@ -15,7 +15,7 @@ class Command(BaseCommand):
         self.db_password = config("DB_PASSWORD")
 
         # Read and execute the SQL script
-        filename = f"{os.path.dirname(os.path.abspath(__file__))}\\aggregate.sql"
+        filename = f"{os.path.dirname(os.path.abspath(__file__))}/aggregate.sql"
         with open(filename, "r") as file:
             sql_script = file.read()
 
