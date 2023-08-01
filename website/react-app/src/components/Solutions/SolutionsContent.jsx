@@ -6,16 +6,13 @@ import InfoModule from './InfoModule';
 import axios from 'axios';
 import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge, Snackbar, Grid } from '@mui/material';
 import { useTheme } from '@mui/system';
-import MuiAlert from '@mui/material/Alert';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
 import CompareBoard from '../Compare/CompareBoard';
 import ZoneBoard from '../Cards/ZoneBoard';
-import { ALL_BOROUGHS, ALL_AGES, ALL_INCOMES } from '../../constants';
+import { ALL_BOROUGHS, ALL_AGES } from '../../constants';
 import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
-import { convertToReadableForGroup } from '../../utils/distributionUtils';
-
 
 
 function SolutionsContent() {
@@ -52,7 +49,6 @@ useEffect(() => {
       const url = "http://127.0.0.1:8000/main/zones/data";//24h impression and business data
       // const url = "./zones_data.json";
       const url_census = 'http://127.0.0.1:8000/main/zones';//census data
-
       const url_geom = "./map-initialising.json";//GEOM data
 
       const request1 = axios.get(url);
@@ -71,17 +67,17 @@ useEffect(() => {
 
       console.log("all data here:", [data_24h, data_census, data_GEOM]);
 
-      const impressionMap = {};
+      const impressionMap = {};// mapping from id to the list of 24h impression, each item: [{time1:...,value1:...},...]
       for(let key in data_24h) {
         impressionMap[Number(key)] = data_24h[key].detail.map(detail => {
           return {
             time: detail.datetime,
-            value: detail.impression_predict
+            value: detail.impression_predict || 0 // if detail has no impression_predict or impression_predict is null, let it be 0
           }
         });
       }
 
-      const ageMap = {};//to check the data....
+      const ageMap = {}; //mapping from id to the dic of census detail, each item: {mian_group:..., median_income:..., percentages:[]}
       for (let key in data_census) {
         ageMap[Number(key)] = {
           main_group: data_census[key].main_group,
@@ -95,18 +91,17 @@ useEffect(() => {
         const detail = impressionMap[id] || []; 
         const totalValue = detail.reduce((sum, current) => sum + current.value, 0);
         const ageDistributionArray = ageMap[id] ? ageMap[id].percentages : [];// if no census data, let it be empty list
-        const median_income = ageMap[id] ? ageMap[id].median_income.toFixed(0) : null;
+        if (!ageMap[id].median_income) {
+          console.log(id);
+          console.log(ageMap);
+        }
+        const median_income = ageMap[id] ? (ageMap[id].median_income ? ageMap[id].median_income.toFixed(0) : null) : null;
         const mode_group = ageMap[id] ? ageMap[id].main_group : null; 
         return {
           ...feature,
           properties: {
             ...feature.properties,
-            // age: [
-            //   7, 5, 4, 6, 5, 4, 6, 5, 4, 5, 
-            //   7, 6, 4, 5, 5, 4, 6, 4, 5, 6
-            // ],
-            age: ageDistributionArray,
-            // average_age: 45,
+            age: ageDistributionArray,// age: [7, 5, 4, 6, 5, 4, 6, 5, 4, 5, 7, 6, 4, 5, 5, 4, 6, 4, 5, 6]
             average_income: median_income,//change the name later coz it affects other functionalities
             mode_group: mode_group,//'females_25_34'
             impression: {
@@ -115,8 +110,10 @@ useEffect(() => {
                 items: detail,
               },
               adTime: {
-                totalValue,
-                items: [...detail],
+                // totalValue,
+                // items: [...detail],
+                totalValue: 0,
+                items: [],
               }
             }
           }
@@ -166,9 +163,12 @@ useEffect(() => {
   });
 
   // Filter zones according to income
-  filteredFeatures = allZonesRef.current.features.filter(feature => {
+  filteredFeatures = filteredFeatures.filter(feature => {
     return ((feature.properties.average_income >= filter_income[0]) && (feature.properties.average_income <= filter_income[1]));
   });
+  // filteredFeatures = allZonesRef.current.features.filter(feature => {
+  //   return ((feature.properties.average_income >= filter_income[0]) && (feature.properties.average_income <= filter_income[1]));
+  // });
 
   // Calculate valid impression according to target customers
   // get the valid percentage for each feature
@@ -243,21 +243,34 @@ useEffect(() => {
   useEffect(() => {
     console.log("UseEffect:Change allZonesRef when adTime change");
     console.log("adTime:", adTime);
-    // setIsLoading(true);
-    // const fetchData = async () => {
-    //   // url for updating impression in allZones for ad time
-    //   const url = "";
-    //   const response = await axios.get(url);
-    //   const data = JSON.parse(response.data.data);
+    if (!adTimeMode) {
+      return;
+    }
 
-    //   // process data to the format I want here....
-    //   // change the impression in ad time field
-    //   // ...
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        // url for updating impression in allZones for ad time
+        const url = "";
+        const response = await axios.get(url);
+        if (response.status !== 201 || response.data.status !== "1") {
+          throw new Error("Can't fetch data for ad time. Please try it agagin.");
+        }
+        const data = JSON.parse(response.data.data);
 
-    //   allZonesRef.current = data;
-    //   setIsLoading(false);
+        // process data to the format I want here....
+        // change the impression in ad time field
+        // ...
+        // const processedData = 
 
-    // }
+        allZonesRef.current = data;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+
+    }
 
   }, [adTime]);
 

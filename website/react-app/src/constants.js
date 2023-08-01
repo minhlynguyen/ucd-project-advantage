@@ -5,6 +5,7 @@ export const ALL_BOROUGHS = [
     { name: 'Queens', id: 3 },
     { name: 'Bronx', id: 4 },
     { name: 'Staten Island', id: 5 },
+    {name: "EWR", id: 6}
   ];
 
 export const ALL_AGES = [
