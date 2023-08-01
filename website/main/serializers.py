@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ZoneDetail, Place, ZonePuma
+from .models import ZoneDetail, Place, ZonePuma, Zone
 # from impression.models import Impression
 from django.core.serializers import serialize
 from rest_framework_gis import serializers as geoserializers
@@ -50,28 +50,7 @@ def zone_census_serializer():
                                                             Avg('males_75_84'),Avg('males_85')
     )
 
-    blank_zone = ZonePuma.objects.filter(median_income__isnull=True)
-
-    for zone in blank_zone:
-        zone.females_under_5 = full_zone['females_under_5__avg']
-        zone.females_15_24 = full_zone['females_15_24__avg']
-        zone.females_25_34 = full_zone['females_25_24__avg']
-        zone.females_35_44 = full_zone['females_35_24__avg']
-        zone.females_45_54 = full_zone['females_45_24__avg']
-        zone.females_55_64 = full_zone['females_55_24__avg']
-        zone.females_65_74 = full_zone['females_65_24__avg']
-        zone.females_75_84 = full_zone['females_75_24__avg']
-        zone.females_85 = full_zone['females_85__avg']
-        zone.males_under_5 = full_zone['males_under_5__avg']
-        zone.males_15_24 = full_zone['males_15_24__avg']
-        zone.males_25_34 = full_zone['males_25_34__avg']
-        zone.males_35_44 = full_zone['males_35_44__avg']
-        zone.males_45_54 = full_zone['males_45_54__avg']
-        zone.males_55_64 = full_zone['males_55_64__avg']
-        zone.males_65_74 = full_zone['males_65_74__avg']
-        zone.males_75_84 = full_zone['males_75_84__avg']
-        zone.males_85 = full_zone['males_85__avg']
-        zone.save()        
+    blank_zone = Zone.objects.filter(zone_puma__isnull=True)
     
     agg = ZonePuma.objects.values("zone").annotate(Sum('median_income'),Sum('females_under_5'),
                                                     Sum('females_5_14'),Sum('females_15_24'),
@@ -101,6 +80,27 @@ def zone_census_serializer():
         d['males_85__sum'] = males_85__sum
         # data.append({d['zone']: {k[:-5]: v for k, v in d.items() if k != 'zone'}})
         data[str(d['zone'])] = {k[:-5]: v for k, v in d.items() if k != 'zone'}
+
+    for zone in blank_zone:
+        data[zone.id] = {'females_under_5': full_zone['females_under_5__avg'],        
+                        'females_15_24' : full_zone['females_15_24__avg'],
+                        'females_25_34' : full_zone['females_25_34__avg'],
+                        'females_35_44' : full_zone['females_35_44__avg'],
+                        'females_45_54' : full_zone['females_45_54__avg'],
+                        'females_55_64' : full_zone['females_55_64__avg'],
+                        'females_65_74' : full_zone['females_65_74__avg'],
+                        'females_75_84' : full_zone['females_75_84__avg'],
+                        'females_85' : full_zone['females_85__avg'],
+                        'males_under_5' : full_zone['males_under_5__avg'],
+                        'males_15_24' : full_zone['males_15_24__avg'],
+                        'males_25_34' : full_zone['males_25_34__avg'],
+                        'males_35_44' : full_zone['males_35_44__avg'],
+                        'males_45_54' : full_zone['males_45_54__avg'],
+                        'males_55_64' : full_zone['males_55_64__avg'],
+                        'males_65_74' : full_zone['males_65_74__avg'],
+                        'males_75_84' : full_zone['males_75_84__avg'],
+                        'males_85' : full_zone['males_85__avg']
+        }
 
     for zone_id, zone_data in data.items():
         find_key_with_highest_value(zone_data)

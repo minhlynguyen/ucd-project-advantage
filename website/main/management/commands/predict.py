@@ -14,17 +14,31 @@ import holidays
 
 
 class Command(BaseCommand):
-    
-    def handle(self, *args, **kwargs):
 
-        now=timezone.now()
-        year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+    def predict(self, predict_start_date, predict_end_date):
 
+        predict_start_date = datetime.datetime.strptime(predict_start_date,"%Y-%m-%d")
+        predict_end_date = datetime.datetime.strptime(predict_end_date,"%Y-%m-%d")
+        run_date = timezone.now()
+        
+        def get_ymd(date_str):
+            y, m, d = date_str.strftime("%Y"),date_str.strftime("%m"),date_str.strftime("%d")
+            return int(y), int(m), int(d)
+        
         help = 'Predict busyness'
         try:
-            zone = ZoneDetail.objects.filter(Q(prediction_last_update__isnull=True) 
-                                             | Q(prediction_last_update__date__lte=datetime.date(int(year), int(month), int(day)))
-                )
+            zone = ZoneDetail.objects.filter(Q(prediction_last_update__isnull=True) | 
+                                             Q(prediction_last_update__date__lte=datetime.date(get_ymd(run_date)[0],
+                                                                                                 get_ymd(run_date)[1],
+                                                                                                 get_ymd(run_date)[2]))
+                                             ).filter(datetime__gte=datetime.date(get_ymd(predict_start_date)[0],
+                                                                                  get_ymd(predict_start_date)[1],
+                                                                                  get_ymd(predict_start_date)[2])
+                                                    ).filter(datetime__lte=datetime.date(get_ymd(predict_end_date)[0],
+                                                                                  get_ymd(predict_end_date)[1],
+                                                                                  get_ymd(predict_end_date)[2])
+                                                    )
+            
             
             # Convert the data into pandas dataframe and process before feeding into model
             df = pd.DataFrame.from_records(zone.values())
@@ -116,9 +130,31 @@ class Command(BaseCommand):
                                                                         prediction_last_update = timezone.now(),
                                                                         holiday = row['holiday']
                                                                         )
-                print('Record no.',row['zone_time_id'],'Zone no.',row['taxi_zone'],'Time',row['datetime'],'updated prediction')
+                print('Record no.',row['zone_time_id'],'Zone no.',row['taxi_zone'],'Time',row['datetime'],'updated prediction:',
+                      row['predicted_passenger_count'])
                 # except Exception as e:
                 #     print(e)                    
 
+            return zone
+        
         except Exception as e:
             print(e)
+        
+
+    def add_arguments(self , parser):
+        today = timezone.now()
+        default_start = today.strftime('%Y-%m-%d')
+        parser.add_argument('start' , nargs='?', type=str, default=default_start,
+        help='Prediction is run to predict data from today by default.'
+        )
+
+        latest_data = ZoneDetail.objects.filter(prediction_last_update__isnull=False).latest("datetime")
+        default_end = latest_data.datetime.strftime('%Y-%m-%d')
+        parser.add_argument('end', nargs='?', type=str, default=default_end,
+        help='Prediction is run to predict data to the latest day we have business data by default.'
+        )
+    
+    def handle(self, *args, **kwargs):
+        start_date = kwargs['start']
+        end_date = kwargs['end']
+        self.predict(start_date,end_date)
