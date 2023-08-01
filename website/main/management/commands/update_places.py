@@ -5,8 +5,15 @@ from django.contrib.gis.geos import Point
 from django.utils import timezone
 from django.utils.timezone import make_aware
 import pgeocode
-
+import warnings
 from main.models import Place, Zone
+
+def fxn():
+    warnings.warn("deprecated", DeprecationWarning)
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    fxn()
 
 class Command(BaseCommand):
 
@@ -170,8 +177,8 @@ class Command(BaseCommand):
                     lat = place['location_1']['latitude']
                     nyc_id = place['phone']
                     small_cate = place.get('facility_type','Others')
-                    big_cate = "Health Care",
-                    name = place.get('facility_name','A '+small_cate),
+                    big_cate = "Health Care"
+                    name = place.get('facility_name','A '+small_cate)
                     self.find_zone(long,lat,nyc_id,small_cate,big_cate,name)
                 except Exception as e:
                     print(e)
@@ -196,16 +203,20 @@ class Command(BaseCommand):
             except Place.DoesNotExist:
                 
                 # If not exist, check whether it's active
-                if place['status_descriptions']!="Closed":
-                    
-                    # If active, create a new object
-                    long = place['longitude']
-                    lat = place['latitude']
-                    nyc_id = place['system_code']
-                    small_cate = place.get('location_category_description','Others')
-                    big_cate = "Education"
-                    name = place.get('location_name','A '+small_cate)
-                    self.find_zone(long,lat,nyc_id,small_cate,big_cate,name)
+
+                try:
+                    if place['status_descriptions']!="Closed":
+                        # If active, create a new object
+                        long = place['longitude']
+                        lat = place['latitude']
+                        nyc_id = place['system_code']
+                        small_cate = place.get('location_category_description','Others')
+                        big_cate = "Education"
+                        name = place.get('location_name','A '+small_cate)
+                        self.find_zone(long,lat,nyc_id,small_cate,big_cate,name)
+                except Exception as e:
+                    print(e)
+                
     
     def update_wifi(self, limit):
         
@@ -222,14 +233,18 @@ class Command(BaseCommand):
 
             except Place.DoesNotExist: 
 
-                # Find the taxi zones that contains the place
-                long = place['longitude']
-                lat = place['latitude']
-                nyc_id = place['objectid']
-                small_cate = place.get('type','Other')
-                big_cate = "Wifi hotspot"
-                name = place.get('name','A '+small_cate+' Wifi Hotspot')
-                self.find_zone(long,lat,nyc_id,small_cate,big_cate,name)
+                try:
+                    # Find the taxi zones that contains the place
+                    long = place['longitude']
+                    lat = place['latitude']
+                    nyc_id = place['objectid']
+                    small_cate = place.get('type','Other')
+                    big_cate = "Wifi hotspot"
+                    name = place.get('name','A '+small_cate+' Wifi Hotspot')
+                    self.find_zone(long,lat,nyc_id,small_cate,big_cate,name)
+                except Exception as e:
+                    print(e)
+                
 
     def add_arguments(self , parser):
         parser.add_argument('limit' , nargs='?' , type=int, default=300000,
@@ -238,7 +253,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         limit = kwargs['limit']
-        self.update_business(limit)
+        # self.update_business(limit)
         self.update_hospital(limit)
         self.update_school(limit)
         self.update_wifi(limit)

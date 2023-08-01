@@ -6,9 +6,8 @@ from django.core.serializers import serialize
 from django.contrib.auth.decorators import login_required
 import datetime
 from zoneinfo import ZoneInfo
-
 from .serializers import ZoneDataSerializer, zone_census_serializer
-from .models import Place, ZoneDetail, ZonePuma
+from .models import Place, ZoneDetail
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import generics
 
@@ -105,4 +104,3 @@ def zone_detail(request, id):
             for item in data
         }
         return JsonResponse({"status":"1","data":data},status=201)
-
