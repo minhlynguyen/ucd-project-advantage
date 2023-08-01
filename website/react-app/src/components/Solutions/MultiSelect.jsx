@@ -18,21 +18,22 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function MultiSelect({ setTempFilters, reset, type }) {
     const defaultValue = (type === 'boroughs') ? ALL_BOROUGHS : ALL_AGES;
-    const field = (type === 'boroughs') ? 'name' : 'age';
+    const filterElement = (type === 'boroughs') ? 'name' : 'id';
+    const name = (type === 'boroughs') ? 'name' : 'age';
     const [selectedOptions, setSelectedOptions] = React.useState(defaultValue);
     
     useEffect(() => {
-        setTempFilters(prevFilters => ({
-            ...prevFilters,
-            boroughs: selectedOptions.map(option => option.name)
-        }));
+      setTempFilters(prevFilters => ({
+          ...prevFilters,
+          [type]: selectedOptions.map(option => option[filterElement])
+      }));
     }, []);
 
     useEffect(() => {
         setSelectedOptions(defaultValue);
         setTempFilters(prevFilters => ({
           ...prevFilters,
-          boroughs: defaultValue.map(option => option.name)
+          [type]: defaultValue.map(option => option[filterElement])
         }));
     }, [reset]);
 
@@ -40,43 +41,21 @@ export default function MultiSelect({ setTempFilters, reset, type }) {
         setSelectedOptions(newSelectedOptions);
         setTempFilters(prevFilters => ({
             ...prevFilters,
-            boroughs: newSelectedOptions.map(option => option.name)
+            [type]: newSelectedOptions.map(option => option[filterElement])
         }));
     };
-
-    // useEffect(() => {
-    //   setTempFilters(prevFilters => ({
-    //       ...prevFilters,
-    //       [type]: selectedOptions.map(option => option[field])
-    //   }));
-    // }, []);
-
-    // useEffect(() => {
-    //     setSelectedOptions(defaultValue);
-    //     setTempFilters(prevFilters => ({
-    //       ...prevFilters,
-    //       [type]: defaultValue.map(option => option[field])
-    //     }));
-    // }, [reset]);
-
-    // const handleSelectChange = (event, newSelectedOptions) => {
-    //     setSelectedOptions(newSelectedOptions);
-    //     setTempFilters(prevFilters => ({
-    //         ...prevFilters,
-    //         [type]: newSelectedOptions.map(option => option[field])
-    //     }));
-    // };
   
     return (
       <ThemeProvider theme={theme}>
         <Autocomplete
+          sx={{ margin: '10px 0' }}
           multiple
           // options={ALL_BOROUGHS}
           options={defaultValue}
           value={selectedOptions}
           disableCloseOnSelect
-          getOptionLabel={(option) => option.name}
-          // getOptionLabel={(option) => option[field]}
+          // getOptionLabel={(option) => option.name}
+          getOptionLabel={(option) => option[name]}
           renderOption={(props, option, { selected }) => (
             <li {...props}>
               <Checkbox
@@ -85,13 +64,15 @@ export default function MultiSelect({ setTempFilters, reset, type }) {
                 style={{ marginRight: 5 }}
                 checked={selected}
               />
-              {option.name}
+              {/* {option.name} */}
+              {option[name]}
             </li>
           )}
           size="small"
           onChange={handleSelectChange}
           renderInput={(params) => (
-            <TextField {...params} label="Locate in" />
+            <TextField {...params} label={type} />
+            // <TextField {...params} label="Locate in" />
           )}
         />
       </ThemeProvider>

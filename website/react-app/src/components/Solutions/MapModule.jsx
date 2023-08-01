@@ -14,11 +14,10 @@ import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 import { Icon } from 'leaflet';
 import { BIG_CATE_ICONS } from '../../constants';
-
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-
+import * as d3 from 'd3';
 
 
 function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
@@ -46,9 +45,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   const viewClusterRef = useRef(L.markerClusterGroup({disableClusteringAtZoom: 15}));
   const [isShowViewMarkers, setIsShowViewMarkers] = useState(false);
 
-  const {realTime, adTime, adTimeMode} = useContext(SolutionsContext);
-
-
+  
   // Map tile layer initialisation
   useEffect(() => {
     console.log("UseEffect:Map tile layer initialisation");
@@ -90,6 +87,13 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       var geojson;
 
       // set color scale and style
+      let minVal = Math.log(1); // log(1) = 0
+      let maxVal = Math.log(1001); // log(1001) is around 6.91
+      let colorScale = d3.scaleLinear()
+          .domain([minVal, maxVal])
+          .range(['#fff5f0', '#67000d'])
+          .interpolate(d3.interpolateRgb);
+
       function getColor(d) {
         return d > 400  ? '#08306b' :
                d > 300  ? '#08519c' :
@@ -102,10 +106,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       }
 
       function style(feature) {
-
         return {
-            fillColor: getColor(feature.properties.impression.display.valid),
-            // fillColor: colorScale(feature.properties.current_impression).hex(),
+            // fillColor: getColor(feature.properties.impression.display.valid),
+            fillColor: colorScale(Math.log(feature.properties.impression.display.valid + 1)),
+
             weight: 2,
             opacity: 1,
             color: 'white',
@@ -144,6 +148,9 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
         return div;
       };
+
+ 
+    
 
       // Search Control
       // Add geocoder control
@@ -333,7 +340,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       // For each feature, create a marker and add it to the map
       features.forEach(feature => {
         // const icon = new Icon({ iconUrl: '/museum.png', iconSize: [40, 40]});
-        const big_cate = feature.properties.big_cate.toLowerCase();
+        let big_cate = feature.properties.big_cate;
+        if (big_cate === "('Health Care',)") {
+          big_cate = "Health Care";
+        }
         const icon_url = BIG_CATE_ICONS[big_cate];
         const url = icon_url ? icon_url : '/museum.png';
         const icon = new Icon({ iconUrl: url, iconSize: [40, 40]});
@@ -526,6 +536,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       >
         <CircularProgress size={60}/>
       </Box>
+
     }
           {selectedZone ?
         <div id="mapillary" style={{display: 'block'}}></div> :

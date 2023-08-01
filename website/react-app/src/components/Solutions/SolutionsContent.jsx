@@ -14,7 +14,7 @@ import ZoneBoard from '../Cards/ZoneBoard';
 import { ALL_BOROUGHS, ALL_AGES, ALL_INCOMES } from '../../constants';
 import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
-
+import { convertToReadableForGroup } from '../../utils/distributionUtils';
 
 
 
@@ -23,8 +23,8 @@ function SolutionsContent() {
   const [filters, setFilters] = 
     useState({
       boroughs: ALL_BOROUGHS.map(borough => borough.name), 
-      Age: ALL_AGES.map(age => age.id), 
-      Income: ALL_INCOMES.map(income => income.id)
+      groups: ALL_AGES.map(age => age.id), 
+      income: [0, Infinity]
     });
   const [filteredZones, setFilteredZones] = useState({});
   const [selectedZone, setSelectedZone] = useState(null);
@@ -49,57 +49,66 @@ useEffect(() => {
   const fetchData = async () => {
     try {
 
-      const url = "http://127.0.0.1:8000/main/zones/data";
+      const url = "http://127.0.0.1:8000/main/zones/data";//24h impression and business data
       // const url = "./zones_data.json";
+      const url_census = 'http://127.0.0.1:8000/main/zones';//census data
 
-      const response = await axios.get(url);
-      // if (response.status !== 201 || response.data.status === 2) {
-      //   throw new Error("Can't fetch data for map initialising now!");
-      // }
-      if (response.status !== 201 && response.status !== 304 && response.status !== 200 || response.data.status === 2) {
+      const url_geom = "./map-initialising.json";//GEOM data
+
+      const request1 = axios.get(url);
+      const request2 = axios.get(url_census);
+      const request3 = axios.get(url_geom);
+      
+      const [response1, response2, response3] = await Promise.all([request1, request2, request3]);
+
+      if (!(response1.status === 201 && response1.data.status === '1' && response2.status === 201 && response2.data.status === '1' && response3.status === 200)) {
         throw new Error("Can't fetch data for map initialising now!");
       }
-      
 
-      // const data1 = JSON.parse(mapGeomData.data);
-      const data2 = response.data.data;
+      const data_24h = response1.data.data;
+      const data_census = response2.data.data;
+      const data_GEOM = JSON.parse(response3.data.data);
 
+      console.log("all data here:", [data_24h, data_census, data_GEOM]);
 
-      const urlMapGeomData = "./map-initialising.json"; 
-      const responseMapGeomData = await axios.get(urlMapGeomData);
-
-      if (!responseMapGeomData.data) {
-        throw new Error("Can't fetch map-initialising.json now!");
-      }
-
-      const data1 = JSON.parse(responseMapGeomData.data.data);
-
-      const zoneDetailMap = {};
-      for(let key in data2) {
-        zoneDetailMap[Number(key)] = data2[key].detail.map(detail => {
+      const impressionMap = {};
+      for(let key in data_24h) {
+        impressionMap[Number(key)] = data_24h[key].detail.map(detail => {
           return {
             time: detail.datetime,
-            value: detail.impression_history
+            value: detail.impression_predict
           }
         });
       }
 
-      const processedData = data1.features.map(feature => {
+      const ageMap = {};//to check the data....
+      for (let key in data_census) {
+        ageMap[Number(key)] = {
+          main_group: data_census[key].main_group,
+          median_income: data_census[key].median_income,
+          percentages: ALL_AGES.map(ageGroup => data_census[key][ageGroup.name_backend])
+        };
+      }
+
+      const processedData = data_GEOM.features.map(feature => {
         const id = feature.properties.pk;
-        const detail = zoneDetailMap[id] || []; 
+        const detail = impressionMap[id] || []; 
         const totalValue = detail.reduce((sum, current) => sum + current.value, 0);
+        const ageDistributionArray = ageMap[id] ? ageMap[id].percentages : [];// if no census data, let it be empty list
+        const median_income = ageMap[id] ? ageMap[id].median_income.toFixed(0) : null;
+        const mode_group = ageMap[id] ? ageMap[id].main_group : null; 
         return {
           ...feature,
           properties: {
             ...feature.properties,
-            age: [
-              7, 5, 4, 6, 5, 4, 6, 5, 4, 5, 
-              7, 6, 4, 5, 5, 4, 6, 4, 5, 6
-            ],
-            // age: ['20%', '50%', '30%'],
-            income: ['20%', '50%', '30%'],
-            average_age: 45,
-            average_income: 1000,
+            // age: [
+            //   7, 5, 4, 6, 5, 4, 6, 5, 4, 5, 
+            //   7, 6, 4, 5, 5, 4, 6, 4, 5, 6
+            // ],
+            age: ageDistributionArray,
+            // average_age: 45,
+            average_income: median_income,//change the name later coz it affects other functionalities
+            mode_group: mode_group,//'females_25_34'
             impression: {
               realTime: {
                 totalValue,
@@ -146,34 +155,30 @@ useEffect(() => {
 
   setSelectedZone(null);
 
-  // filters for test
-  // const filter_borough = ['Queens']; // use borough name to match
-  // const filter_age = [0, 1]; // e.g. [1, 2, 3] reps the first 3 age range
-  // const filter_income = [0, 1]; // e.g. [1, 2, 3] reps the first 3 income range
-  // real filters
   const filter_borough = filters.boroughs; // use borough name to match
-  const filter_age = filters.Age; // e.g. [1, 2, 3] reps the first 3 age range
-  const filter_income = filters.Income; // e.g. [1, 2, 3] reps the first 3 income range
+  const filter_age = filters.groups; // e.g. [0, 1, 2] reps the first 3 age-sex range
+  const filter_income = filters.income; // e.g. [300, 500] reps the income range
+  // const filter_income = [0, Infinity]; // e.g. [300, 500] reps the income range
 
-  // Filter data according to borough
+  // Filter zones according to borough
   let filteredFeatures = allZonesRef.current.features.filter(feature => {
     return filter_borough.includes(feature.properties.borough);
+  });
+
+  // Filter zones according to income
+  filteredFeatures = allZonesRef.current.features.filter(feature => {
+    return ((feature.properties.average_income >= filter_income[0]) && (feature.properties.average_income <= filter_income[1]));
   });
 
   // Calculate valid impression according to target customers
   // get the valid percentage for each feature
   filteredFeatures = filteredFeatures.map(feature => {
-    // Convert age and income percentages to number
-    // const agePercentages = feature.properties.age.map(item => parseFloat(item) / 100);
-    const agePercentages = feature.properties.age.map(item => item);
-    const incomePercentages = feature.properties.income.map(item => parseFloat(item) / 100);
 
-    // Calculate valid age and income percentages
-    const validAgePercentage = filter_age.reduce((sum, age) => sum + agePercentages[age], 0);
-    const validIncomePercentage = filter_income.reduce((sum, income) => sum + incomePercentages[income], 0);
-
-    // Calculate total valid percentage
-    const validPercentage = validAgePercentage * validIncomePercentage;
+    let validPercentage = 0;
+    for (let i = 0; i < filter_age.length; i++) {
+      validPercentage += feature.properties.age[filter_age[i]];
+    }
+    validPercentage = validPercentage / 100;
 
     // Define function to calculate valid impression
     const calculateValidImpression = (impression) => {
@@ -199,8 +204,7 @@ useEffect(() => {
       displayTotal = adTimeImpression.totalValue;
       displayValid = adTimeImpression.totalValidValue;
     } else {
-      const realTimeItem = realTimeImpression.items.find(item => item.time === '2023-04-30T22:00:00-04:00');
-      // const realTimeItem = realTimeImpression.items.find(item => item.time === realTime);
+      const realTimeItem = realTimeImpression.items.find(item => item.time === realTime);
       if (realTimeItem) {
         displayTotal = realTimeItem.value;
         displayValid = realTimeItem.validValue;
@@ -223,7 +227,7 @@ useEffect(() => {
     };
   });
 
-  // Create new GeoJSON
+  // Create new structured GeoJSON
   const filteredGeojson = {
     ...allZonesRef.current,
     features: filteredFeatures
@@ -351,7 +355,7 @@ useEffect(() => {
             style={{ height: isMobile ? '380px' : '750px' }} // change the height based on the screen size
           />
         </Grid>
-        <Grid item xs={12} md={12} lg={3}>
+        <Grid item xs={12} md={12} lg={3} style={{ height: isMobile ? 'auto' : '750px' }}>
           <InfoModule 
             zones={filteredZones} 
             selectedZone={selectedZone} 

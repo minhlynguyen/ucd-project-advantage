@@ -16,13 +16,11 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   const selectedZoneRef = useRef(null);
   const [info, setInfo] = useState('');
   const [detailMode, setDetailMode] = useState(false);
+  const [numCardsToShow, setNumCardsToShow] = useState(5);
 
   // update detailMode when selectedZone change
   useEffect(() => {
-    // console.log("selectedZoneRef", selectedZoneRef.current);
-    // console.log("selectedZone", selectedZone);
-    // console.log(!selectedZoneRef && selectedZone);
-    // console.log(selectedZoneRef && !selectedZone);
+
     if (!selectedZoneRef.current && selectedZone) {
       setDetailMode(true);
     }
@@ -36,7 +34,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   useEffect(() => {
 
     if (Object.keys(zones).length !== 0) {
-      const sortedZonesArray = zones.features.sort((b, a) => a.properties.impression.display.valid - b.properties.impression.display.valid).slice(0, 5);
+      const sortedZonesArray = zones.features.sort((b, a) => a.properties.impression.display.valid - b.properties.impression.display.valid).slice(0, numCardsToShow);
       setSortedZones(sortedZonesArray);
     } else {
       setSortedZones([]);
@@ -50,7 +48,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       setSelectedZoneDetail(null);
     }
     // console.log("selectedZoneDetail", selectedZoneDetail);
-  }, [zones, selectedZone]);
+  }, [zones, selectedZone, numCardsToShow]);
 
   // update info according to changes from status and data
   useEffect(() => {
@@ -71,6 +69,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading }) {
         setInfo(skeleton);
       } else {
         const zoneCards = sortedZones.map(zone => <BriefZoneCard key={zone.id} zone={zone} setSelectedZone={setSelectedZone}/>);
+        zoneCards.push(<Button key="show-more" variant="outlined" onClick={() => setNumCardsToShow(numCardsToShow + 5)}>Show more</Button>);
         setInfo(zoneCards);
       }
     }
@@ -78,7 +77,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   }, [isLoading, detailMode, selectedZoneDetail, sortedZones]);
   
   return (
-    <div className="info-module" style={{ overflowX: 'auto' }}>
+    <div className="info-module" style={{ overflowX: 'auto', overflowY: 'auto', height: '100%' }}>
       <Stack spacing={1} direction={isMobile ? 'row' : 'column'}>
         {info}
         {detailMode && (

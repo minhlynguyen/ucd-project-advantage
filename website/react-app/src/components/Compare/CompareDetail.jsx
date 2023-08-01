@@ -97,6 +97,7 @@ export default function CompareDetail({setConfirmMode}) {
               backgroundColor: 'rgba(50, 67, 95, 1)',
               borderRadius: '10px',
               // height: '30vh',
+              minHeight: '40vh',
               justifyContent: 'center',
               alignItems: 'center'
             }}

@@ -1,5 +1,5 @@
 import { ALL_AGES, BIG_CATE } from "../constants";
-
+import {convertToBriefDateString} from './dateTimeUtils';
 
 export const getPieDataForGender = (gender, data1, data2=null) => {
     let arr = data1.arr;
@@ -198,6 +198,7 @@ export const getLineOptions = (mode) => {
               color: 'white', 
             },
             ticks: {
+              display: false,
               color: 'white',
             }
           },
