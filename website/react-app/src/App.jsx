@@ -11,7 +11,7 @@ import SignupLoginPage from "./components/SignupLoginPage/SignupLoginPage";
 import Header from "./components/Header/Header";
 import SignedInHeader from "./components/Header/SignedInHeader/SignedInHeader";
 import Footer from "./components/Footer/Footer";
-import axios from "axios";
+import axiosInstance from "./AxiosConfig";
 import SolutionsContent from "./components/Solutions/SolutionsContent";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,28 +21,30 @@ import webhomepagelogo from "./assets/AdVantageMainLoader.svg";
 import './App.css'
 import DotLoader from "react-spinners/DotLoader"
 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
-axios.defaults.withCredentials = true;
-
 // Create a user context
 const UserContext = createContext();
-
 
 function App() {
   const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [userName, setUserName] = useState(""); // Add state for the user's name
+  const [emailAddress, setEmailAddress] = useState(""); // Add state for the user's name
 
+  
 
   useEffect(() => {
-    const client = axios.create({
-      baseURL: "http://127.0.0.1:8000",
-    });
-    client
+
+
+    axiosInstance
       .get("/user/user")
       .then(function (res) {
         console.log(res);
         setCurrentUser(true);
+        // setUserName(res.data.user.username); // Set the user's name from the response
+        // console.log(res.data.user.username)
+        // setEmailAddress(res.data.user.email)
+        // console.log(res.data.user.email)
+
       })
       .catch(function (error) {
         console.log(error);
@@ -55,6 +57,12 @@ function App() {
       });
 
   }, []);
+  // Function to reset userName and email states after successful registration
+  const handleRegisterSuccess = (username, userEmail) => {
+    setUserName(username);
+    setEmailAddress(userEmail);
+  };
+
 
 
   if (currentUser === null || isLoading) {
@@ -70,13 +78,10 @@ function App() {
   }
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser, userName, emailAddress, handleRegisterSuccess }}>
       <ToastContainer />
-
       <Router>
       <ScrollToTop />
-
-
         <MyRoutes />
       </Router>
     </UserContext.Provider>
@@ -93,7 +98,7 @@ function MyRoutes() {
       {/* Only show Header or SignedInHeader based on user login status */}
       {location.pathname !== "/signup" &&
         (currentUser ? <SignedInHeader /> : <Header />)}
-        {/* (currentUser ? <Header /> : <SignedInHeader />)}  */}
+    {/* // (currentUser ? <Header /> : <SignedInHeader />)}   */}
 
       <Routes>
         <Route path="/" element={<HomePage />} />

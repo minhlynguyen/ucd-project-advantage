@@ -18,6 +18,7 @@ export default function HomePage() {
   // checking if user is loggged in
   const { currentUser } = useContext(UserContext);
 
+  
   return (
     <main role="main">
       <section className="section-1" role="information about adVantage">

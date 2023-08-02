@@ -8,10 +8,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = '__all__'
+        extra_kwargs = {'password':{'write_only': True}}
+
     def create(self, clean_data):
         user_obj = UserModel.objects.create_user(email=clean_data['email'],
                                                  password=clean_data['password'])
-        user_obj.username = clean_data['username']
+        # user_obj.username = clean_data['username']
         user_obj.save()
         return user_obj
     
