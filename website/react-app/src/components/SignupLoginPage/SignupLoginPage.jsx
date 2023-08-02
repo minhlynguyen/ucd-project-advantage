@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useContext, useRef, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import axiosInstance from "../../AxiosConfig";
 import * as Form from "@radix-ui/react-form";
 import { UserContext } from "../../App";
@@ -43,8 +43,11 @@ export default function SignupLoginPage() {
           })
           .then(function (res) {
             setCurrentUser(true);
-            console.log(res)
-            // handleRegisterSuccess(res.data.user.username, registerEmail); // Call the handleRegisterSuccess function
+                 localStorage.setItem('access_token', res.data.access);
+                 localStorage.setItem('refresh_token', res.data.refresh);
+                 axiosInstance.defaults.headers['Authorization'] =
+                   'JWT ' + localStorage.getItem('access_token');
+            // console.log(res)
 
             toast.success('Registeration successful.', {
               position: 'top-right',
@@ -56,8 +59,8 @@ export default function SignupLoginPage() {
               progress: undefined,
             });
             navigate("/");
-          }).catch(function (error) {
-            console.log(error.response.status);
+          }).catch(function () {
+            // console.log(error.response.status);
           });
       })
       .catch(function (error) {  
@@ -91,7 +94,6 @@ export default function SignupLoginPage() {
 				localStorage.setItem('refresh_token', res.data.refresh);
 				axiosInstance.defaults.headers['Authorization'] =
 					'JWT ' + localStorage.getItem('access_token');
-        // handleRegisterSuccess(res.data.user.username, res.data.user.email); // Call the handleAuthSuccess function
  
         console.log(res)
         toast.success('Login successful.', {
