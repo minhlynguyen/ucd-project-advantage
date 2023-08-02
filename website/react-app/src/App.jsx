@@ -30,8 +30,9 @@ function App() {
   const [userName, setUserName] = useState(""); // Add state for the user's name
   const [emailAddress, setEmailAddress] = useState(""); // Add state for the user's name
 
+  
 
-
+  useEffect(() => {
 
 
     axiosInstance
@@ -55,6 +56,7 @@ function App() {
         }, 3000);
       });
 
+  }, []);
   // Function to reset userName and email states after successful registration
   const handleRegisterSuccess = (username, userEmail) => {
     setUserName(username);
