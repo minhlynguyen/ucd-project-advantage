@@ -7,4 +7,5 @@ urlpatterns = [
 	path('logout', views.UserLogout.as_view(), name='logout'),
 	path('user', views.UserView.as_view(), name='user'),
     path('superuser', views.superuser),
+    path('logout/blacklist/', views.BlacklistTokenView.as_view(),name='blacklist')
 ]
