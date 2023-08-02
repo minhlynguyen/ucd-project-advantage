@@ -4,6 +4,9 @@ from django.http import HttpResponse
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
 from .models import AppUser
 from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer
 from rest_framework import permissions, status
@@ -53,3 +56,16 @@ class UserView(APIView):
 def superuser(request):
     superuser = AppUser.objects.filter(is_superuser=True)
     return HttpResponse(superuser,content_type='json')
+
+class BlacklistTokenView(APIView):
+	permission_classes = (permissions.AllowAny,)
+	authentication_classes = ()
+
+	def post(self, request):
+		try:
+			refresh_token = request.data["refresh_token"]
+			token = RefreshToken(refresh_token)
+			token.blacklist()
+			return Response(status=status.HTTP_205_RESET_CONTENT)
+		except Exception as e:
+			return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -102,7 +102,7 @@ import DetailedZoneCard from '../Cards/DetailedZoneCard';
 
 
 
-function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleClickMore }) {
+function InfoModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
   const [sortedZones, setSortedZones] = useState([]);
   const [selectedZoneDetail, setSelectedZoneDetail] = useState(null);
@@ -112,10 +112,10 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleCli
 
   // update detailMode when selectedZone change
   useEffect(() => {
-    console.log("selectedZoneRef", selectedZoneRef);
-    console.log("selectedZone", selectedZone);
-    console.log(!selectedZoneRef && selectedZone);
-    console.log(selectedZoneRef && !selectedZone);
+    // console.log("selectedZoneRef", selectedZoneRef.current);
+    // console.log("selectedZone", selectedZone);
+    // console.log(!selectedZoneRef && selectedZone);
+    // console.log(selectedZoneRef && !selectedZone);
     if (!selectedZoneRef.current && selectedZone) {
       setDetailMode(true);
     }
@@ -129,7 +129,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleCli
   useEffect(() => {
 
     if (Object.keys(zones).length !== 0) {
-      const sortedZonesArray = zones.features.sort((a, b) => a.properties.pk - b.properties.pk).slice(0, 5);
+      const sortedZonesArray = zones.features.sort((b, a) => a.properties.impression.display.valid - b.properties.impression.display.valid).slice(0, 5);
       setSortedZones(sortedZonesArray);
     } else {
       setSortedZones([]);
@@ -142,7 +142,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleCli
     } else {
       setSelectedZoneDetail(null);
     }
-    console.log("selectedZoneDetail", selectedZoneDetail);
+    // console.log("selectedZoneDetail", selectedZoneDetail);
   }, [zones, selectedZone]);
 
   // update info according to changes from status and data
@@ -150,10 +150,10 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading, handleCli
     // console.log();
     if (detailMode) {
       if (isLoading) {
-        const skeleton = <DetailedZoneCard zone={null} handleClickMore={handleClickMore}/>;
+        const skeleton = <DetailedZoneCard zone={null}/>;
         setInfo(skeleton);
       } else {
-        const detailedZoneCard = <DetailedZoneCard zone={selectedZoneDetail} handleClickMore={handleClickMore}/>;
+        const detailedZoneCard = <DetailedZoneCard zone={selectedZoneDetail}/>;
         setInfo(detailedZoneCard);
       }
 
