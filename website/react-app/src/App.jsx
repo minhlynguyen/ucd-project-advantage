@@ -5,6 +5,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage";
 import SignupLoginPage from "./components/SignupLoginPage/SignupLoginPage";
@@ -18,8 +19,9 @@ import "react-toastify/dist/ReactToastify.css";
 import SavedPage from './components/SavedPage/SavedPage';
 import ScrollToTop from "./components/ScrollToTop";
 import webhomepagelogo from "./assets/AdVantageMainLoader.svg";
-import './App.css'
-import DotLoader from "react-spinners/DotLoader"
+import './App.css';
+import DotLoader from "react-spinners/DotLoader";
+import axios from 'axios';
 
 // Create a user context
 const UserContext = createContext();
@@ -32,31 +34,93 @@ function App() {
 
   
 
+  // useEffect(() => {
+
+
+  //   axiosInstance
+  //     .get("/user/user")
+  //     .then(function (res) {
+  //       console.log(res);
+  //       setCurrentUser(true);
+  //       // setUserName(res.data.user.username); // Set the user's name from the response
+  //       // console.log(res.data.user.username)
+  //       // setEmailAddress(res.data.user.email)
+  //       // console.log(res.data.user.email)
+
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //       setCurrentUser(false);
+  //     }).finally(() => {
+  //       // Simulate a 5-second delay before setting isLoading to false
+  //       setTimeout(() => {
+  //         setIsLoading(false);
+  //       }, 3000);
+  //     });
+
+  // }, []);
+
+  //=======================new===========================
+
   useEffect(() => {
+    
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (!refreshToken) {
+      // if no token in localStorage, set no user
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
+      setCurrentUser(false);
+      return;
+    } else {
+      // if there exists token in localStorage
+      const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]));
+      const now = Math.ceil(Date.now() / 1000);
+      if (tokenParts.exp > now) {
+        // if refresh token hasn't expire, send request to get new access token
+        const axiosInstanceForUserAuth = axios.create({
+          baseURL: 'http://localhost:8000/',
+          timeout: 5000,
+          headers: {
+            Authorization: localStorage.getItem('access_token')
+              ? 'JWT ' + localStorage.getItem('access_token')
+              : null,
+            'Content-Type': 'application/json',
+            accept: 'application/json',
+          },
+        });
+        return axiosInstanceForUserAuth
+        .post('/token/refresh/', { refresh: refreshToken })
+        .then((response) => {
+          localStorage.setItem('access_token', response.data.access);
+          localStorage.setItem('refresh_token', response.data.refresh);
 
+          axiosInstance.defaults.headers['Authorization'] =
+            'JWT ' + response.data.access;
 
-    axiosInstance
-      .get("/user/user")
-      .then(function (res) {
-        console.log(res);
-        setCurrentUser(true);
-        // setUserName(res.data.user.username); // Set the user's name from the response
-        // console.log(res.data.user.username)
-        // setEmailAddress(res.data.user.email)
-        // console.log(res.data.user.email)
+          setCurrentUser(true);
+        })
+        .catch(function (error) {
+          console.log(error);
+          setCurrentUser(false);
+        }).finally(() => {
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 3000);
+        });
 
-      })
-      .catch(function (error) {
-        console.log(error);
-        setCurrentUser(false);
-      }).finally(() => {
-        // Simulate a 5-second delay before setting isLoading to false
+      } else {
         setTimeout(() => {
           setIsLoading(false);
         }, 3000);
-      });
+        setCurrentUser(false);
+        return;
+      }
+    }
 
   }, []);
+  //=======================new===========================
+
   // Function to reset userName and email states after successful registration
   const handleRegisterSuccess = (username, userEmail) => {
     setUserName(username);
@@ -91,6 +155,15 @@ function App() {
 function MyRoutes() {
   const { currentUser } = useContext(UserContext);
   let location = useLocation();
+
+  //=======================new===========================
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!currentUser && (location.pathname === '/solutions' || location.pathname === '/saved')) {
+      navigate('/signup');
+    }
+  }, [currentUser, navigate]);
+  //=======================new===========================
 
   return (
     <div>

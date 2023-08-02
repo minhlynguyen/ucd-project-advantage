@@ -37,12 +37,21 @@ export default function SignupLoginPage() {
       })
       .then(function () {
         axiosInstance
-          .post("/user/login", {
+          // .post("/user/login", {
+          .post("/token/", { //new
             email: registerEmail,
             password: registerPassword,
           })
           .then(function (res) {
             setCurrentUser(true);
+
+            //=======================new===========================
+            localStorage.setItem('access_token', res.data.access);
+            localStorage.setItem('refresh_token', res.data.refresh);
+            axiosInstance.defaults.headers['Authorization'] =
+              'JWT ' + localStorage.getItem('access_token');
+            //=======================new===========================
+
             console.log(res)
             // handleRegisterSuccess(res.data.user.username, registerEmail); // Call the handleRegisterSuccess function
 
