@@ -55,3 +55,4 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 		# return self.username
 
 		return self.email
+	

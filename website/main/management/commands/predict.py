@@ -4,6 +4,8 @@ from django.db.models import Q
 from django.utils import timezone
 import pickle, datetime, holidays, warnings
 from main.models import ZoneDetail
+import psycopg2
+
 
 def fxn():
     warnings.warn("deprecated", DeprecationWarning)
@@ -126,7 +128,7 @@ class Command(BaseCommand):
             # write prediction result in database
             for index, row in result.iterrows():
                 # try: 
-                zone.filter(zone_time_id=row['zone_time_id']).update(impression_predict=int(row['predicted_passenger_count']),
+                zone.filter(zone_time_id=row['zone_time_id']).bulk_update(impression_predict=int(row['predicted_passenger_count']),
                                                                         prediction_last_update = timezone.now(),
                                                                         holiday = row['holiday']
                                                                         )
