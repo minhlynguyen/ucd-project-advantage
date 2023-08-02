@@ -32,17 +32,17 @@ function App() {
 
 
 
-  useEffect(() => {
+
 
     axiosInstance
       .get("/user/user")
       .then(function (res) {
         console.log(res);
         setCurrentUser(true);
-        setUserName(res.data.user.username); // Set the user's name from the response
-        console.log(res.data.user.username)
-        setEmailAddress(res.data.user.email)
-        console.log(res.data.user.email)
+        // setUserName(res.data.user.username); // Set the user's name from the response
+        // console.log(res.data.user.username)
+        // setEmailAddress(res.data.user.email)
+        // console.log(res.data.user.email)
 
       })
       .catch(function (error) {
@@ -55,7 +55,6 @@ function App() {
         }, 3000);
       });
 
-  }, []);
   // Function to reset userName and email states after successful registration
   const handleRegisterSuccess = (username, userEmail) => {
     setUserName(username);
@@ -97,7 +96,7 @@ function MyRoutes() {
       {/* Only show Header or SignedInHeader based on user login status */}
       {location.pathname !== "/signup" &&
         (currentUser ? <SignedInHeader /> : <Header />)}
-    {/* (currentUser ? <Header /> : <SignedInHeader />)}   */}
+    {/* // (currentUser ? <Header /> : <SignedInHeader />)}   */}
 
       <Routes>
         <Route path="/" element={<HomePage />} />
