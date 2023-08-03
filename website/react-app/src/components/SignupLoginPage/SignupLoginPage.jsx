@@ -8,6 +8,7 @@ import weblogo from "../../assets/AdVantage.svg";
 import "./SignupLoginPage.css";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from "react-router-dom";
 
 
 
@@ -135,6 +136,7 @@ export default function SignupLoginPage() {
 
 
               <h2>Register</h2>
+
             </div>
             <Form.Field className="FormField" name="username">
               <Form.Message className="FormMessage" match="valueMissing">
@@ -208,6 +210,8 @@ export default function SignupLoginPage() {
             </Form.Field>
             <Form.Submit asChild>
               <div className="signup-button-container">
+              <Link className="link-hompepage-btn" to="/"> Return to Home Page</Link>
+
                 <button type="submit" className="register-button">
                   Register
                 </button>
@@ -266,10 +270,13 @@ export default function SignupLoginPage() {
             </Form.Field>
             <Form.Submit asChild>
               <div className="login-button-container">
+              <Link className="link-hompepage-btn" to="/"> Return to Home Page</Link>
                 <button type="submit" className="loginpage-button">
                   Login
                 </button>
+
               </div>
+
             </Form.Submit>
           </Form.Root>
         </div>
