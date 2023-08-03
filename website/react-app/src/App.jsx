@@ -29,42 +29,11 @@ const UserContext = createContext();
 function App() {
   const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [userName, setUserName] = useState(""); // Add state for the user's name
-  const [emailAddress, setEmailAddress] = useState(""); // Add state for the user's name
-
-  
-
-  // useEffect(() => {
-
-
-  //   axiosInstance
-  //     .get("/user/user")
-  //     .then(function (res) {
-  //       console.log(res);
-  //       setCurrentUser(true);
-  //       // setUserName(res.data.user.username); // Set the user's name from the response
-  //       // console.log(res.data.user.username)
-  //       // setEmailAddress(res.data.user.email)
-  //       // console.log(res.data.user.email)
-
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //       setCurrentUser(false);
-  //     }).finally(() => {
-  //       // Simulate a 5-second delay before setting isLoading to false
-  //       setTimeout(() => {
-  //         setIsLoading(false);
-  //       }, 3000);
-  //     });
-
-  // }, []);
-
-  //=======================new===========================
 
   useEffect(() => {
     
     const refreshToken = localStorage.getItem('refresh_token');
+    
     const refreshTokenData = async (refreshToken) => {
       // if there exists token in localStorage
       const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]));
@@ -103,7 +72,6 @@ function App() {
           // }, 1000);
           setIsLoading(false);
         });
-
       } else {
         // setTimeout(() => {
         //   setIsLoading(false);
@@ -126,14 +94,6 @@ function App() {
     }
 
   }, []);
-  //=======================new===========================
-
-  // Function to reset userName and email states after successful registration
-  const handleRegisterSuccess = (username, userEmail) => {
-    setUserName(username);
-    setEmailAddress(userEmail);
-  };
-
 
 
   if (currentUser === null || isLoading) {
@@ -149,7 +109,7 @@ function App() {
   }
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser, userName, emailAddress, handleRegisterSuccess }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser}}>
       <ToastContainer />
       <Router>
       <ScrollToTop />

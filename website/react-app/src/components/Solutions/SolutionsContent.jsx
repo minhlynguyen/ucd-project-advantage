@@ -14,6 +14,7 @@ import { ALL_BOROUGHS, ALL_AGES } from '../../constants';
 import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 import axiosInstance from '../../AxiosConfig';
+import { generateAdTimeData } from '../../utils/testDataGenerator';
 
 
 function SolutionsContent() {
@@ -23,32 +24,34 @@ function SolutionsContent() {
       boroughs: ALL_BOROUGHS.map(borough => borough.name), 
       groups: ALL_AGES.map(age => age.id), 
       income: [0, Infinity]
-    });
-  const [filteredZones, setFilteredZones] = useState({});
-  const [selectedZone, setSelectedZone] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+    }); //init filters
+  const [filteredZones, setFilteredZones] = useState({});// data shown in map and info module
+  const [selectedZone, setSelectedZone] = useState(null);// selected zone (feature)
+  const [isLoading, setIsLoading] = useState(true);// control the loading state
   const [openCompareBoard, setOpenCompareBoard] = useState(false); // compare dialog
   const [openZoneBoard, setOpenZoneBoard] = useState(null); // zone board dialog
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const allZonesRef = useRef(null);
+  const [allZones, setAllZones] = useState(null);// data saved to be fastly filtered
   const [adTime, setAdTime] = useState(['', '']);
   const [adTimeMode, setAdTimeMode] = useState(false);
   // Set the initial state using the current time in New York
   const [realTime, setRealTime] = useState(getCurrentTimeInNY()); // the choosen time in real time Slider
   const [compareZones, setCompareZones] = useState([null, null]);// zones selected to be compared
-  const [impressionMap, setImpressionMap] = useState({});
-  const [ageMap, setAgeMap] = useState({});
-  const [data_GEOM, setData_GEOM] = useState(null);
+  const [impressionMap, setImpressionMap] = useState({});// impression data
+  const [ageMap, setAgeMap] = useState({}); // census data
+  const [data_GEOM, setData_GEOM] = useState(null); // GEOM data
   const [isFetchingImpression, setIsFetchingImpression] = useState(false);
   const [isFetchingCensus, setIsFetchingCensus] = useState(false);
   const [isFetchingGEOM, setIsFetchingGEOM] = useState(false);
+  const [isFetchingAdTimeData, setIsFetchingAdTimeData] = useState(false);
 
   // fetch impression data
   useEffect(()=>{
     const fetchData = async () => {
       setIsFetchingImpression(true);
+      // !!!!!!remove the baseURL if use axiosInstance
       const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/data`;//24h impression and business data
       // axiosInstance.get(url).then((response) => {
       axios.get(url).then((response) => {
@@ -126,12 +129,12 @@ function SolutionsContent() {
 
   //update loading state
   useEffect(() => {
-    const loadingState = isFetchingImpression || isFetchingCensus || isFetchingGEOM;
+    const loadingState = isFetchingImpression || isFetchingCensus || isFetchingGEOM || isFetchingAdTimeData;
     setIsLoading(loadingState);
 
-  }, [isFetchingImpression, isFetchingCensus, isFetchingGEOM]);
+  }, [isFetchingImpression, isFetchingCensus, isFetchingGEOM, isFetchingAdTimeData]);
 
-  // Process data to get allZones info
+  // Process data to get allZones
   useEffect(() => {
     // console.log("UseEffect: Fetch data for initialising");
     if (!data_GEOM) {
@@ -175,7 +178,7 @@ function SolutionsContent() {
           features: processedData
         };
 
-        allZonesRef.current = processedGeojson;
+        setAllZones(processedGeojson);
       } catch (error) {
         console.error(error);
       };
@@ -184,16 +187,15 @@ function SolutionsContent() {
     updateData();
   }, [impressionMap, ageMap, data_GEOM]);
 
-  // Change filteredZones when filters, allZoneRef, realTime, adTimeMode change
+  // Change filteredZones when filters, allZone, realTime, adTimeMode change
   useEffect(() => {
     console.log("UseEffect: Change filteredZones when filters, allZoneRef, realTime, adTimeMode change");
     console.log("filters", filters);
     console.log("adTimeMode:", adTimeMode);
     console.log("realTime:", realTime);
-    console.log("allZonesRef:",allZonesRef);
+    console.log("allZones:",allZones);
 
-    // If data has not been loaded, return early to avoid errors
-    if (!allZonesRef.current) {
+    if (!allZones) {
       return;
     }
 
@@ -204,7 +206,7 @@ function SolutionsContent() {
     const filter_income = filters.income; // e.g. [300, 500] reps the income range
 
     // Filter zones according to borough
-    let filteredFeatures = allZonesRef.current.features.filter(feature => {
+    let filteredFeatures = allZones.features.filter(feature => {
       return filter_borough.includes(feature.properties.borough);
     });
 
@@ -273,13 +275,13 @@ function SolutionsContent() {
 
     // Create new structured GeoJSON
     const filteredGeojson = {
-      ...allZonesRef.current,
+      ...allZones,
       features: filteredFeatures
     };
     console.log("filteredGeojson:", filteredGeojson);
 
     setFilteredZones(filteredGeojson);
-  }, [filters, allZonesRef.current, adTimeMode, realTime]);
+  }, [filters, allZones, adTimeMode, realTime]);
 
 
   // Change allZonesRef when adTime change
@@ -290,47 +292,50 @@ function SolutionsContent() {
     if (!adTimeMode) {
       return;
     }
+    const updateData = async () => {
+      let data = {};
+      function arraysEqual(a, b) {
+        return a.length === b.length && a.every((val, index) => val === b[index]);
+      }
+      if (!arraysEqual(adTime, ['', ''])) {
+        // setIsFetchingAdTimeData(true);
+        // // set url here
+        // axios.post('', {time_range: ''})
+        // .then((response) => {
+        //   if (response.data.status !== "1") {
+        //     throw new Error("Can't fetch impression data for ad time now!");
+        //   }
+        //   data = JSON.parse(response.data.data);
+        // }).catch((error) => {
+        //   console.log(error);
+        // }).finally(() => {
+        //   setIsFetchingAdTimeData(false);
+        // });
+        data = generateAdTimeData().data;
+      }
 
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        // url for updating impression in allZones for ad time
-        const url = "";
-        const response = await axios.get(url);
-        if (response.status !== 201 || response.data.status !== "1") {
-          throw new Error("Can't fetch data for ad time. Please try it agagin.");
-        }
-        const data = JSON.parse(response.data.data);
-
-        // change the total impression in ad time field (the valid impression would be changed in other useEffect automatically)
-        const updatedFeatures = allZonesRef.current.features.map(feature => ({
-          ...feature,
-          properties: {
-            ...feature.properties,
-            impression: {
-              ...feature.properties.impression,
-              adTime: {
-                ...feature.properties.impression.adTime,
-                totalValue: data[String(feature.id)]
-              }
+      // change the total impression in ad time field (the valid impression would be changed in other useEffect automatically since allZones changed)
+      const updatedFeatures = allZones.features.map(feature => ({
+        ...feature,
+        properties: {
+          ...feature.properties,
+          impression: {
+            ...feature.properties.impression,
+            adTime: {
+              ...feature.properties.impression.adTime,
+              totalValue: data[String(feature.id)] || 0
             }
           }
-        }));
-        
-        // Update allZonesRef data
-        allZonesRef.current = {
-          ...allZonesRef.current,
-          features: updatedFeatures
-        };
+        }
+      }));
 
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+      setAllZones({
+        ...allZones,
+        features: updatedFeatures
+      });
+    };
 
-    // fetchData();
+    updateData();
 
   }, [adTime]);
 
@@ -362,54 +367,39 @@ function SolutionsContent() {
 
   return (
     <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, handleClickMore, filteredZones, compareZones, setCompareZones, setOpenCompareBoard }}>
-      
-      <div className="solutions-content">
-      
-
+      <div className="solutions-content">      
         <FunctionModule filters={filters} setFilters={setFilters}/>
-
-
         <div className="map-info-container">
-      <Grid container>
-        <Grid item xs={12} md={12} lg={9}>
-          <MapModule 
-            zones={filteredZones} 
-            selectedZone={selectedZone} 
-            setSelectedZone={setSelectedZone} 
-            isLoading={isLoading} 
-            style={{ height: isMobile ? '380px' : '750px' }} // change the height based on the screen size
-          />
-        </Grid>
-        <Grid item xs={12} md={12} lg={3} style={{ height: isMobile ? 'auto' : '750px' }}>
-          <InfoModule 
-            zones={filteredZones} 
-            selectedZone={selectedZone} 
-            setSelectedZone={setSelectedZone} 
-            isLoading={isLoading} 
-          />
-        </Grid>
-      </Grid>
-
-      {/* {selectedZone ?
-        <div id="mapillary" style={{display: 'block'}}></div> :
-        <div id="mapillary" style={{display: 'none'}}></div>
-      } */}
-    </div>
-
-
-        <Box className='floating-button'>
-          
+          <Grid container>
+            <Grid item xs={12} md={12} lg={9}>
+              <MapModule 
+                zones={filteredZones} 
+                selectedZone={selectedZone} 
+                setSelectedZone={setSelectedZone} 
+                isLoading={isLoading} 
+                style={{ height: isMobile ? '380px' : '750px' }} // change the height based on the screen size
+              />
+            </Grid>
+            <Grid item xs={12} md={12} lg={3} style={{ height: isMobile ? 'auto' : '750px' }}>
+              <InfoModule 
+                zones={filteredZones} 
+                selectedZone={selectedZone} 
+                setSelectedZone={setSelectedZone} 
+                isLoading={isLoading} 
+              />
+            </Grid>
+          </Grid>
+        </div>
+        <Box className='floating-button'>        
           <Fab color="primary" aria-label="compare" onClick={handleClickDifference}>
             <Badge badgeContent={compareZones.filter(zone => zone !== null).length} color="primary">
               <DifferenceIcon />
               </Badge>
-          </Fab>
-          
+          </Fab>         
           <Fab color='secondary' aria-label="like" onClick={handleClickLikeFab}>
             <FavoriteIcon />
           </Fab>
         </Box>
-
         <Dialog open={openCompareBoard} onClose={handleCloseCompareBoard} fullScreen={fullScreen} maxWidth='lg'>
           <DialogTitle>Compare Board</DialogTitle>
           <DialogContent>
@@ -419,7 +409,6 @@ function SolutionsContent() {
             <Button onClick={handleCloseCompareBoard}>Close</Button>
           </DialogActions>
         </Dialog>
-
         <Dialog open={!!openZoneBoard} onClose={handleCloseZoneBoard} fullScreen={fullScreen} maxWidth='lg'>
           <DialogTitle>Zone Board</DialogTitle>
           <DialogContent>
@@ -433,7 +422,6 @@ function SolutionsContent() {
       </div>
     </SolutionsContext.Provider>
   );
-
 };
 
 export default SolutionsContent;

@@ -1,6 +1,6 @@
 // Signed In Header that the user sees  whenn they log in
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext} from "react";
 import { UserContext } from "../../../App";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -17,29 +17,30 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import weblogo from "../../../assets/AdVantageMain.svg";
 import "../Header.css";
 import { toast } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
 
 
 export default function SignedInHeader() {
   const navigate = useNavigate();
-  const { setCurrentUser, userName, emailAddress } = useContext(UserContext);
+  const { setCurrentUser} = useContext(UserContext);
   const { currentUser } = useContext(UserContext);
 
   // handles responsive side bar
   const [click, setClick] = useState(false);
   const handleClick = () => setClick(!click);
   const closeMobileMenu = () => setClick(false);
-  console.log('hi', {userName})
+
 
   // submit logout functionality
 const submitLogout= (e)=> {
     e.preventDefault();
-    axiosInstance.post("/user/logout/blacklist/", { refresh_token: localStorage.getItem('refresh_token')})
-    .then(function (res) {
+    axiosInstance.post("user/logout/blacklist/", { refresh_token: localStorage.getItem('refresh_token')})
+    .then(function () {
       setCurrentUser(false);
       localStorage.removeItem('access_token')
       localStorage.removeItem('refresh_token')
-      axiosInstance.defaults.headers['Authorization'] = null;
+      axiosInstance.defaults.headers['Authorization'] = '';
       toast.success("Logout successful.", {
         position: "top-right",
         autoClose: 1500,
@@ -49,10 +50,10 @@ const submitLogout= (e)=> {
         draggable: true,
         progress: undefined,
       });
-      console.log("you clicked logout", res);
+      // console.log("you clicked logout", res);
       navigate("/");
-    }).catch(function (error) {
-    console.error('Logout failed:', error);
+    }).catch(function () {
+    // console.error('Logout failed:', error);
     toast.error('Logout failed. Please try again later.', {
       position: 'top-right',
       autoClose: 5000,
@@ -134,7 +135,6 @@ const submitLogout= (e)=> {
                 className="DropdownMenuContent"
                 sideOffset={5}
               >
-                            <h3>{userName}<br/><span>{emailAddress}</span></h3>
 
                 <DropdownMenu.Item className="DropdownMenuItem">
                   <PersonIcon className="icon" /> Profile

@@ -126,32 +126,7 @@ nav .nav-btn {
 
 /* signed in header  */
 
-/* h3{
-    width: 100%;
-    text-align: center;
-    font-size: 18px;
-    padding: 20px 0;
-    font-weight: 500;
-    font-size: 18px;
-    color: var(--primary-text-color);
-    line-height: 1.2rem;
-  } */
-h3{
-  width: 100%;
-  text-align: center;
-  font-size: 18px;
-  padding: 20px 0;
-  font-weight: 500;
-  font-size: 18px;
-  color: grey;
-  line-height: 1.2rem;
-}
 
-h3 span{
-  font-size: 14px;
-  color: grey;
-  font-weight: 400;
-}
 .DropdownMenuContent {
   font-family: "Roboto", sans-serif;
   min-width: 220px;
