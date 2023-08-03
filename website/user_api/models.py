@@ -32,10 +32,10 @@ class AppUserManager(BaseUserManager):
 class AppUser(AbstractBaseUser, PermissionsMixin):
 	user_id = models.AutoField(primary_key=True)
 	email = models.EmailField(_("email address"), unique=True)
-	username = models.CharField(max_length=150, null=True)
+	username = models.CharField(max_length=150, unique=True)
 	# email = models.EmailField(max_length=50, unique=True)
 	is_staff = models.BooleanField(default=False)
-	# is_active = models.BooleanField(default=True)
+	# is_active = models.BooleanField(default=False)
 	user_type = models.IntegerField(default=1)
 	date_joined = models.DateTimeField(default=timezone.now)
 

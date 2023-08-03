@@ -14,6 +14,7 @@ const paperStyle = {
   'paddingBottom': '5px'
 };
 
+
 export default function BriefZoneCard({ zone, setSelectedZone }) {
   // zone is a feature for now
 
@@ -74,7 +75,20 @@ export default function BriefZoneCard({ zone, setSelectedZone }) {
       (Object.keys(zone).length === 0) ?
         skeleton :
         <Paper className="zone-card" elevation={2} style={paperStyle}>
-        <h3>{zone.properties.name}</h3>
+        {/* <h3>{zone.properties.name}</h3> */}
+        <Typography 
+        variant="h7" 
+        onClick={handleClickLocate(zone)}
+        sx={{
+          cursor: 'pointer',
+          '&:hover': {
+            color: '#344561',
+            fontWeight: 'bold'
+          },
+        }}
+      >
+        {zone.properties.name}
+      </Typography>
         {/* <Typography>ID: {zone.id}</Typography> */}
         <Typography style={{ fontStyle: 'italic', color: 'grey' }}>Borough: {zone.properties.borough}</Typography>
         <Typography>Total Impression: {zone.properties.impression.display.total}</Typography>

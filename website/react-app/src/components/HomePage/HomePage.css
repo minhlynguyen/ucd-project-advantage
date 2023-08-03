@@ -40,6 +40,9 @@ h2 {
 .section1-homepage-button-container {
   margin-top: 0.5em;
 }
+.section1-homepage-button-container a{
+  text-decoration: none;
+}
 
 .homepage-getstarted-button {
   border: 1.5px solid transparent;
@@ -253,6 +256,11 @@ h2 {
   color: #f4f8fe;
 }
 
+.homepage-button-container a{
+  text-decoration:  none;
+}
+
+
 .homepage-getstarted-button:hover {
   cursor: pointer;
   background-color: #465e86;
@@ -267,6 +275,7 @@ h2 {
   transition: all 240ms ease-in-out;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   letter-spacing: 0.125rem;
+
 }
 
 /* responiseness */

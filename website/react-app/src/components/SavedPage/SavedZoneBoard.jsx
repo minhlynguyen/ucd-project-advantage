@@ -15,7 +15,7 @@ import { getBarData, getBarOptions, getLineData, getLineOptions, getPieDataForGe
 ChartJS.register(LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement);
 
 
-export default function ZoneBoard({zone}) {
+export default function SavedZoneBoard({zone}) {
   console.log("zone in ZoneBoard:", zone);
   const { adTimeMode } = React.useContext(SolutionsContext);
   const [businessData, setBusinessData] = useState(null);
@@ -71,9 +71,8 @@ export default function ZoneBoard({zone}) {
   }, []);
   // bar chart
   useEffect(() => {
-        axios
-      // .get(`http://127.0.0.1:8000/main/zones/${zone.id}`)
-      .get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone.id}`)
+    axios
+      .get(`${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/${zone.id}`)
       .then((response) => {
         const data = response.data;
         setTotalBusiness(data.data[zone.id].detail[0].total_business);

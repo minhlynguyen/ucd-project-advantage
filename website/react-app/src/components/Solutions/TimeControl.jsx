@@ -22,7 +22,7 @@ export default function TimeControl() {
   };
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction="row" spacing={1} alignItems="center" sx={{padding:'8px 0'}}>
         <Typography variant='body2'>(NYC) Real time</Typography>
         <Switch
         checked={adTimeMode}
