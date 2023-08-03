@@ -54,7 +54,10 @@ export default function CompareConfirm( {setConfirmMode} ) {
 
       <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
         {/* <Typography variant="h4" align="center">VS</Typography> */}
-        <img src={'/compareIcon.png'} alt="VS Icon" style={{height: '50px', width: '50px'}}/>
+        {/* <img src={'/compareIcon.png'} alt="VS Icon" style={{height: '50px', width: '50px'}}/> */}
+        <Button variant="contained" disabled={!(compareZones[0] && compareZones[1])} onClick={handleCompareClick}>
+          <img src={'/compareIcon.png'} alt="VS Icon" style={{height: '50px', width: '50px'}}/>Compare
+        </Button>
       </Grid>
 
       <Grid item xs={12}>
@@ -65,9 +68,9 @@ export default function CompareConfirm( {setConfirmMode} ) {
         }
       </Grid>
 
-      <Grid item xs={12} md={12} lg={12} sx={{display: 'flex', justifyContent: 'center'}}>
-        <Button variant="contained" disabled={!(compareZones[0] && compareZones[1])} onClick={handleCompareClick}>COMPARE</Button>
-      </Grid>
+      {/* <Grid item xs={12} md={12} lg={12} sx={{display: 'flex', justifyContent: 'center'}}>
+        <Button variant="contained" disabled={!(compareZones[0] && compareZones[1])} onClick={handleCompareClick}><img src={'/compareIcon.png'} alt="VS Icon" style={{height: '50px', width: '50px'}}/>Compare</Button>
+      </Grid> */}
 
     </Grid>
   );
