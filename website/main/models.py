@@ -17,19 +17,6 @@ class Zone(geomodels.Model):
     borough = geomodels.CharField(max_length=13)
     geom = geomodels.MultiPolygonField()
 
-    def current_detail(self):
-
-        # Use this when data is updated
-        now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
-        year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
-
-        # This is for testing
-        year, month, day = 2023, 4, 30
-        return ZoneDetail.objects.filter(taxi_zone=self, 
-                                        #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
-                                        datetime__date=datetime.date(year, month, day)
-                                         )#,
-
     class Meta:
         managed = True
         db_table = 'maps\".\"zone'
