@@ -321,7 +321,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       (async () => {
         try {
           // Request data for markers in selected zone
-          const url = `http://127.0.0.1:8000/main/zones/${selectedZone.id}/places`;
+          const url = `${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${selectedZone.id}/places`;
           const response = await axios.get(url);
           if (response.status !== 201 || response.data.status !== "1"){
             throw new Error("Can't fetch markers data!");
@@ -388,16 +388,16 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   
 
   // Initialize Mapillary viewer when the map is ready
-  useEffect(() => {
-    if (mapInstanceRef.current && !viewerRef.current) {
-      viewerRef.current = new Viewer({
-        container: 'mapillary',
-        imageId: '3056168174613811',  
-        accessToken: import.meta.env.VITE_APP_ACCESS_TOKEN,  // Mapillary Client ID
-        isNavigable: true,
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (mapInstanceRef.current && !viewerRef.current) {
+  //     viewerRef.current = new Viewer({
+  //       container: 'mapillary',
+  //       imageId: '3056168174613811',  
+  //       accessToken: import.meta.env.VITE_APP_ACCESS_TOKEN,  // Mapillary Client ID
+  //       isNavigable: true,
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (!selectedZone) {
@@ -467,7 +467,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       }
     };
 
-    fetchData();
+    // fetchData();
     
     // const mapillaryLayer = L.tileLayer(`/api/maps/vtp/mly1_public/2/{z}/{x}/{y}?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}`,
     //   {

@@ -79,7 +79,8 @@ function App() {
       if (tokenParts.exp > now) {
         // if refresh token hasn't expire, send request to get new access token
         const axiosInstanceForUserAuth = axios.create({
-          baseURL: 'http://localhost:8000/',
+          // baseURL: 'http://localhost:8000/',
+          baseURL: import.meta.env.VITE_APP_API_BASE_URL,
           timeout: 5000,
           headers: {
             Authorization: localStorage.getItem('access_token')

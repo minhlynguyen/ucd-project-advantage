@@ -3,7 +3,8 @@ import axios from 'axios';
 
     
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8000/',
+    baseURL: import.meta.env.VITE_APP_API_BASE_URL,
+	// baseURL: 'http://localhost:8000/',
     timeout: 5000,
     headers: {
       Authorization: localStorage.getItem('access_token')

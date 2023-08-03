@@ -94,8 +94,8 @@ export default function CompareDetail({setConfirmMode}) {
   useEffect(() => {
 
     Promise.all([
-      axios.get(`http://127.0.0.1:8000/main/zones/${zone1.id}`),
-      axios.get(`http://127.0.0.1:8000/main/zones/${zone2.id}`)
+      axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone1.id}`),
+      axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone2.id}`)
     ]).then((responses) => {
       const dataZone1 = responses[0].data;
       const dataZone2 = responses[1].data;

@@ -71,8 +71,9 @@ export default function ZoneBoard({zone}) {
   }, []);
   // bar chart
   useEffect(() => {
-    axios
-      .get(`http://127.0.0.1:8000/main/zones/${zone.id}`)
+        axios
+      // .get(`http://127.0.0.1:8000/main/zones/${zone.id}`)
+      .get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone.id}`)
       .then((response) => {
         const data = response.data;
         setTotalBusiness(data.data[zone.id].detail[0].total_business);

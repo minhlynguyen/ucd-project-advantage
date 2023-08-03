@@ -46,9 +46,9 @@ useEffect(() => {
   const fetchData = async () => {
     try {
 
-      const url = "http://127.0.0.1:8000/main/zones/data";//24h impression and business data
+      const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/data`;//24h impression and business data
       // const url = "./zones_data.json";
-      const url_census = 'http://127.0.0.1:8000/main/zones';//census data
+      const url_census = `${import.meta.env.VITE_APP_API_BASE_URL}main/zones`;//census data
       const url_geom = "./map-initialising.json";//GEOM data
 
       const request1 = axios.get(url);
