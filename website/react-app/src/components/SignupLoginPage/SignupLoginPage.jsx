@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useContext, useRef, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import axiosInstance from "../../AxiosConfig";
 import * as Form from "@radix-ui/react-form";
 import { UserContext } from "../../App";
@@ -8,6 +8,7 @@ import weblogo from "../../assets/AdVantage.svg";
 import "./SignupLoginPage.css";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from "react-router-dom";
 
 
 
@@ -45,15 +46,10 @@ export default function SignupLoginPage() {
           .then(function (res) {
             setCurrentUser(true);
 
-            //=======================new===========================
             localStorage.setItem('access_token', res.data.access);
             localStorage.setItem('refresh_token', res.data.refresh);
             axiosInstance.defaults.headers['Authorization'] =
               'JWT ' + localStorage.getItem('access_token');
-            //=======================new===========================
-
-            console.log(res)
-            // handleRegisterSuccess(res.data.user.username, registerEmail); // Call the handleRegisterSuccess function
 
             toast.success('Registeration successful.', {
               position: 'top-right',
@@ -65,8 +61,8 @@ export default function SignupLoginPage() {
               progress: undefined,
             });
             navigate("/");
-          }).catch(function (error) {
-            console.log(error.response.status);
+          }).catch(function () {
+            // console.log(error.response.status);
           });
       })
       .catch(function (error) {  
@@ -100,7 +96,6 @@ export default function SignupLoginPage() {
 				localStorage.setItem('refresh_token', res.data.refresh);
 				axiosInstance.defaults.headers['Authorization'] =
 					'JWT ' + localStorage.getItem('access_token');
-        // handleRegisterSuccess(res.data.user.username, res.data.user.email); // Call the handleAuthSuccess function
  
         console.log(res)
         toast.success('Login successful.', {
@@ -142,6 +137,7 @@ export default function SignupLoginPage() {
 
 
               <h2>Register</h2>
+
             </div>
             <Form.Field className="FormField" name="username">
               <Form.Message className="FormMessage" match="valueMissing">
@@ -215,6 +211,8 @@ export default function SignupLoginPage() {
             </Form.Field>
             <Form.Submit asChild>
               <div className="signup-button-container">
+              <Link className="link-hompepage-btn" to="/"> Return to Home Page</Link>
+
                 <button type="submit" className="register-button">
                   Register
                 </button>
@@ -273,10 +271,13 @@ export default function SignupLoginPage() {
             </Form.Field>
             <Form.Submit asChild>
               <div className="login-button-container">
+              <Link className="link-hompepage-btn" to="/"> Return to Home Page</Link>
                 <button type="submit" className="loginpage-button">
                   Login
                 </button>
+
               </div>
+
             </Form.Submit>
           </Form.Root>
         </div>
