@@ -52,9 +52,9 @@ function SolutionsContent() {
     const fetchData = async () => {
       setIsFetchingImpression(true);
       // !!!!!!remove the baseURL if use axiosInstance
-      const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/data`;//24h impression and business data
+      const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/data/`;//24h impression and business data
       // axiosInstance.get(url).then((response) => {
-      axios.get(url).then((response) => {
+      axios.get(url, { timeout: 60000 }).then((response) => {
         if (response.data.status === "2") {
           throw new Error("Can't fetch impression data from DB now!");
         }
@@ -70,7 +70,12 @@ function SolutionsContent() {
         }
         setImpressionMap(map);
       }).catch((error) => {
-        console.log("Error:", error);
+        // console.log("Error:", error);
+        if (error.code === 'ECONNABORTED') {
+          console.log("Request timed out");
+        } else {
+          console.log("Error:", error);
+        }
       }).finally (() => {
         setIsFetchingImpression(false);
       });
@@ -83,7 +88,7 @@ function SolutionsContent() {
   useEffect(()=>{
     const fetchData = async () => {
       setIsFetchingCensus(true);
-      const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones`;//census data
+      const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/`;//census data
       // axiosInstance.get(url).then((response) => {
       axios.get(url).then((response) => {
         if (response.data.status === "2") {
