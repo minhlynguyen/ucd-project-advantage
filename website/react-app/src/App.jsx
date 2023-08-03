@@ -65,14 +65,7 @@ function App() {
   useEffect(() => {
     
     const refreshToken = localStorage.getItem('refresh_token');
-    if (!refreshToken) {
-      // if no token in localStorage, set no user
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 3000);
-      setCurrentUser(false);
-      return;
-    } else {
+    const refreshTokenData = async (refreshToken) => {
       // if there exists token in localStorage
       const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]));
       const now = Math.ceil(Date.now() / 1000);
@@ -105,18 +98,31 @@ function App() {
           console.log(error);
           setCurrentUser(false);
         }).finally(() => {
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 3000);
+          // setTimeout(() => {
+          //   setIsLoading(false);
+          // }, 1000);
+          setIsLoading(false);
         });
 
       } else {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 3000);
+        // setTimeout(() => {
+        //   setIsLoading(false);
+        // }, 3000);
+        setIsLoading(false);
         setCurrentUser(false);
         return;
       }
+    };
+    if (!refreshToken) {
+      // if no token in localStorage, set no user
+      // setTimeout(() => {
+      //   setIsLoading(false);
+      // }, 1000);
+      setIsLoading(false);
+      setCurrentUser(false);
+      return;
+    } else {
+      refreshTokenData(refreshToken);
     }
 
   }, []);
