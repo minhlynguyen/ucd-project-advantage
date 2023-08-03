@@ -1,41 +1,97 @@
 from django.test import TestCase
-from django.core.management import call_command, CommandError
+from django.utils import timezone
+from .models import Zone, ZoneDetail, Puma, ZonePuma, Place
+
+class ZoneModelTestCase(TestCase):
+    def setUp(self):
+        self.zone = Zone.objects.create(
+            id=1,
+            name="Test Zone",
+            borough="Test Borough",
+            geom="POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"
+        )
+
+    def test_zone_creation(self):
+        self.assertEqual(self.zone.name, "Test Zone")
+        self.assertEqual(self.zone.borough, "Test Borough")
+        self.assertEqual(str(self.zone), "Test Zone")
+
+    def test_current_detail(self):
+        # Add test cases for the current_detail method here, if required.
+        pass
 
 
-# Create your tests here.
+class ZoneDetailModelTestCase(TestCase):
+    def setUp(self):
+        self.zone = Zone.objects.create(id=1, name="Test Zone", borough="Test Borough", geom="POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))")
+        self.zone_detail = ZoneDetail.objects.create(
+            taxi_zone=self.zone,
+            datetime=timezone.now(),
+            # Add other required attributes for ZoneDetail instance creation
+            # ...
+        )
 
-# Test management command
-# https://adamj.eu/tech/2020/09/07/how-to-unit-test-a-django-management-command/
-# https://docs.djangoproject.com/en/4.2/ref/django-admin/#django.core.management.call_command
+    def test_zone_detail_creation(self):
+        # Add test cases for ZoneDetail model creation here.
+        pass
+
+    def test_zone_detail_str_representation(self):
+        expected_str = "Test Zone - " + str(self.zone_detail.datetime)
+        self.assertEqual(str(self.zone_detail), expected_str)
+
+class PumaModelTestCase(TestCase):
+    def setUp(self):
+        self.puma = Puma.objects.create(
+            id=1,
+            median_income=50000,
+            # Add other required attributes for Puma instance creation
+            # ...
+        )
+
+    def test_puma_creation(self):
+        # Add test cases for Puma model creation here.
+        pass
+
+    def test_puma_str_representation(self):
+        expected_str = "Puma ID: 1"
+        self.assertEqual(str(self.puma), expected_str)
 
 
-class CommandTestCase(TestCase):
-    def test_batch_add_users_command(self):
-        self.assertEqual(self.radius_batch_model.objects.all().count(), 0)
-        path = self._get_path('static/test_batch.csv')
-        options = dict(file=path, expiration='28-01-2018', name='test')
-        self._call_command('batch_add_users', **options)
-        self.assertEqual(self.radius_batch_model.objects.all().count(), 1)
-        radiusbatch = self.radius_batch_model.objects.first()
-        self.assertEqual(get_user_model().objects.all().count(), 3)
-        self.assertEqual(radiusbatch.expiration_date.strftime('%d-%m-%y'), '28-01-18')
-        path = self._get_path('static/test_batch_new.csv')
-        options = dict(file=path, name='test1')
-        self._call_command('batch_add_users', **options)
-        self.assertEqual(self.radius_batch_model.objects.all().count(), 2)
-        self.assertEqual(get_user_model().objects.all().count(), 6)
-        invalid_csv_path = self._get_path('static/test_batch_invalid.csv')
-        with self.assertRaises(CommandError):
-            options = dict(file='doesnotexist.csv', name='test3')
-            self._call_command('batch_add_users', **options)
-        with self.assertRaises(SystemExit):
-            options = dict(file=invalid_csv_path, name='test4')
-            self._call_command('batch_add_users', **options)
+class ZonePumaModelTestCase(TestCase):
+    def setUp(self):
+        self.zone = Zone.objects.create(id=1, name="Test Zone", borough="Test Borough", geom="POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))")
+        self.puma = Puma.objects.create(id=1, median_income=50000)
+        self.zone_puma = ZonePuma.objects.create(
+            zone=self.zone,
+            puma=self.puma,
+            # Add other required attributes for ZonePuma instance creation
+            # ...
+        )
 
-from io import StringIO
+    def test_zone_puma_creation(self):
+        # Add test cases for ZonePuma model creation here.
+        pass
 
-class ClosepollTest(TestCase):
-    def test_command_output(self):
-        out = StringIO()
-        call_command('closepoll', stdout=out)
-        self.assertIn('Expected output', out.getvalue())
+    def test_zone_puma_str_representation(self):
+        expected_str = "Zone: Test Zone, Puma: Puma ID: 1"
+        self.assertEqual(str(self.zone_puma), expected_str)
+
+
+class PlaceModelTestCase(TestCase):
+    def setUp(self):
+        self.zone = Zone.objects.create(id=1, name="Test Zone", borough="Test Borough", geom="POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))")
+        self.place = Place.objects.create(
+            nyc_id="12345",
+            status="Active",
+            # Add other required attributes for Place instance creation
+            # ...
+            taxi_zone=self.zone,
+        )
+
+    def test_place_creation(self):
+        # Add test cases for Place model creation here.
+        pass
+
+    def test_place_str_representation(self):
+        expected_str = "Place: 12345"
+        self.assertEqual(str(self.place), expected_str)

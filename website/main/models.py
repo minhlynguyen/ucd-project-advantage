@@ -4,13 +4,14 @@ from django.db import models as models
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models as geomodels
 from django.contrib.gis.geos import GEOSGeometry
+from django.db.models.query import QuerySet
 from django.utils import timezone
 
 # from impression.models import Impression
 # Create your models here.
 
 # Taxi zone models in maps schema
-class Zone(models.Model):
+class Zone(geomodels.Model):
     id = geomodels.PositiveIntegerField(primary_key=True)
     name = geomodels.CharField(max_length=45)
     borough = geomodels.CharField(max_length=13)
@@ -28,9 +29,6 @@ class Zone(models.Model):
                                         #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
                                         datetime__date=datetime.date(year, month, day)
                                          )#,
-
-    def multipolygon(self):
-        return str(self.geom)
 
     class Meta:
         managed = True
@@ -134,6 +132,11 @@ class ZonePuma(geomodels.Model):
 
 # Places model in maps schema
 class Place(geomodels.Model):
+
+    class PlaceObjects(models.Manager):
+        def get_queryset(self) -> QuerySet:
+            return super().get_queryset().filter(status='Active')
+        
     id = geomodels.AutoField(primary_key=True)
     nyc_id = geomodels.CharField(unique=True, max_length=30)
     status = geomodels.CharField(max_length=8)
@@ -143,6 +146,8 @@ class Place(geomodels.Model):
     name = geomodels.CharField(max_length=150)
     geom = geomodels.PointField()
     taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
+    objects = models.Manager() #default manager
+    placeobjects = PlaceObjects()
 
     class Meta:
         managed = True

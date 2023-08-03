@@ -60,7 +60,6 @@ def superuser(request):
 class BlacklistTokenView(APIView):
 	permission_classes = (permissions.AllowAny,)
 	authentication_classes = ()
-
 	def post(self, request):
 		try:
 			refresh_token = request.data["refresh_token"]

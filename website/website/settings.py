@@ -95,6 +95,9 @@ DATABASES = {
         "PASSWORD": config("DB_PASSWORD"),
         "HOST": "database-1.cvwut6jnqsvn.us-east-1.rds.amazonaws.com",
         "PORT": "5432",
+        'TEST': {
+            'NAME': 'lytestdatabase',
+        },
     }
 }
 
@@ -186,3 +189,5 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
+
+TEST_RUNNER = 'website.runner.PostgresSchemaTestRunner'

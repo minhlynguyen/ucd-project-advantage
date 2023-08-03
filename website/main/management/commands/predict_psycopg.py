@@ -2,18 +2,11 @@ import pandas as pd
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 from django.utils import timezone
-import pickle, datetime, holidays, warnings
+import pickle, datetime, holidays
 from main.models import ZoneDetail
+from psycopg2.extras import execute_values
+from decouple import config
 import psycopg2
-
-
-def fxn():
-    warnings.warn("deprecated", DeprecationWarning)
-
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    fxn()
-
 
 class Command(BaseCommand):
 
@@ -27,23 +20,22 @@ class Command(BaseCommand):
             y, m, d = date_str.strftime("%Y"),date_str.strftime("%m"),date_str.strftime("%d")
             return int(y), int(m), int(d)
         
-        help = 'Predict busyness'
         try:
-            zone = ZoneDetail.objects.filter(Q(prediction_last_update__isnull=True) | 
-                                             Q(prediction_last_update__date__lte=datetime.date(get_ymd(run_date)[0],
-                                                                                                 get_ymd(run_date)[1],
-                                                                                                 get_ymd(run_date)[2]))
-                                             ).filter(datetime__gte=datetime.date(get_ymd(predict_start_date)[0],
-                                                                                  get_ymd(predict_start_date)[1],
-                                                                                  get_ymd(predict_start_date)[2])
-                                                    ).filter(datetime__lte=datetime.date(get_ymd(predict_end_date)[0],
-                                                                                  get_ymd(predict_end_date)[1],
-                                                                                  get_ymd(predict_end_date)[2])
+            zone = ZoneDetail.objects.filter(Q(impression_predict__isnull=True) 
+                                            | Q(prediction_last_update__date__lte=datetime.date(get_ymd(run_date)[0],
+                                                                                                    get_ymd(run_date)[1],
+                                                                                                    get_ymd(run_date)[2]))
+                                                ).filter(datetime__date__gte=datetime.date(get_ymd(predict_start_date)[0],
+                                                                                    get_ymd(predict_start_date)[1],
+                                                                                    get_ymd(predict_start_date)[2])
+                                                    ).filter(datetime__date__lte=datetime.date(get_ymd(predict_end_date)[0],
+                                                                                    get_ymd(predict_end_date)[1],
+                                                                                    get_ymd(predict_end_date)[2])
                                                     )
-            
             
             # Convert the data into pandas dataframe and process before feeding into model
             df = pd.DataFrame.from_records(zone.values())
+            print(df.head(5))
 
             # Create a dictionary of US holidays for 2022 and 2023
             us_holidays = dict(holidays.US(years=[2022, 2023]))
@@ -53,7 +45,6 @@ class Command(BaseCommand):
             df['datetime'] = pd.to_datetime(df['datetime'])
 
             # Change holiday column
-            # otherwise, it will be "No"
             df['holiday'] = df['datetime'].dt.date.apply(lambda x: us_holidays.get(x, "No"))
             
             # Rename column to match with training data
@@ -69,8 +60,6 @@ class Command(BaseCommand):
             df['borough'] = df['borough'].astype('category')
             df['passenger_count'] = df['passenger_count'].fillna(-1).astype(int)
 
-            # print(df.dtypes)
-    
             # print existing categories:
             taxi_zone_cate = []
             for i in range(1,264):
@@ -82,8 +71,6 @@ class Command(BaseCommand):
             df['hour'] = df["hour"].cat.set_categories(['0','1','2','3','4','5','6','7','8','9','10','11','12',
                                                     '13','14','15','16','17','18','19','20','21','22','23'])
             
-            # print(df[df['hour'].isnull()])
-
             df['borough'] = df['borough'].cat.set_categories(['Bronx', 'Brooklyn', 'EWR', 'Manhattan', 'Queens', 
                                                             'Staten Island'])
             df['month'] = df['month'].cat.set_categories(['1','2','3','4','5','6','7','8','9','10','11','12'])
@@ -96,18 +83,14 @@ class Command(BaseCommand):
                                                             ])
                                                                 
             # Keep the primary key and needed info to match and concat the results later
-            df_pk = df[['zone_time_id','taxi_zone','impression_history','datetime','prediction_last_update','holiday']]
-                        
+            df_pk = df[['zone_time_id','holiday','taxi_zone','datetime']]
             df = df.drop(labels=['zone_time_id','impression_history','datetime','place_last_update','prediction_last_update'], axis=1)
 
             # set up dummies features
             df_dummy = pd.get_dummies(df)
             
             # split data set into the features and target feature
-            target_features=df_dummy[['passenger_count']]
             features = df_dummy.drop(labels=["passenger_count"], axis=1)
-
-            # print(features.dtypes)
             
             # load the trained model
             loaded_model = pickle.load(open('../website/main/final_XGboost_model.pkl', 'rb'))
@@ -121,51 +104,57 @@ class Command(BaseCommand):
             predictions_df = pd.DataFrame(predictions, columns=['predicted_passenger_count'])
 
             # concatenate the target_feature, features and primary key dataframes
-            result = pd.concat([df_pk, predictions_df, target_features, features], axis=1)
+            result = pd.concat([df_pk, predictions_df], axis=1)
+            result.rename(columns = {'predicted_passenger_count':'impression_predict'}, inplace = True)
 
-            # Step 1: Convert DataFrame to a list of dictionaries
-            update_data = df.to_dict(orient="records")
+            # Convert DataFrame to a list of tuples for bulk insert
+            self.data= [(row["zone_time_id"], int(row["impression_predict"]), row["holiday"]) for _, row in result.iterrows()]
 
-            # Step 2: Fetch existing objects based on zone_time_id
-            existing_objects = YourModel.objects.in_bulk(field_name="zone_time_id")
+            # Create a cursor to execute SQL queries
+            # Database connection details
 
-            # Step 3: Update fields of existing objects and add new objects to update_data
-            updated_objects = []
-            for data in update_data:
-                zone_time_id = data["zone_time_id"]
-                if zone_time_id in existing_objects:
-                    # Update fields of existing object
-                    obj = existing_objects[zone_time_id]
-                    obj.impression_predict = data["impression_predict"]
-                    obj.holiday = data["holiday"]
-                    obj.prediction_last_update = timezone.now()
-                    updated_objects.append(obj)
-                else:
-                    # Add new object with prediction_last_update as timezone.now()
-                    data["prediction_last_update"] = timezone.now()
-                    updated_objects.append(YourModel(**data))
+            self.db_host = "database-1.cvwut6jnqsvn.us-east-1.rds.amazonaws.com"
+            self.db_name = "advantage-db"
+            self.db_user = "advantage"
+            self.db_password = config("DB_PASSWORD")
 
-            # Step 4: Use bulk_update() to perform the bulk update
-            with transaction.atomic():
-                YourModel.objects.bulk_update(updated_objects, fields=["impression_predict", "holiday", "prediction_last_update"])
+            connection = psycopg2.connect(
+                host=self.db_host,
+                database=self.db_name,
+                user=self.db_user,
+                password=self.db_password,
+            )
 
+            # Read and execute the SQL script
+            print("Connection is created.")
+            try:
+                with connection.cursor() as cursor:
+                    print("Running query.")
+                    cursor.execute("""
+                        CREATE TEMP TABLE temp_holiday_data (
+                            zone_time_id INTEGER,
+                            holiday VARCHAR,
+                            impression_predict INTEGER
+                        )
+                    """)
 
-            # print(result[['holiday']])
-            
-            # write prediction result in database
-            # for index, row in result.iterrows():
-            #     # try: 
-            #     zone.filter(zone_time_id=row['zone_time_id']).bulk_update(impression_predict=int(row['predicted_passenger_count']),
-            #                                                             prediction_last_update = timezone.now(),
-            #                                                             holiday = row['holiday']
-            #                                                             )
-            #     print('Record no.',row['zone_time_id'],'Zone no.',row['taxi_zone'],'Time',row['datetime'],'updated prediction:',
-            #           row['predicted_passenger_count'])
-            #     # except Exception as e:
-            #     #     print(e)                    
+                    # Use execute_values to efficiently insert data into the temporary table
+                    execute_values(cursor, """
+                        INSERT INTO temp_holiday_data (zone_time_id, impression_predict, holiday) VALUES %s
+                    """, self.data)
 
-            # return zone
-        
+                    # Update the 'holiday' column in 'maps.zone_detail' using a JOIN with the temporary table
+                    cursor.execute("""
+                        UPDATE maps.zone_detail AS zd
+                        SET holiday = thd.holiday, impression_predict = thd.impression_predict, prediction_last_update = NOW()
+                        FROM temp_holiday_data AS thd
+                        WHERE zd.zone_time_id = thd.zone_time_id 
+                    """)
+                    connection.commit()
+            finally:
+                connection.close()
+                print("Connection is closed.")
+
         except Exception as e:
             print(e)
         
@@ -184,6 +173,7 @@ class Command(BaseCommand):
         )
     
     def handle(self, *args, **kwargs):
+        help = 'Predict busyness'
         start_date = kwargs['start']
         end_date = kwargs['end']
         self.predict(start_date,end_date)
