@@ -3,8 +3,7 @@ from .views import SavedList, SavedZone
 
 app_name = 'save_api'
 
-urlpatterns = [
-    path('<int:pk>/', SavedZone.as_view(), name = 'zonesave'), #view 1 post only
+urlpatterns = [   
     path('',SavedList.as_view(), name='zonesavelist'), #view multiple post
-
+    path('<int:zone>/', SavedZone.as_view(), name = 'zonesave'), #delete 1 zone from collection only
 ]

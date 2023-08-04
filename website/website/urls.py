@@ -9,8 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('main/',include('main.urls')),
     path('user/',include('user_api.urls')),
-    path('user/save/',include('save_api.urls')),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('user/save/',include('save_api.urls',namespace='save_api')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')), 
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
