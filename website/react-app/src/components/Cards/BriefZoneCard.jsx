@@ -1,5 +1,5 @@
 
-import { Box, Button, Card, Container, IconButton, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Container, IconButton, Paper, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
@@ -18,8 +18,9 @@ const paperStyle = {
 export default function BriefZoneCard({ zone, setSelectedZone }) {
   // zone is a feature for now
 
-  const { compareZones, setCompareZones } = React.useContext(SolutionsContext);
+  const { compareZones, setCompareZones, collection, addCollection, deleteCollection } = React.useContext(SolutionsContext);
   const isCompared = compareZones.includes(zone);
+  const isSaved = collection.includes(zone.id);
 
   const [hover, setHover] = useState(false);
 
@@ -65,6 +66,16 @@ export default function BriefZoneCard({ zone, setSelectedZone }) {
     };
   };
 
+  const handleClickSave = (clickedZone) => {    
+    if (isSaved) {
+      // delete
+      deleteCollection(clickedZone.id);
+    } else {
+      // add
+      addCollection(clickedZone.id);
+    }
+  };
+
 
   const skeleton = 
     <Container>
@@ -90,12 +101,15 @@ export default function BriefZoneCard({ zone, setSelectedZone }) {
         <Typography>Total Impression: {zone.properties.impression.display.total}</Typography>
         <Typography>Target Impression: {zone.properties.impression.display.valid}</Typography>
         <Box display="flex" justifyContent="flex-end">
-          <IconButton aria-label="Locate" onClick={handleClickLocate(zone)}><LocationOnIcon /></IconButton>
-          <IconButton aria-label="Add to compare" onClick={handleClickCompare(zone)}>
-            {/* <DifferenceIcon /> */}
-            <DifferenceIcon color={isCompared ? "primary" : "inherit"} />
+          <IconButton aria-label="Locate" onClick={handleClickLocate(zone)}>
+            <Tooltip title='Locate in the map'><LocationOnIcon /></Tooltip>
           </IconButton>
-          <IconButton aria-label="Save"><FavoriteIcon /></IconButton>
+          <IconButton aria-label="Add to compare" onClick={handleClickCompare(zone)}>
+            <Tooltip title='Add to compare'><DifferenceIcon color={isCompared ? "primary" : "inherit"} /></Tooltip>
+          </IconButton>
+          <IconButton aria-label="Save" onClick={() => handleClickSave(zone)}>
+            <Tooltip title='Add to collection'><FavoriteIcon color={isSaved ? 'secondary' : 'inherit'} /></Tooltip>
+          </IconButton>
         </Box>
       </Paper>        
   );

@@ -414,58 +414,58 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
     const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
 
         
-    const fetchData = async () => {
-      try {
-        // Fetch image data
-        const url = `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url,geometry,sequence&bbox=${bbox}&limit=100`;
-        // `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url&bbox=${bbox}&limit=100`
-        const response = await axios.get(url);
-        if (response.status !== 200) {
-          throw new Error("Can't fetch pictures for viewing now!");
-        } 
-        const data = response.data.data;
-        console.log("pictures data:", data );
+    // const fetchData = async () => {
+    //   try {
+    //     // Fetch image data
+    //     const url = `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url,geometry,sequence&bbox=${bbox}&limit=100`;
+    //     // `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url&bbox=${bbox}&limit=100`
+    //     const response = await axios.get(url);
+    //     if (response.status !== 200) {
+    //       throw new Error("Can't fetch pictures for viewing now!");
+    //     } 
+    //     const data = response.data.data;
+    //     console.log("pictures data:", data );
 
-        const sequenceSet = new Set();
-        const uniqueData = data.filter(item => {
-          if(!sequenceSet.has(item.sequence)) {
-            sequenceSet.add(item.sequence);
-            return true;
-          }
-          return false;
-        });
-        console.log("filtered pictures data:", uniqueData );
+    //     const sequenceSet = new Set();
+    //     const uniqueData = data.filter(item => {
+    //       if(!sequenceSet.has(item.sequence)) {
+    //         sequenceSet.add(item.sequence);
+    //         return true;
+    //       }
+    //       return false;
+    //     });
+    //     console.log("filtered pictures data:", uniqueData );
         
-        uniqueData.forEach(image => {
-          // Create a new marker with the image as the icon
-          // if (image.computed_geometry) {
-          //   const marker = L.marker(
-          //     [image.computed_geometry.coordinates[1], image.computed_geometry.coordinates[0]], 
-          //     { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
-          //   ); 
-          //   // Add the marker to the map
-          //   viewClusterRef.current.addLayer(marker);
-          //   viewMarkersRef.current.push(marker);
-          //   // marker.addTo(viewCluster);
-          // }
-          if (image.geometry) {
-            const marker = L.marker(
-              [image.geometry.coordinates[1], image.geometry.coordinates[0]], 
-              { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
-            ); 
-            // Add the marker to the map
-            viewClusterRef.current.addLayer(marker);
-            viewMarkersRef.current.push(marker);
-            // marker.addTo(viewCluster);
-          }
+    //     uniqueData.forEach(image => {
+    //       // Create a new marker with the image as the icon
+    //       // if (image.computed_geometry) {
+    //       //   const marker = L.marker(
+    //       //     [image.computed_geometry.coordinates[1], image.computed_geometry.coordinates[0]], 
+    //       //     { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
+    //       //   ); 
+    //       //   // Add the marker to the map
+    //       //   viewClusterRef.current.addLayer(marker);
+    //       //   viewMarkersRef.current.push(marker);
+    //       //   // marker.addTo(viewCluster);
+    //       // }
+    //       if (image.geometry) {
+    //         const marker = L.marker(
+    //           [image.geometry.coordinates[1], image.geometry.coordinates[0]], 
+    //           { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
+    //         ); 
+    //         // Add the marker to the map
+    //         viewClusterRef.current.addLayer(marker);
+    //         viewMarkersRef.current.push(marker);
+    //         // marker.addTo(viewCluster);
+    //       }
 
-        });
+    //     });
 
          
-      } catch (error) {
-        console.error("PIC MARKER", error);
-      }
-    };
+    //   } catch (error) {
+    //     console.error("PIC MARKER", error);
+    //   }
+    // };
 
     // fetchData();
     
@@ -517,7 +517,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
     
     
     
-    console.log('key is:', import.meta.env.VITE_APP_ACCESS_TOKEN);
+    // console.log('key is:', import.meta.env.VITE_APP_ACCESS_TOKEN);
   }, [selectedZone, isShowViewMarkers]);
   
 

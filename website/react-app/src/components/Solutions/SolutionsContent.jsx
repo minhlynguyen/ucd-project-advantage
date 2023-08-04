@@ -4,7 +4,7 @@ import FunctionModule from './FunctionModule';
 import MapModule from './MapModule';
 import InfoModule from './InfoModule';
 import axios from 'axios';
-import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge, Snackbar, Grid } from '@mui/material';
+import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge, Snackbar, Grid, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/system';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
@@ -14,7 +14,17 @@ import { ALL_BOROUGHS, ALL_AGES } from '../../constants';
 import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 import axiosInstance from '../../AxiosConfig';
-import { generateAdTimeData } from '../../utils/testDataGenerator';
+import { generateAdTimeData, generateAllCollection } from '../../utils/testDataGenerator';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const uiTheme = createTheme({
+  palette: {
+    secondary: {
+      main: '#f50057',
+    },
+  },
+});
+
 
 
 function SolutionsContent() {
@@ -46,6 +56,7 @@ function SolutionsContent() {
   const [isFetchingCensus, setIsFetchingCensus] = useState(false);
   const [isFetchingGEOM, setIsFetchingGEOM] = useState(false);
   const [isFetchingAdTimeData, setIsFetchingAdTimeData] = useState(false);
+  const [collection, setCollection] = useState([]);//list of zones that user saved
 
   // fetch impression data
   useEffect(()=>{
@@ -344,8 +355,32 @@ function SolutionsContent() {
 
   }, [adTime]);
 
-  const handleClickLikeFab = () => {
+  // fetch collection data
+  useEffect(()=>{
+    const fetchData = async () => {
+      let data = [];
 
+      // axios.get('')
+      // .then((response)=> {
+      //   if (response.data.status !== "1") {
+      //     throw new Error("Can't fetch collection data for current user now!");
+      //   }
+      //   data = response.data.data;
+      // }).catch(error => {
+      //   console.log(error);
+      // });
+
+      data = generateAllCollection().data;
+
+      setCollection(data.map(zone => zone.zoneID));
+      
+    };
+
+    fetchData();
+
+  }, []);
+
+  const handleClickLikeFab = () => {
     const currentURL = window.location.href;
     const urlObject = new URL(currentURL);
     const likeUrl = new URL('/saved', urlObject);
@@ -369,9 +404,65 @@ function SolutionsContent() {
     setOpenZoneBoard(null);
   };
 
+  const addCollection = (zoneID) => {
+    const updateData = async (id) => {
+
+      let isUpdated = false;
+
+      // axios.get('')
+      // .then(response => {
+      //   if (response.data.status !== "1") {
+      //     throw new Error("Failed to add collection!");
+      //   }
+      //   isUpdated = true;
+      // })
+      // .catch(error => {
+      //   console.log(error);
+      // });
+
+      isUpdated = true;
+
+      if (isUpdated) {
+        setCollection(prev => [...prev, id]);
+        console.log("Collection added succussfully!");
+      }
+
+    };
+    updateData(zoneID);
+  };
+
+  const deleteCollection = (zoneID) => {
+    const updateData = async (id) => {
+
+      let isUpdated = false;
+
+      // axios.get('')
+      // .then(response => {
+      //   if (response.data.status !== "1") {S
+      //     throw new Error("Failed to delete collection!");
+      //   }
+      //   isUpdated = true;
+      // })
+      // .catch(error => {
+      //   console.log(error);
+      // });
+
+      isUpdated = true;
+
+      if (isUpdated) {
+        setCollection(prev => prev.filter(item => item !== id));
+        console.log("Collection removed succussfully!");
+      }
+
+    };
+    updateData(zoneID);
+  };
 
   return (
-    <SolutionsContext.Provider value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, handleClickMore, filteredZones, compareZones, setCompareZones, setOpenCompareBoard }}>
+    <ThemeProvider theme={uiTheme}>
+    <SolutionsContext.Provider 
+    value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, handleClickMore, filteredZones, compareZones, setCompareZones, setOpenCompareBoard, collection, addCollection, deleteCollection }}
+    >
       <div className="solutions-content">      
         <FunctionModule filters={filters} setFilters={setFilters}/>
         <div className="map-info-container">
@@ -395,15 +486,21 @@ function SolutionsContent() {
             </Grid>
           </Grid>
         </div>
-        <Box className='floating-button'>        
+        <Box className='floating-button'>
+          <Tooltip title='Go to compare'>      
           <Fab color="primary" aria-label="compare" onClick={handleClickDifference}>
             <Badge badgeContent={compareZones.filter(zone => zone !== null).length} color="primary">
               <DifferenceIcon />
-              </Badge>
-          </Fab>         
-          <Fab color='secondary' aria-label="like" onClick={handleClickLikeFab}>
-            <FavoriteIcon />
+            </Badge>
           </Fab>
+          </Tooltip>
+          <Tooltip title='Go to collection'>          
+          <Fab color='secondary' aria-label="like" onClick={handleClickLikeFab}>
+            <Badge badgeContent={collection.length} color="secondary">
+              <FavoriteIcon />
+            </Badge>
+          </Fab>
+          </Tooltip> 
         </Box>
         <Dialog open={openCompareBoard} onClose={handleCloseCompareBoard} fullScreen={fullScreen} maxWidth='lg'>
           <DialogTitle>Compare Board</DialogTitle>
@@ -418,7 +515,6 @@ function SolutionsContent() {
           <DialogTitle>Zone Board</DialogTitle>
           <DialogContent>
             {openZoneBoard ? <ZoneBoard zone={openZoneBoard} /> : null}
-            {/* <ZoneBoard zone={openZoneBoard} />  */}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseZoneBoard}>Close</Button>
@@ -426,6 +522,7 @@ function SolutionsContent() {
         </Dialog>
       </div>
     </SolutionsContext.Provider>
+    </ThemeProvider>
   );
 };
 

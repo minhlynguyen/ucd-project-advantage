@@ -82,3 +82,43 @@ export const generateAdTimeDataForSingleZone = () => {
         "data": data
     };
 };
+
+/*
+{
+	'status': 1,
+	'data': [
+		{
+			'zoneID': 5,
+			'name': 'XXX AIR Port',
+			'borough': xxx,
+			'median_income': 3000,
+			'mode_age_group': 'females_under_5'
+		},
+		{
+			'zone id': 6,
+			'name': 'XXX AIR Port',
+			'borough': xxx,
+			'median_income': 3000,
+			'mode_age_group': 'females_under_5'
+		},
+		...
+	]
+}
+*/
+export const generateAllCollection = () => {
+    const data = [];
+    for (let i = 1; i <= 97; i++) {
+        let zone = {
+			'zoneID': i,
+			'name': `XXX AIR Port${i}`,
+			'borough': 'Manhattan',
+			'median_income': 3000,
+			'mode_age_group': 'females_under_5'
+		}
+        data.push(zone);
+    }
+    return {
+        "status": "1",
+        "data": data
+    };
+};

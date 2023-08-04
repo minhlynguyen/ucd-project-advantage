@@ -38,7 +38,7 @@
 //     );
 //   }
 
-import { Box, Button, Card, Container, IconButton, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Container, IconButton, Paper, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
@@ -51,8 +51,9 @@ import { convertToReadableForGroup } from '../../utils/distributionUtils';
 
 export default function DetailedZoneCard({ zone }) {
     // zone is a feature for now
-    const { handleClickMore, compareZones, setCompareZones } = React.useContext(SolutionsContext);
+    const { handleClickMore, compareZones, setCompareZones, collection, addCollection, deleteCollection } = React.useContext(SolutionsContext);
     const isCompared = compareZones.includes(zone);
+    const isSaved = collection.includes(zone.id);
 
     const paperStyle = {
     //   height: 200,
@@ -94,6 +95,16 @@ export default function DetailedZoneCard({ zone }) {
       };
     };
 
+    const handleClickSave = (clickedZone) => {    
+      if (isSaved) {
+        // delete
+        deleteCollection(clickedZone.id);
+      } else {
+        // add
+        addCollection(clickedZone.id);
+      }
+    };
+
     // console.log("zone in detailedzonecard componet", zone);
     return (
       (!zone) ?
@@ -105,16 +116,20 @@ export default function DetailedZoneCard({ zone }) {
           <Typography style={{ fontStyle: 'italic', color: 'grey' }}>Borough: {zone.properties.borough}</Typography>
           <Typography>Total Impression: {zone.properties.impression.display.total}</Typography>
           <Typography>Target Impression: {zone.properties.impression.display.valid}</Typography>
-          <Typography>Median Income: {`${zone.properties.average_income} $`}</Typography>
+          <Typography>Median Income: {`$${zone.properties.average_income}`}</Typography>
           <Typography>Most common group: {convertToReadableForGroup(zone.properties.mode_group)}</Typography>
           {/* <Typography>Total Business: 20</Typography> */}
 
           <Box display="flex" justifyContent="flex-end">
             <IconButton aria-label="Add to compare" onClick={handleClickCompare(zone)}>
-              <DifferenceIcon color={isCompared ? "primary" : "inherit"} />
+              <Tooltip title='Add to compare'><DifferenceIcon color={isCompared ? "primary" : "inherit"} /></Tooltip>
             </IconButton>
-            <IconButton aria-label="Save"><FavoriteIcon /></IconButton>
-            <IconButton aria-label="More" onClick={() => handleClickMore(zone)}><MoreHorizIcon /></IconButton>
+            <IconButton aria-label="Save" onClick={() => handleClickSave(zone)}>
+              <Tooltip title='Add to collection'><FavoriteIcon color={isSaved ? 'secondary' : 'inherit'} /></Tooltip>
+            </IconButton>
+            <IconButton aria-label="More" onClick={() => handleClickMore(zone)}>
+            <Tooltip title='Show more details'><MoreHorizIcon /></Tooltip>
+            </IconButton>
           </Box>
 
         </Paper>
