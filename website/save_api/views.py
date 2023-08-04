@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from rest_framework import generics
+from rest_framework import generics, response
 from .models import SavedZone
 from .serializers import SavedSerializer
 from rest_framework import permissions, status
-from rest_framework.decorators import api_view, schema, authentication_classes
+from rest_framework.decorators import api_view, schema, permission_classes
 
 class SavedZonePermission(permissions.BasePermission):
     
@@ -13,31 +13,23 @@ class SavedZonePermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.user == request.user.user_id
 
-class SavedList(generics.ListAPIView,SavedZonePermission): 
-
-    permission_classes = [SavedZonePermission]
-    serializer_class = SavedSerializer
-    
-    def get_queryset(self):
-        """
-        This view should return a list of all the saved zones
-        for the currently authenticated user.
-        """
-        user = self.request.user
-        queryset = SavedZone.objects.filter(user=user.user_id)
-        return queryset
-
-@api_view(['GET','POST'])
-@authentication_classes(SavedZonePermission,)
+@api_view(['GET', 'POST'])
+@permission_classes([SavedZonePermission])
 def saved_list(request):
+    """
+    This view should return a list of all the saved zones
+    for the currently authenticated user.
+    """
     user = request.user
     try:
-        zone_list = SavedZone.objects.filter(user=user.user_id)
-        
+        zones = SavedZone.objects.filter(user=user.user_id)
+    
     except Exception as e:
-        return JsonResponse({"status":"2","data":str(e)},status=200)
+        return response.Response({"status":"2","data":str(e)})
+    
     if request.method == 'GET':
-        return JsonResponse({"status":"1","data":places},status=200,safe=False)
+        serializer = SavedSerializer(zones,many=True)
+        return response.Response({"status":"1","data":str(serializer.data)})
 
 
 class ViewDeleteSavedZone(generics.RetrieveDestroyAPIView,SavedZonePermission):
