@@ -105,21 +105,33 @@ export default function CompareDetail({setConfirmMode}) {
   }, []);
   // for bar chart
   useEffect(() => {
+    const updateData = async () => {
+      let data1 = {};
+      let data2 = {};
 
-    Promise.all([
-      axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone1.id}`),
-      axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone2.id}`)
-    ]).then((responses) => {
-      const dataZone1 = responses[0].data;
-      const dataZone2 = responses[1].data;
-  
+      // Promise.all([
+      //   axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone1.id}`),
+      //   axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone2.id}`)
+      // ]).then((responses) => {
+      //   if (responses[0].data.status !== "1" || responses[1].data.status !== "1") {
+      //     throw new Error("Can't fetch data for business now!");
+      //   }
+      //   data1 = responses[0].data.data[String(zone1.id)].detail[0];
+      //   data2 = responses[1].data.data[String(zone2.id)].detail[0];
+      // }).catch((error) => {
+      //   console.error('Error fetching data: ', error);
+      // });
+
+      data1 = generateAdTimeDataForSingleZone().data[String(zone1.id)].detail[0];//test
+      data2 = generateAdTimeDataForSingleZone().data[String(zone2.id)].detail[0];//test
+
       setTotalBusiness([
-        dataZone1.data[zone1.id].detail[0].total_business,
-        dataZone2.data[zone2.id].detail[0].total_business
+        data1.total_business,
+        data2.total_business
       ]);
   
-      const categoriesDataZone1 = BIG_CATE.map((category) => dataZone1.data[zone1.id].detail[0][category]);
-      const categoriesDataZone2 = BIG_CATE.map((category) => dataZone2.data[zone2.id].detail[0][category]);
+      const categoriesDataZone1 = BIG_CATE.map((category) => data1[category]);
+      const categoriesDataZone2 = BIG_CATE.map((category) => data2[category]);
       
       setBusinessData(getBarData(
         {
@@ -131,9 +143,9 @@ export default function CompareDetail({setConfirmMode}) {
           label: zone2.properties.name
         })
       );
-    }).catch((error) => {
-      console.error('Error fetching data: ', error);
-    });
+    };
+
+    updateData();
   
   }, [compareZones]);
   

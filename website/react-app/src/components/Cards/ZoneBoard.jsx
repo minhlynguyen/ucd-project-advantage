@@ -85,25 +85,37 @@ export default function ZoneBoard({zone}) {
   }, []);
   // bar chart
   useEffect(() => {
-        axios
-      // .get(`http://127.0.0.1:8000/main/zones/${zone.id}`)
-      .get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone.id}`)
-      .then((response) => {
-        const data = response.data;
-        setTotalBusiness(data.data[zone.id].detail[0].total_business);
+    const updateData = async () => {
+      let data = {};
 
-        const categoriesData = BIG_CATE.map((category) => data.data[zone.id].detail[0][category]);
-        
-        setBusinessData(getBarData(
-          {
-            arr: categoriesData,
-            label: zone.properties.name
-          })
-        );
-      })
-      .catch((error) => {
-        console.error('Error fetching data: ', error);
-      });
+      // axios
+      // // .get(`http://127.0.0.1:8000/main/zones/${zone.id}`)
+      // .get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone.id}`)
+      // .then((response) => {
+      //   if (response.data.status !== "1") {
+      //     throw new Error("Can't fetch data for business now!");
+      //   }
+      //   data = response.data.data[String(zone.id)].detail[0];
+      // })
+      // .catch((error) => {
+      //   console.error(error);
+      // });
+
+      data = generateAdTimeDataForSingleZone().data[String(zone.id)].detail[0];//test data
+
+      setTotalBusiness(data.total_business);
+
+      const categoriesData = BIG_CATE.map((category) => data[category]);
+      
+      setBusinessData(getBarData(
+        {
+          arr: categoriesData,
+          label: zone.properties.name
+        })
+      );
+    };
+    updateData();
+
   }, []);
 
   return ( 
