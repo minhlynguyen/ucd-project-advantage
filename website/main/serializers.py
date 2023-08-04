@@ -35,7 +35,7 @@ def find_key_with_highest_value(zone_data):
     # Add a pair of 'key_with_highest_value': name of the key back to the zone_data dictionary
     zone_data['main_group'] = key_with_highest_value
 
-def zone_census_serializer():
+def zone_census_serializer(id=None):
 
     full_zone = ZonePuma.objects.filter(median_income__isnull=False).aggregate(Avg('median_income'),
                                                             Avg('females_under_5'),Avg('females_5_14'),
@@ -111,7 +111,10 @@ def zone_census_serializer():
     for zone_id, zone_data in data.items():
         find_key_with_highest_value(zone_data)
 
-    return(data)
+    if id == None:
+        return(data)
+    else: 
+        return(data.get(id))
 
 
 

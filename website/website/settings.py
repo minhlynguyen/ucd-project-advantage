@@ -88,7 +88,6 @@ WSGI_APPLICATION = "website.wsgi.application"
 
 DATABASES = {
     "default": {
-        # "ENGINE": "django.db.backends.postgresql",
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "NAME": "advantage-db",
         "USER": "advantage",
@@ -164,11 +163,13 @@ REST_FRAMEWORK = {
     #     "rest_framework.authentication.SessionAuthentication",
     # ],
 
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    # "DEFAULT_AUTHENTICATION_CLASSES": [
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ],
 
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly", 
+    ],
 }
 
 
