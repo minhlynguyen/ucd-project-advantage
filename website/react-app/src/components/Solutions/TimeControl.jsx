@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import Switch from '@mui/material/Switch';
-import { Slider, Stack, Typography } from '@mui/material';
+import { Box, Slider, Stack, Typography, Tooltip } from '@mui/material';
 import DateTimeSelect from './DateTimeSelect';
 import SolutionsContext from './SolutionsContext';
 import { setHourInTimeString, getNYCHourFromTimeString, getCurrentTimeInNY } from '../../utils/dateTimeUtils';
-
+import InfoIcon from '@mui/icons-material/Info';
 
 export default function TimeControl() {
 
@@ -22,8 +22,16 @@ export default function TimeControl() {
   };
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
-        <Typography variant='body2'>(NYC) Real time</Typography>
+    <div className='time-control' style={{marginTop: '5px'}}>
+    <Stack direction={{ xs: 'column', md: 'row' }} spacing={1} alignItems="center" >
+
+        <Box display="flex" alignItems="center">
+        <Typography variant='body2'>(NYC</Typography>
+        <Tooltip title="All the time on our website is NYC time">
+        <InfoIcon fontSize='small' color='primary'/>
+        </Tooltip>
+        
+        <Typography variant='body2'>) Real time</Typography>
         <Switch
         checked={adTimeMode}
         onChange={handleModeChange}
@@ -31,6 +39,8 @@ export default function TimeControl() {
         />
         <Typography variant='body2'>Ad time</Typography>
         <span>:   </span>
+        </Box>
+
         {adTimeMode ? 
           <DateTimeSelect/> :
           <Stack direction="row" spacing={1} alignItems="center">
@@ -38,7 +48,7 @@ export default function TimeControl() {
             <Slider 
               max={23} 
               min={0} 
-              sx={{ width: 300 }} 
+              sx={{ width: '200px' }} 
               size="small" 
               defaultValue={sliderValue} 
               value={sliderValue}
@@ -47,8 +57,11 @@ export default function TimeControl() {
               valueLabelDisplay="auto" 
             />
             <Typography variant='body2'>24h</Typography>
+        
+        
           </Stack> 
         }
     </Stack>
+    </div>
   );
 }

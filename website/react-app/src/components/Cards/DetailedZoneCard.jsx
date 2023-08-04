@@ -47,6 +47,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SolutionsContext from '../Solutions/SolutionsContext';
+import { convertToReadableForGroup } from '../../utils/distributionUtils';
 
 export default function DetailedZoneCard({ zone }) {
     // zone is a feature for now
@@ -104,8 +105,8 @@ export default function DetailedZoneCard({ zone }) {
           <Typography style={{ fontStyle: 'italic', color: 'grey' }}>Borough: {zone.properties.borough}</Typography>
           <Typography>Total Impression: {zone.properties.impression.display.total}</Typography>
           <Typography>Target Impression: {zone.properties.impression.display.valid}</Typography>
-          <Typography>Average Income: {zone.properties.average_income}</Typography>
-          <Typography>Average Age: {zone.properties.average_age}</Typography>
+          <Typography>Median Income: {`${zone.properties.average_income} $`}</Typography>
+          <Typography>Most common group: {convertToReadableForGroup(zone.properties.mode_group)}</Typography>
           {/* <Typography>Total Business: 20</Typography> */}
 
           <Box display="flex" justifyContent="flex-end">

@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useContext, useRef, useState, useEffect } from "react";
-import axios from "axios";
+import React, { useContext, useState } from "react";
+import axiosInstance from "../../AxiosConfig";
 import * as Form from "@radix-ui/react-form";
 import { UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
@@ -8,20 +8,15 @@ import weblogo from "../../assets/AdVantage.svg";
 import "./SignupLoginPage.css";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from "react-router-dom";
 
-// connecting to server 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
-axios.defaults.withCredentials = true;
 
-const client = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-});
 
 export default function SignupLoginPage() {
   // setting credentials for registration page and login page
   const navigate = useNavigate();
-  const { setCurrentUser} = useContext(UserContext);
+  const { setCurrentUser, } = useContext(UserContext);
+  // handleRegisterSuccess
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
@@ -35,20 +30,27 @@ export default function SignupLoginPage() {
   //   handling registration submit
   const handleSignupSubmit = (e) => {
     e.preventDefault();
-    client
+    axiosInstance
       .post("/user/register", {
         email: registerEmail,
         username: userName,
         password: registerPassword,
       })
       .then(function () {
-        client
-          .post("/user/login", {
+        axiosInstance
+          // .post("/user/login", {
+          .post("/token/", { //new
             email: registerEmail,
             password: registerPassword,
           })
-          .then(function () {
+          .then(function (res) {
             setCurrentUser(true);
+
+            localStorage.setItem('access_token', res.data.access);
+            localStorage.setItem('refresh_token', res.data.refresh);
+            axiosInstance.defaults.headers['Authorization'] =
+              'JWT ' + localStorage.getItem('access_token');
+
             toast.success('Registeration successful.', {
               position: 'top-right',
               autoClose: 1500,
@@ -59,8 +61,8 @@ export default function SignupLoginPage() {
               progress: undefined,
             });
             navigate("/");
-          }).catch(function (error) {
-            console.log(error.response.status);
+          }).catch(function () {
+            // console.log(error.response.status);
           });
       })
       .catch(function (error) {  
@@ -82,16 +84,20 @@ export default function SignupLoginPage() {
 // handle login submit 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    client
-      .post("/user/login", {
+    axiosInstance
+      .post("token/", {
         email: loginEmail,
         password: loginPassword,
       })
       .then(function (res) {
         setCurrentUser(true);
-        // setIsLoginSuccess(true); // Update the state to true for login success
-        // console.log('Login successful. isLoginSuccess:', isLoginSuccess);
-        console.log(res.data.userName)
+
+				localStorage.setItem('access_token', res.data.access);
+				localStorage.setItem('refresh_token', res.data.refresh);
+				axiosInstance.defaults.headers['Authorization'] =
+					'JWT ' + localStorage.getItem('access_token');
+ 
+        console.log(res)
         toast.success('Login successful.', {
           position: 'top-right',
           autoClose: 1500,
@@ -131,6 +137,7 @@ export default function SignupLoginPage() {
 
 
               <h2>Register</h2>
+
             </div>
             <Form.Field className="FormField" name="username">
               <Form.Message className="FormMessage" match="valueMissing">
@@ -204,6 +211,8 @@ export default function SignupLoginPage() {
             </Form.Field>
             <Form.Submit asChild>
               <div className="signup-button-container">
+              <Link className="link-hompepage-btn" to="/"> Return to Home Page</Link>
+
                 <button type="submit" className="register-button">
                   Register
                 </button>
@@ -262,10 +271,13 @@ export default function SignupLoginPage() {
             </Form.Field>
             <Form.Submit asChild>
               <div className="login-button-container">
+              <Link className="link-hompepage-btn" to="/"> Return to Home Page</Link>
                 <button type="submit" className="loginpage-button">
                   Login
                 </button>
+
               </div>
+
             </Form.Submit>
           </Form.Root>
         </div>

@@ -5,54 +5,93 @@ import {
   Route,
   Routes,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage";
 import SignupLoginPage from "./components/SignupLoginPage/SignupLoginPage";
 import Header from "./components/Header/Header";
 import SignedInHeader from "./components/Header/SignedInHeader/SignedInHeader";
 import Footer from "./components/Footer/Footer";
-import axios from "axios";
+import axiosInstance from "./AxiosConfig";
 import SolutionsContent from "./components/Solutions/SolutionsContent";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SavedPage from './components/SavedPage/SavedPage';
 import ScrollToTop from "./components/ScrollToTop";
 import webhomepagelogo from "./assets/AdVantageMainLoader.svg";
-import './App.css'
-import DotLoader from "react-spinners/DotLoader"
-
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
-axios.defaults.withCredentials = true;
+import './App.css';
+import DotLoader from "react-spinners/DotLoader";
+import axios from 'axios';
 
 // Create a user context
 const UserContext = createContext();
-
 
 function App() {
   const [currentUser, setCurrentUser] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
-
   useEffect(() => {
-    const client = axios.create({
-      baseURL: "http://127.0.0.1:8000",
-    });
-    client
-      .get("/user/user")
-      .then(function (res) {
-        console.log(res);
-        setCurrentUser(true);
-      })
-      .catch(function (error) {
-        console.log(error);
-        setCurrentUser(false);
-      }).finally(() => {
-        // Simulate a 5-second delay before setting isLoading to false
-        setTimeout(() => {
+    
+    const refreshToken = localStorage.getItem('refresh_token');
+    
+    const refreshTokenData = async (refreshToken) => {
+      // if there exists token in localStorage
+      const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]));
+      const now = Math.ceil(Date.now() / 1000);
+      if (tokenParts.exp > now) {
+        // if refresh token hasn't expire, send request to get new access token
+        const axiosInstanceForUserAuth = axios.create({
+          // baseURL: 'http://localhost:8000/',
+          baseURL: import.meta.env.VITE_APP_API_BASE_URL,
+          timeout: 5000,
+          headers: {
+            Authorization: localStorage.getItem('access_token')
+              ? 'JWT ' + localStorage.getItem('access_token')
+              : null,
+            'Content-Type': 'application/json',
+            accept: 'application/json',
+          },
+        });
+        return axiosInstanceForUserAuth
+        .post('/token/refresh/', { refresh: refreshToken })
+        .then((response) => {
+          localStorage.setItem('access_token', response.data.access);
+          localStorage.setItem('refresh_token', response.data.refresh);
+
+          axiosInstance.defaults.headers['Authorization'] =
+            'JWT ' + response.data.access;
+
+          setCurrentUser(true);
+        })
+        .catch(function (error) {
+          console.log(error);
+          setCurrentUser(false);
+        }).finally(() => {
+          // setTimeout(() => {
+          //   setIsLoading(false);
+          // }, 1000);
           setIsLoading(false);
-        }, 3000);
-      });
+        });
+      } else {
+        // setTimeout(() => {
+        //   setIsLoading(false);
+        // }, 3000);
+        setIsLoading(false);
+        setCurrentUser(false);
+        return;
+      }
+    };
+    if (!refreshToken) {
+      // if no token in localStorage, set no user
+      // setTimeout(() => {
+      //   setIsLoading(false);
+      // }, 1000);
+      setIsLoading(false);
+      setCurrentUser(false);
+      return;
+    } else {
+      refreshTokenData(refreshToken);
+    }
 
   }, []);
 
@@ -70,13 +109,10 @@ function App() {
   }
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser}}>
       <ToastContainer />
-
       <Router>
       <ScrollToTop />
-
-
         <MyRoutes />
       </Router>
     </UserContext.Provider>
@@ -87,13 +123,22 @@ function MyRoutes() {
   const { currentUser } = useContext(UserContext);
   let location = useLocation();
 
+  //=======================new===========================
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!currentUser && (location.pathname === '/solutions' || location.pathname === '/saved')) {
+      navigate('/signup');
+    }
+  }, [currentUser, navigate]);
+  //=======================new===========================
+
   return (
     <div>
       {/* Only show Header when not on LoginPage */}
       {/* Only show Header or SignedInHeader based on user login status */}
       {location.pathname !== "/signup" &&
         (currentUser ? <SignedInHeader /> : <Header />)}
-        {/* (currentUser ? <Header /> : <SignedInHeader />)}  */}
+    {/* // (currentUser ? <Header /> : <SignedInHeader />)}   */}
 
       <Routes>
         <Route path="/" element={<HomePage />} />

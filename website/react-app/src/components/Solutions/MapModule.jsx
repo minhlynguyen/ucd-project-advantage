@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import chroma from 'chroma-js';
@@ -6,7 +6,7 @@ import { Box, CircularProgress } from '@mui/material';
 import 'mapillary-js/dist/mapillary.css';
 import { Viewer } from 'mapillary-js';
 import axios from 'axios';
-
+import 'leaflet.vectorgrid';
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 import 'leaflet-control-geocoder';
 import './MapModule.css';
@@ -14,11 +14,10 @@ import SolutionsContext from './SolutionsContext';
 import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 import { Icon } from 'leaflet';
 import { BIG_CATE_ICONS } from '../../constants';
-
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-
+import * as d3 from 'd3';
 
 
 function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
@@ -42,10 +41,11 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   const viewerRef = useRef(null);
   // marker cluster
   const clusterRef = useRef(L.markerClusterGroup());
+  const viewMarkersRef = useRef([]);
+  const viewClusterRef = useRef(L.markerClusterGroup({disableClusteringAtZoom: 15}));
+  const [isShowViewMarkers, setIsShowViewMarkers] = useState(false);
 
-  const {realTime, adTime, adTimeMode} = useContext(SolutionsContext);
-
-
+  
   // Map tile layer initialisation
   useEffect(() => {
     console.log("UseEffect:Map tile layer initialisation");
@@ -54,8 +54,25 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
+
+
       map.addLayer(clusterRef.current);
-      mapInstanceRef.current = map;     
+      map.addLayer(viewClusterRef.current);
+      mapInstanceRef.current = map;
+      
+      // Add zoomend event listener
+      map.on('zoomend', () => {
+        const zoomLevel = map.getZoom();
+        console.log('Zoom level is now: ', zoomLevel);
+        
+        // Check zoom level
+        if (zoomLevel >= 18) {
+          // Execute your function here
+          console.log('Zoom level is now equal or above 17');
+          setIsShowViewMarkers(true);
+
+        }
+      });
     }    
   }, []);
 
@@ -70,6 +87,13 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       var geojson;
 
       // set color scale and style
+      let minVal = Math.log(1); // log(1) = 0
+      let maxVal = Math.log(1001); // log(1001) is around 6.91
+      let colorScale = d3.scaleLinear()
+          .domain([minVal, maxVal])
+          .range(['#fff5f0', '#67000d'])
+          .interpolate(d3.interpolateRgb);
+
       function getColor(d) {
         return d > 400  ? '#08306b' :
                d > 300  ? '#08519c' :
@@ -82,10 +106,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       }
 
       function style(feature) {
-
         return {
-            fillColor: getColor(feature.properties.impression.display.valid),
-            // fillColor: colorScale(feature.properties.current_impression).hex(),
+            // fillColor: getColor(feature.properties.impression.display.valid),
+            fillColor: colorScale(Math.log(feature.properties.impression.display.valid + 1)),
+
             weight: 2,
             opacity: 1,
             color: 'white',
@@ -109,7 +133,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       };
 
       // Legend Control
-      let legend = L.control({position: 'bottomleft'});
+      let legend = L.control({position: 'topleft'});
       legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'map-legend'),// create a div with a class "map-legend"
         grades = [0, 10, 20, 50, 100, 200, 300, 400],
@@ -124,6 +148,9 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
         return div;
       };
+
+ 
+    
 
       // Search Control
       // Add geocoder control
@@ -252,7 +279,15 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
     // return pre selected zone to normal
     if (currentZoneRef.current) {
       geoJsonRef.current.resetStyle(currentZoneRef.current); 
-      infoRef.current.update();     
+      infoRef.current.update();
+      
+      //remove view markers
+   
+      viewMarkersRef.current.forEach(marker => {
+        viewClusterRef.current.removeLayer(marker);
+      });
+      
+
     }
     if (selectedZone) {
       const layer = layerMappingRef.current[selectedZone.id];
@@ -286,7 +321,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       (async () => {
         try {
           // Request data for markers in selected zone
-          const url = `http://127.0.0.1:8000/main/zones/${selectedZone.id}/places`;
+          const url = `${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${selectedZone.id}/places`;
           const response = await axios.get(url);
           if (response.status !== 201 || response.data.status !== "1"){
             throw new Error("Can't fetch markers data!");
@@ -305,7 +340,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       // For each feature, create a marker and add it to the map
       features.forEach(feature => {
         // const icon = new Icon({ iconUrl: '/museum.png', iconSize: [40, 40]});
-        const big_cate = feature.properties.big_cate.toLowerCase();
+        let big_cate = feature.properties.big_cate;
+        if (big_cate === "('Health Care',)") {
+          big_cate = "Health Care";
+        }
         const icon_url = BIG_CATE_ICONS[big_cate];
         const url = icon_url ? icon_url : '/museum.png';
         const icon = new Icon({ iconUrl: url, iconSize: [40, 40]});
@@ -342,6 +380,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
   }, [selectedZone]);
 
+  // Add markers for view when a zone is selected
+  useEffect(() => {
+
+  }, []);
 
   
 
@@ -351,40 +393,134 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   //     viewerRef.current = new Viewer({
   //       container: 'mapillary',
   //       imageId: '3056168174613811',  
-  //       accessToken: '',  // Mapillary Client ID
+  //       accessToken: import.meta.env.VITE_APP_ACCESS_TOKEN,  // Mapillary Client ID
   //       isNavigable: true,
   //     });
   //   }
   // }, []);
 
-  // // Initialize Mapillary viewer when the map is ready
-  // useEffect(() => {
-  //   if (mapInstanceRef.current && !viewerRef.current) {
-  //     // Use Mapillary API to find the nearest image to the specified coordinates
-  //     const client_id = '';  // Mapillary Client ID
-  //     const coordinates = '-74.0084234,40.7198226';
-  //     const radius = '100';  // 
+  useEffect(() => {
+    if (!selectedZone) {
+      return;
+    }
+    if (!isShowViewMarkers) {
+      return;
+    }
+    // Get map instance
+    const map = mapInstanceRef.current;
+    // Get current bounds of the map view
+    const bounds = map.getBounds();
+    // Convert bounds to bbox string
+    const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
 
-  //     axios.get(`https://graph.mapillary.com/v3/images?client_id=${client_id}&closeto=${coordinates}&radius=${radius}`)
-  //       .then(response => {
-  //         const data = response.data;
-  //         if (data.features && data.features.length > 0) {
-  //           const imageId = data.features[0].properties.id;  // Use the ID of the first image
+        
+    const fetchData = async () => {
+      try {
+        // Fetch image data
+        const url = `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url,geometry,sequence&bbox=${bbox}&limit=100`;
+        // `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url&bbox=${bbox}&limit=100`
+        const response = await axios.get(url);
+        if (response.status !== 200) {
+          throw new Error("Can't fetch pictures for viewing now!");
+        } 
+        const data = response.data.data;
+        console.log("pictures data:", data );
 
-  //           viewerRef.current = new Viewer({
-  //             container: 'mapillary',
-  //             imageId: imageId,  
-  //             accessToken: client_id,
-  //           });
-  //         } else {
-  //           console.log('No images found near the specified coordinates.');
+        const sequenceSet = new Set();
+        const uniqueData = data.filter(item => {
+          if(!sequenceSet.has(item.sequence)) {
+            sequenceSet.add(item.sequence);
+            return true;
+          }
+          return false;
+        });
+        console.log("filtered pictures data:", uniqueData );
+        
+        uniqueData.forEach(image => {
+          // Create a new marker with the image as the icon
+          // if (image.computed_geometry) {
+          //   const marker = L.marker(
+          //     [image.computed_geometry.coordinates[1], image.computed_geometry.coordinates[0]], 
+          //     { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
+          //   ); 
+          //   // Add the marker to the map
+          //   viewClusterRef.current.addLayer(marker);
+          //   viewMarkersRef.current.push(marker);
+          //   // marker.addTo(viewCluster);
+          // }
+          if (image.geometry) {
+            const marker = L.marker(
+              [image.geometry.coordinates[1], image.geometry.coordinates[0]], 
+              { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
+            ); 
+            // Add the marker to the map
+            viewClusterRef.current.addLayer(marker);
+            viewMarkersRef.current.push(marker);
+            // marker.addTo(viewCluster);
+          }
+
+        });
+
+         
+      } catch (error) {
+        console.error("PIC MARKER", error);
+      }
+    };
+
+    // fetchData();
+    
+    // const mapillaryLayer = L.tileLayer(`/api/maps/vtp/mly1_public/2/{z}/{x}/{y}?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}`,
+    //   {
+    //     maxZoom: 15,
+    //     tms: false,
+    //     attribution: '<a href="https://www.mapillary.com/">Mapillary</a>',
+    //     id: 'mapbox.mapbox-streets-v7'
+    //   }
+    //   ).addTo(map);
+    // //   mapillaryLayer.setZIndex(999);
+    // console.log('map.hasLayer(mapillaryLayer)', map.hasLayer(mapillaryLayer));
+  //   var mapillaryUrl = `/api/maps/vtp/mly1_public/2/{z}/{x}/{y}?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}`;
+
+  //   var vectorGrid = L.vectorGrid.protobuf(mapillaryUrl, {
+  //     vectorTileLayerStyles: {
+  //       sequence: function(properties, zoom) {
+  //             return {
+  //                 // radius: 3,
+  //                 fillColor: "#ff0000",
+  //                 fillOpacity: 0.5,
+  //                 stroke: true,
+  //                 fill: true,
+  //                 color: 'white',
+  //                 weight: 1
+  //             }
   //         }
-  //       })
-  //       .catch(error => {
-  //         console.error('Error occurred while fetching images from Mapillary API:', error);
-  //       });
-  //   }
-  // }, []);
+  //     },
+  //     interactive: true,
+  //     getFeatureId: function(f) {
+  //         return f.properties.id;
+  //     }
+  // }).addTo(map);
+  
+  // // Interact with the features
+  // vectorGrid.on('click', function(e) {
+  //     var properties = e.layer.properties;
+  //     var popupContent = 
+  //         `<b>Feature ID:</b> ${properties.id}<br>` +
+  //         `<b>Class:</b> ${properties.image_id}<br>` +
+          
+  //     L.popup()
+  //         .setLatLng(e.layer.latlng)
+  //         .setContent(popupContent)
+  //         .openOn(map);
+  // });
+
+    
+    
+    
+    console.log('key is:', import.meta.env.VITE_APP_ACCESS_TOKEN);
+  }, [selectedZone, isShowViewMarkers]);
+  
+
 
   return <div ref={mapRef} className="map-module">
 
@@ -400,7 +536,12 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       >
         <CircularProgress size={60}/>
       </Box>
+
     }
+          {selectedZone ?
+        <div id="mapillary" style={{display: 'block'}}></div> :
+        <div id="mapillary" style={{display: 'none'}}></div>
+      }
   </div>;
 }
 

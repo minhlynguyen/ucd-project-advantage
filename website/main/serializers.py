@@ -52,37 +52,42 @@ def zone_census_serializer():
 
     blank_zone = Zone.objects.filter(zone_puma__isnull=True)
     
-    agg = ZonePuma.objects.values("zone").annotate(Sum('median_income'),Sum('females_under_5'),
-                                                    Sum('females_5_14'),Sum('females_15_24'),
-                                                    Sum('females_25_34'),Sum('females_35_44'),
-                                                    Sum('females_45_54'),Sum('females_55_64'),
-                                                    Sum('females_65_74'),
-                                                    Sum('females_75_84'),Sum('females_85'),
-                                                    Sum('males_under_5'),Sum('males_5_14'),
-                                                    Sum('males_15_24'),Sum('males_25_34'),
-                                                    Sum('males_35_44'),Sum('males_45_54'),
-                                                    Sum('males_55_64'),Sum('males_65_74'),
-                                                    Sum('males_75_84'),Sum('males_85')
+    agg = ZonePuma.objects.values("zone").annotate(Sum('median_income'),
+                                                   Sum('females_under_5'), Sum('females_5_14'),
+                                                    Sum('females_15_24'), Sum('females_25_34'),
+                                                    Sum('females_35_44'), Sum('females_45_54'),
+                                                    Sum('females_55_64'), Sum('females_65_74'),
+                                                    Sum('females_75_84'), Sum('females_85'),
+                                                    Sum('males_under_5'), Sum('males_5_14'), 
+                                                    Sum('males_15_24'), Sum('males_25_34'), 
+                                                    Sum('males_35_44'), Sum('males_45_54'), 
+                                                    Sum('males_55_64'), Sum('males_65_74'), 
+                                                    Sum('males_75_84'), Sum('males_85')
                                                     )
 
     # data = []
     data = {}
     
     for d in agg:
-        othes_sum = sum(d[key] for key in ['females_under_5__sum', 'females_5_14__sum', 'females_15_24__sum', 
-                                            'females_25_34__sum','females_35_44__sum', 'females_45_54__sum', 
+        othes_sum = sum(d[key] for key in ['females_under_5__sum', 'females_5_14__sum', 
+                                           'females_15_24__sum', 'females_25_34__sum',
+                                           'females_35_44__sum', 'females_45_54__sum', 
                                             'females_55_64__sum', 'females_65_74__sum',
-                                            'females_75_84__sum', 'females_85__sum','males_under_5__sum',
-                                            'males_5_14__sum','males_15_24__sum',
-                                            'males_25_34__sum','males_35_44__sum','males_45_54__sum','males_55_64__sum',
-                                            'males_65_74__sum','males_75_84__sum'])
+                                            'females_75_84__sum', 'females_85__sum',
+                                            'males_under_5__sum', 'males_5_14__sum',
+                                            'males_15_24__sum', 'males_25_34__sum',
+                                            'males_35_44__sum','males_45_54__sum',
+                                            'males_55_64__sum','males_65_74__sum',
+                                            'males_75_84__sum'])
         males_85__sum = 100.0 - othes_sum
         d['males_85__sum'] = males_85__sum
         # data.append({d['zone']: {k[:-5]: v for k, v in d.items() if k != 'zone'}})
         data[str(d['zone'])] = {k[:-5]: v for k, v in d.items() if k != 'zone'}
 
     for zone in blank_zone:
-        data[zone.id] = {'females_under_5': full_zone['females_under_5__avg'],        
+        data[zone.id] = {'median_income': full_zone['median_income__avg'],
+                        'females_under_5': full_zone['females_under_5__avg'],        
+                        'females_5_14': full_zone['females_5_14__avg'],        
                         'females_15_24' : full_zone['females_15_24__avg'],
                         'females_25_34' : full_zone['females_25_34__avg'],
                         'females_35_44' : full_zone['females_35_44__avg'],
@@ -92,6 +97,7 @@ def zone_census_serializer():
                         'females_75_84' : full_zone['females_75_84__avg'],
                         'females_85' : full_zone['females_85__avg'],
                         'males_under_5' : full_zone['males_under_5__avg'],
+                        'males_5_14' : full_zone['males_5_14__avg'],
                         'males_15_24' : full_zone['males_15_24__avg'],
                         'males_25_34' : full_zone['males_25_34__avg'],
                         'males_35_44' : full_zone['males_35_44__avg'],

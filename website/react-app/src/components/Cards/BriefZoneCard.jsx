@@ -14,11 +14,17 @@ const paperStyle = {
   'paddingBottom': '5px'
 };
 
+
 export default function BriefZoneCard({ zone, setSelectedZone }) {
   // zone is a feature for now
 
   const { compareZones, setCompareZones } = React.useContext(SolutionsContext);
   const isCompared = compareZones.includes(zone);
+
+  const [hover, setHover] = useState(false);
+
+  const handleMouseEnter = () => setHover(true);
+  const handleMouseLeave = () => setHover(false);
 
 
   const handleClickLocate = (clickedZone) => {
@@ -73,7 +79,11 @@ export default function BriefZoneCard({ zone, setSelectedZone }) {
     
       (Object.keys(zone).length === 0) ?
         skeleton :
-        <Paper className="zone-card" elevation={2} style={paperStyle}>
+        <Paper className="zone-card" style={paperStyle}
+        elevation={hover ? 8 : 2} 
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        >
         <h3>{zone.properties.name}</h3>
         {/* <Typography>ID: {zone.id}</Typography> */}
         <Typography style={{ fontStyle: 'italic', color: 'grey' }}>Borough: {zone.properties.borough}</Typography>

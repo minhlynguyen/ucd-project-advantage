@@ -17,14 +17,11 @@ export default function Header() {
   return (
     <header role="banner">
       <nav role="navigation" className="navbar">
-        <Link to="/">
-          {" "}
           <img
             src={weblogo}
             className="navbar-logo"
             alt="AdVantage-Header-Logo"
           />
-        </Link>
         <div className="menu-icon" onClick={handleClick}>
           <i className={click ? "fas fa-times" : "fas fa-bars"} />
         </div>
