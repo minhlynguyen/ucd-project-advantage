@@ -13,18 +13,22 @@ import axios from 'axios';
 import { CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/system';
 import ZoneBoard from '../Cards/ZoneBoard';
+import { generateAllCollection } from '../../utils/testDataGenerator';
+import { convertToReadableForGroup } from '../../utils/distributionUtils';
+import SavedZoneBoard from './SavedZoneBoard';
 
 
 const defaultTheme = createTheme();
 
 export default function SavedPage() {
-  // const [zones, setZones] = React.useState(null);
-  const [zones, setZones] = React.useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [zones, setZones] = React.useState(null);
+  // const [zones, setZones] = React.useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   // const [zones, setZones] = React.useState([]);
   const [info, setInfo] = React.useState('');
   const [openZoneBoard, setOpenZoneBoard] = React.useState(false); // zone board dialog
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [selectedZoneID, setSelectedZoneID] = React.useState(null);
 
   // const handleClickMore = () => {
   //   setOpenZoneBoard(true);
@@ -42,11 +46,20 @@ export default function SavedPage() {
   // when loading, fetch data from backend and set as zones
   React.useEffect(() => {
     const fetchData = async () => {
-      const url = '/user/saved';
-      const response = await axios.get(url);
-      setZones(response.data);
+      let data = [];
+      // axios.get('')
+      // .then((response) => {
+      //   if (response.data.status !== "1") {
+      //     throw new Error("Can't fetch collection data for current user now!");
+      //   }
+      //   data = response.data.data;
+      // }).catch((error) => {
+      //   console.log(error);
+      // });
+      data = generateAllCollection().data;
+      setZones(data);
     }
-    // fetchData();
+    fetchData();
   }, []);
 
   // when zones change, change info displayed in the container
@@ -79,28 +92,28 @@ export default function SavedPage() {
     } else {
       infoContent =         
       <Grid container spacing={4}>
-        {zones.map((card, index) => (
-          <Grid item key={card} xs={12} sm={6} md={4}>
+        {zones.map((zone) => (
+          <Grid item key={zone.zoneID} xs={12} sm={6} md={4}>
             <Card
               sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
             >
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom variant="h5" component="h2">
-                  Zone {index + 1}
+                  {zone.name}
                 </Typography>
                 <Typography>
-                  borough: XXX
+                  Borough: {zone.borough}
                 </Typography>
                 <Typography>
-                  Average Income: XXX
+                  Median Income: {zone.median_income}
                 </Typography>
                 <Typography>
-                  Average Age: XXX
+                  Most common group: {convertToReadableForGroup(zone.mode_age_group)}
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small" onClick={() => handleView(index)}>View</Button>
-                <Button size="small" onClick={() => handleDelete(index)}>Delete</Button>
+                <Button size="small" onClick={() => handleView(zone.zoneID)}>View</Button>
+                <Button size="small" onClick={() => handleDelete(zone.zoneID)}>Delete</Button>
               </CardActions>
             </Card>
           </Grid>
@@ -112,11 +125,36 @@ export default function SavedPage() {
 
   }, [zones]);
 
-  const handleDelete = (index) => {
-    const newZones = zones.filter((zone, idx) => idx !== index);
-    setZones(newZones);
+  const handleDelete = (zoneID) => {
+    const updateData = async (id) => {
+
+      let isUpdated = false;
+
+      // axios.get('')
+      // .then(response => {
+      //   if (response.data.status !== "1") {S
+      //     throw new Error("Failed to delete collection!");
+      //   }
+      //   isUpdated = true;
+      // })
+      // .catch(error => {
+      //   console.log(error);
+      // });
+
+      isUpdated = true;
+
+      if (isUpdated) {
+        setZones(prev => prev.filter(item => item.zoneID !== id));
+        console.log("Collection removed succussfully!");
+      }
+
+    };
+    updateData(zoneID);
   };
-  const handleView = (index) => {
+
+
+  const handleView = (zoneID) => {
+    setSelectedZoneID(zoneID);
     setOpenZoneBoard(true);
   };
 
@@ -153,7 +191,7 @@ export default function SavedPage() {
         <Dialog open={openZoneBoard} onClose={handleCloseZoneBoard} fullScreen={fullScreen} maxWidth='lg'>
           <DialogTitle>Zone Board</DialogTitle>
           <DialogContent>
-            <ZoneBoard />
+            <SavedZoneBoard zoneID={selectedZoneID}/>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseZoneBoard}>Close</Button>

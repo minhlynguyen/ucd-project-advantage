@@ -8,88 +8,125 @@ import { ALL_AGES, BIG_CATE } from '../../constants';
 import { Line, Pie, Bar, Doughnut } from 'react-chartjs-2';
 
 import { Chart as ChartJS, LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement } from 'chart.js';
-import BasicZone from './BasicZone';
-import { getGenderPercList } from '../../utils/distributionUtils';
+import BasicZone from '../Cards/BasicZone';
+import { convertToReadableForGroup, getGenderPercList } from '../../utils/distributionUtils';
 import { getBarData, getBarOptions, getLineData, getLineOptions, getPieDataForGender, getPieOptionsForGender } from '../../utils/chartsUtils';
+import { generateOneCollection } from '../../utils/testDataGenerator';
+import { convertToBriefDateString, getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 
 ChartJS.register(LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement);
 
 
-export default function SavedZoneBoard({zone}) {
-  console.log("zone in ZoneBoard:", zone);
-  const { adTimeMode } = React.useContext(SolutionsContext);
+export default function SavedZoneBoard({zoneID}) {
+  const [zone, setZone] = useState(null);
+  const [impressionData, setImpressionData] = useState(null);
+  const [femaleData, setFemaleData] = useState(null);
+  const [maleData, setMaleData] = useState(null);
   const [businessData, setBusinessData] = useState(null);
-  const [totalBusiness, setTotalBusiness] = useState(null);
-  const [impressionData, setImpressionData] = useState(zone);
+  const [summaryData, setSummaryData] = useState(null);
 
-  const female_data = getPieDataForGender('female', {
-    arr: getGenderPercList(zone.properties.age)[0],
-    label: zone.properties.name
-  });
-  const male_data = getPieDataForGender('male', {
-    arr: getGenderPercList(zone.properties.age)[1],
-    label: zone.properties.name
-  });
-
-  // fetch data for line chart
-  useEffect(()=>{
-    const fetchData = async () => {
-      try {
-        const url = '';
-        const reponse = await axios.get(url);
-        if (reponse.status !== 201 || reponse.data.status !== "1") {
-          throw new Error("Can't fetch data for Line Graph now! Error:");
-        }
-        
-        const data = reponse.data.data;
-        const impressionItems = data.map(item => {
-          return {
-            time: item.datetime,
-            value: item.impression_predict || 0, // if detail has no impression_predict or impression_predict is null, let it be 0
-            validValue: item.impression_predict ? parseFloat((item.impression_predict * zone.properties.impression.targetPerc).toFixed(2)) : 0
-          };
-        });
-        const processedData = {
-          ...zone,
-          properties: {
-            ...zone.properties,
-            impression: {
-              ...zone.properties.impression,
-              adTime: {
-                ...zone.properties.impression.adTime,
-                items: impressionItems
-              }
-            }
-          }
-        };
-        setImpressionData(processedData);
-      } catch(error) {
-        console.log( error);
-      }
-    };
-    // fetchData();
-  }, []);
-  // bar chart
+  console.log(zone);
+  // fetch data
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/${zone.id}`)
-      .then((response) => {
-        const data = response.data;
-        setTotalBusiness(data.data[zone.id].detail[0].total_business);
+    const updateData = async (id) => {
+      let data = {};
 
-        const categoriesData = BIG_CATE.map((category) => data.data[zone.id].detail[0][category]);
-        
-        setBusinessData(getBarData(
-          {
-            arr: categoriesData,
-            label: zone.properties.name
-          })
-        );
-      })
-      .catch((error) => {
-        console.error('Error fetching data: ', error);
-      });
+      // // set url here
+      // axios.get('')
+      // .then((response) => {
+      //   if (response.data.status !== "1") {
+      //     throw new Error("Can't fetch data for current zone now!");
+      //   }
+      //   data = response.data.data;
+      // }).catch((error) => {
+      //   console.log(error);
+      // });
+
+      data = generateOneCollection().data;
+
+      data.age = ALL_AGES.map(ageGroup => data[ageGroup.name_backend]);
+      setZone(data);
+      console.log(zone);
+    };
+    updateData(zoneID);
   }, []);
+  
+  // update data for summary
+  useEffect(()=>{
+    if (!zone) {
+      return;
+    }
+    let data = {};
+    data.properties = {
+      ...zone,
+      impression: {
+        display: {
+          total: zone.details.reduce((sum, cur) => sum + cur.impression_predict, 0)
+        }
+      },
+      mode_group: zone.mode_age_group,
+      average_income: zone.median_income,
+
+    }
+    setSummaryData(data);
+  }, [zone]);
+
+  // update data for line chart
+  useEffect(()=>{
+    if (!zone) {
+      return;
+    }
+    let data = {
+      labels: zone.details.map(item => convertToBriefDateString(item.datetime)), // Assume that time is same for both zone
+      datasets: [
+        {
+          label: `${zone.name}`,
+          data: zone.details.map(item => item.impression_predict || 0),
+          fill: false,
+          backgroundColor: 'rgb(255, 99, 132)',
+          borderColor: 'rgba(255, 99, 132, 0.2)',
+        },
+      ],
+    };
+    
+    setImpressionData(data);
+  }, [zone]);
+
+  // update data for pie chart
+  useEffect(()=>{
+    if (!zone) {
+      return;
+    }
+    const female_data = getPieDataForGender('female', {
+      arr: getGenderPercList(zone.age)[0],
+      label: zone.name
+    });
+    const male_data = getPieDataForGender('male', {
+      arr: getGenderPercList(zone.age)[1],
+      label: zone.name
+    });
+
+    setFemaleData(female_data);
+    setMaleData(male_data);
+  }, [zone]);
+
+  // update data for bar chart
+  useEffect(() => {
+    if (!zone) {
+      return;
+    }
+    // let item = zone.details.filter(item => item.datetime === getCurrentTimeInNY())[0];
+    let item = zone.details[0];//just for test
+    console.log('item', item);
+    const categoriesData = BIG_CATE.map((category) => item[category]);
+    console.log('categoriesData', categoriesData);
+    setBusinessData(getBarData(
+      {
+        arr: categoriesData,
+        label: zone.name
+      })
+    );
+  }, [zone]);
 
   return ( 
     <Container sx={{ mt: 4, mb: 4, height: '60vh'}}>
@@ -97,7 +134,7 @@ export default function SavedZoneBoard({zone}) {
 
         <Grid item xs={12} md={4} lg={4} sx={{ display: 'flex' }}>
         <Paper sx={{p: 2, width: '100%'}}>
-          <BasicZone zone={zone} totalBusiness={totalBusiness}/>
+          <BasicZone zone={summaryData} totalBusiness={zone ? zone.total_business : null }/>
         </Paper>
         </Grid>
 
@@ -116,7 +153,11 @@ export default function SavedZoneBoard({zone}) {
             alignItems: 'center'}}
         >
           {/* <Line data={getLineData(adTimeMode ? 'Ad' : 'Real', zone)} options={getLineOptions(adTimeMode ? 'Ad' : 'Real', zone)} /> */}
-          <Line data={getLineData(adTimeMode ? 'Ad' : 'Real', impressionData)} options={getLineOptions(adTimeMode ? 'Ad' : 'Real', impressionData)} />
+          {impressionData ?
+            <Line data={impressionData} options={getLineOptions('Real')} />
+            : null
+          }
+          
         </Paper>
         </Grid>
 
@@ -129,7 +170,10 @@ export default function SavedZoneBoard({zone}) {
           justifyContent: 'center',
           alignItems: 'center'
           }}>
-          <Doughnut data={female_data} options={getPieOptionsForGender('Female')} />
+          {femaleData ?
+          <Doughnut data={femaleData} options={getPieOptionsForGender('Female')} />
+          : null
+          }
         </Paper>
 
         </Grid>
@@ -141,7 +185,11 @@ export default function SavedZoneBoard({zone}) {
           height: '30vh',
           justifyContent: 'center',
           alignItems: 'center' }}>
-          <Doughnut data={male_data} options={getPieOptionsForGender('Male')} />
+          {maleData ?
+            <Doughnut data={maleData} options={getPieOptionsForGender('Male')} />
+            : null
+          }
+          
         </Paper>
         </Grid>
 
