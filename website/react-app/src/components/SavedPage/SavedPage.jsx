@@ -108,7 +108,10 @@ export default function SavedPage() {
                   Median Income: {zone.median_income}
                 </Typography>
                 <Typography>
-                  Most common group: {convertToReadableForGroup(zone.mode_age_group)}
+                  Most common group: 
+                </Typography>
+                <Typography>
+                  {convertToReadableForGroup(zone.mode_age_group)}
                 </Typography>
               </CardContent>
               <CardActions>

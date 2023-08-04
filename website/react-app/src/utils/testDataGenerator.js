@@ -106,13 +106,14 @@ export const generateAdTimeDataForSingleZone = () => {
 }
 */
 export const generateAllCollection = () => {
+    const nameList = ['Times Sq/Theatre District', 'Upper East Side North', 'Midtown East', 'Upper West Side South', 'JFK Airport', 'Clinton East'];
     const data = [];
-    for (let i = 1; i <= 97; i++) {
+    for (let i = 1; i <= 6; i++) {
         let zone = {
 			'zoneID': i,
-			'name': `XXX AIR Port${i}`,
+			'name': nameList[i - 1],
 			'borough': 'Manhattan',
-			'median_income': 3000,
+			'median_income':  Math.floor(Math.random() * 8000) + 1,
 			'mode_age_group': 'females_under_5'
 		}
         data.push(zone);
