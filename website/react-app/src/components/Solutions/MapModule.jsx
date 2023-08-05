@@ -21,6 +21,7 @@ import * as d3 from 'd3';
 import * as turf from '@turf/turf';
 import '@skyraptor/leaflet.bouncemarker';
 import { notify } from '../../utils/notify';
+import axiosInstance from '../../AxiosConfig';
 
 
 
@@ -298,23 +299,39 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
     // placeholder for markers
     let markers = [];
 
+    const fetchData = async (id) => {
+      const url = `api/main/places/${id}/`;
+      axiosInstance.get(url)
+      .then((response) => {
+        if (response.data.status !== "1") {
+          throw new Error("Can't fetch places data for ad time now!");
+        }
+        addMarkersToMap(response.data.data);
+      })
+      .catch(error => {
+        console.error(error);
+        notify("Can't fetch places data for ad time now!", 'error');
+      })
+    };
+
     // If there is a selected zone
     if (selectedZone) {
       // Create an async function to handle the async operation
-      (async () => {
-        try {
-          // Request data for markers in selected zone
-          // const url = `${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${selectedZone.id}/places`;
-          const url = `${import.meta.env.VITE_APP_API_BASE_URL}api/main/places/${selectedZone.id}/`;
-          const response = await axios.get(url);
-          if (response.status !== 200 || response.data.status !== "1"){
-            throw new Error("Can't fetch markers data!");
-          }
-          addMarkersToMap(response.data.data); 
-        } catch (error) {
-          console.error(error);
-        }
-      })();
+      // (async () => {
+      //   try {
+      //     // Request data for markers in selected zone
+      //     // const url = `${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${selectedZone.id}/places`;
+      //     const url = `${import.meta.env.VITE_APP_API_BASE_URL}api/main/places/${selectedZone.id}/`;
+      //     const response = await axios.get(url);
+      //     if (response.status !== 200 || response.data.status !== "1"){
+      //       throw new Error("Can't fetch markers data!");
+      //     }
+      //     addMarkersToMap(response.data.data); 
+      //   } catch (error) {
+      //     console.error(error);
+      //   }
+      // })();
+      fetchData(selectedZone.id);
     }
 
     const addMarkersToMap = (data) => {

@@ -5,7 +5,7 @@ import axios from 'axios';
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_APP_API_BASE_URL,
 	// baseURL: 'http://localhost:8000/',
-    timeout: 5000,
+    timeout: 500000,
     headers: {
       Authorization: localStorage.getItem('access_token')
         ? 'JWT ' + localStorage.getItem('access_token')

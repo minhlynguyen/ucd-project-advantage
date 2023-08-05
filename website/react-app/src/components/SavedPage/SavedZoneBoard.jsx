@@ -13,6 +13,7 @@ import { convertToReadableForGroup, getGenderPercList } from '../../utils/distri
 import { getBarData, getBarOptions, getLineData, getLineOptions, getPieDataForGender, getPieOptionsForGender } from '../../utils/chartsUtils';
 import { generateOneCollection } from '../../utils/testDataGenerator';
 import { convertToBriefDateString, getCurrentTimeInNY } from '../../utils/dateTimeUtils';
+import axiosInstance from '../../AxiosConfig';
 
 ChartJS.register(LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement);
 
@@ -28,25 +29,42 @@ export default function SavedZoneBoard({zoneID}) {
   console.log(zone);
   // fetch data
   useEffect(() => {
+    // const updateData = async (id) => {
+    //   let data = {};
+
+    //   // // set url here
+    //   // axios.get('')
+    //   // .then((response) => {
+    //   //   if (response.data.status !== "1") {
+    //   //     throw new Error("Can't fetch data for current zone now!");
+    //   //   }
+    //   //   data = response.data.data;
+    //   // }).catch((error) => {
+    //   //   console.log(error);
+    //   // });
+
+    //   data = generateOneCollection().data;
+
+    //   data.age = ALL_AGES.map(ageGroup => data[ageGroup.name_backend]);
+    //   setZone(data);
+    //   console.log(zone);
+    // };
     const updateData = async (id) => {
       let data = {};
 
-      // // set url here
-      // axios.get('')
-      // .then((response) => {
-      //   if (response.data.status !== "1") {
-      //     throw new Error("Can't fetch data for current zone now!");
-      //   }
-      //   data = response.data.data;
-      // }).catch((error) => {
-      //   console.log(error);
-      // });
-
-      data = generateOneCollection().data;
-
-      data.age = ALL_AGES.map(ageGroup => data[ageGroup.name_backend]);
-      setZone(data);
-      console.log(zone);
+      // set url here
+      axiosInstance.get(`/api/user/save/${id}/info/`)
+      .then((response) => {
+        if (response.data.status !== "1") {
+          throw new Error("Can't fetch data for current zone now!");
+        }
+        data = response.data.data;
+        data.age = ALL_AGES.map(ageGroup => data[ageGroup.name_backend]);
+        
+        setZone(data);
+      }).catch((error) => {
+        console.log(error);
+      });
     };
     updateData(zoneID);
   }, []);
@@ -65,7 +83,7 @@ export default function SavedZoneBoard({zoneID}) {
         }
       },
       mode_group: zone.mode_age_group,
-      average_income: zone.median_income,
+      average_income: zone.median_income.toFixed(0),
 
     }
     setSummaryData(data);
@@ -105,6 +123,7 @@ export default function SavedZoneBoard({zoneID}) {
       arr: getGenderPercList(zone.age)[1],
       label: zone.name
     });
+    console.log('data hhhhhh', getGenderPercList(zone.age)[0]);
 
     setFemaleData(female_data);
     setMaleData(male_data);

@@ -45,22 +45,38 @@ export default function SavedPage() {
 
   // when loading, fetch data from backend and set as zones
   React.useEffect(() => {
+    // const fetchData = async () => {
+
+    //   let data = [];
+    //   // axiosInstance.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/user/save/`)
+    //   // .then((response) => {
+    //   //   if (response.data.status !== "1") {
+    //   //     throw new Error("Can't fetch collection data for current user now!");
+    //   //   }
+        
+    //   //   data = response.data.data;
+    //   //   setZones(data);
+    //   // }).catch((error) => {
+    //   //   console.log(error);
+    //   // });
+    //   data = generateAllCollection().data;
+    //   setZones(data);
+    // }
     const fetchData = async () => {
 
       let data = [];
+      axiosInstance.get(`/api/user/save/`)
       // axiosInstance.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/user/save/`)
-      // .then((response) => {
-      //   if (response.data.status !== "1") {
-      //     throw new Error("Can't fetch collection data for current user now!");
-      //   }
+      .then((response) => {
+        if (response.data.status !== "1") {
+          throw new Error("Can't fetch collection data for current user now!");
+        }
         
-      //   data = response.data.data;
-      //   setZones(data);
-      // }).catch((error) => {
-      //   console.log(error);
-      // });
-      data = generateAllCollection().data;
-      setZones(data);
+        data = response.data.data;
+        setZones(data);
+      }).catch((error) => {
+        console.log(error);
+      });
     }
     fetchData();
   }, []);
@@ -109,7 +125,7 @@ export default function SavedPage() {
                   Borough: {zone.borough}
                 </Typography>
                 <Typography>
-                  Median Income: {zone.median_income}
+                  Median Income: {zone.median_income.toFixed(0)}
                 </Typography>
                 <Typography>
                   Most common group: 
@@ -134,30 +150,23 @@ export default function SavedPage() {
 
   const handleDelete = (zoneID) => {
     const updateData = async (id) => {
-
-      let isUpdated = false;
-
-      // axios.get('')
-      // .then(response => {
-      //   if (response.data.status !== "1") {S
-      //     throw new Error("Failed to delete collection!");
-      //   }
-      //   isUpdated = true;
-      // })
-      // .catch(error => {
-      //   console.log(error);
-      // });
-
-      isUpdated = true;
-
-      if (isUpdated) {
+      axiosInstance.delete(`/api/user/save/${id}/`)
+      .then(response => {
+        // if (response.data.status !== "1") {S
+        //   throw new Error("Failed to delete collection!");
+        // }
         setZones(prev => prev.filter(item => item.zoneID !== id));
         console.log("Collection removed succussfully!");
-      }
-
+      })
+      .catch(error => {
+        console.log(error);
+      });
     };
+
     updateData(zoneID);
   };
+
+
 
 
   const handleView = (zoneID) => {
