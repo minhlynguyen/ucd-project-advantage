@@ -3,8 +3,8 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import chroma from 'chroma-js';
 import { Box, CircularProgress } from '@mui/material';
+import { Viewer, CameraControls } from 'mapillary-js';
 import 'mapillary-js/dist/mapillary.css';
-import { Viewer } from 'mapillary-js';
 import axios from 'axios';
 import 'leaflet.vectorgrid';
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
@@ -91,24 +91,25 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       let maxVal = Math.log(1001); // log(1001) is around 6.91
       let colorScale = d3.scaleLinear()
           .domain([minVal, maxVal])
-          .range(['#fff5f0', '#67000d'])
+          .range(['#fff5f0', '#08306b'])
           .interpolate(d3.interpolateRgb);
-
+          
       function getColor(d) {
-        return d > 400  ? '#08306b' :
-               d > 300  ? '#08519c' :
-               d > 200  ? '#2171b5' :
-               d > 100  ? '#4292c6' :
-               d > 50   ? '#6baed6' :
-               d > 20   ? '#9ecae1' :
-               d > 10   ? '#c6dbef' :
-                          '#deebf7';
+        return d > 800  ? '#023858' :
+               d > 400  ? '#045a8d' :
+               d > 300  ? '#0570b0' :
+               d > 200  ? '#3690c0' :
+               d > 100  ? '#74a9cf' :
+               d > 50   ? '#a6bddb' :
+               d > 20   ? '#d0d1e6' :
+               d > 10   ? '#ece7f2' :
+                          '#fff7fb';
       }
 
       function style(feature) {
         return {
-            // fillColor: getColor(feature.properties.impression.display.valid),
-            fillColor: colorScale(Math.log(feature.properties.impression.display.valid + 1)),
+            fillColor: getColor(feature.properties.impression.display.valid),
+            // fillColor: colorScale(Math.log(feature.properties.impression.display.valid + 1)),
 
             weight: 2,
             opacity: 1,
@@ -136,7 +137,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       let legend = L.control({position: 'topleft'});
       legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'map-legend'),// create a div with a class "map-legend"
-        grades = [0, 10, 20, 50, 100, 200, 300, 400],
+        grades = [0, 10, 20, 50, 100, 200, 300, 400, 800],
         labels = [];
 
         // loop through our intervals and generate a label with a colored square for each interval
@@ -281,7 +282,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       geoJsonRef.current.resetStyle(currentZoneRef.current); 
       infoRef.current.update();
       
-      //remove view markers
+      // //remove view markers
    
       viewMarkersRef.current.forEach(marker => {
         viewClusterRef.current.removeLayer(marker);
@@ -356,10 +357,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
             Big Category: ${feature.properties.big_cate}
             <br/>
             Small Category: ${feature.properties.small_cate}
-            <br/>
-            Zone: ${feature.properties.taxi_zone}
-            <br/>
-            pk: ${feature.properties.pk}
           `);
 
         markers.push(marker);
@@ -388,16 +385,27 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   
 
   // Initialize Mapillary viewer when the map is ready
-  // useEffect(() => {
-  //   if (mapInstanceRef.current && !viewerRef.current) {
-  //     viewerRef.current = new Viewer({
-  //       container: 'mapillary',
-  //       imageId: '3056168174613811',  
-  //       accessToken: import.meta.env.VITE_APP_ACCESS_TOKEN,  // Mapillary Client ID
-  //       isNavigable: true,
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (mapInstanceRef.current && !viewerRef.current) {
+
+      viewerRef.current = new Viewer({
+        container: 'mapillary',
+        imageId: '178975760792906',  
+        accessToken: import.meta.env.VITE_APP_ACCESS_TOKEN,  // Mapillary Client ID
+        trackResize: true,
+        component: {cover: true},
+        combinedPanning: false,
+        isNavigable: true,
+      });
+      viewerRef.current.on('image', (event) => {
+        // This will be executed when a new image is ready to be displayed
+        console.log('Image loaded:', event.image.id);
+        // Manually dispatch a resize event to render new image
+        window.dispatchEvent(new Event('resize'));
+      });
+
+    }
+  }, []);
 
   useEffect(() => {
     if (!selectedZone) {
@@ -410,114 +418,61 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
     const map = mapInstanceRef.current;
     // Get current bounds of the map view
     const bounds = map.getBounds();
+    console.log("bbox", bounds);
     // Convert bounds to bbox string
     const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
 
         
-    // const fetchData = async () => {
-    //   try {
-    //     // Fetch image data
-    //     const url = `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url,geometry,sequence&bbox=${bbox}&limit=100`;
-    //     // `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url&bbox=${bbox}&limit=100`
-    //     const response = await axios.get(url);
-    //     if (response.status !== 200) {
-    //       throw new Error("Can't fetch pictures for viewing now!");
-    //     } 
-    //     const data = response.data.data;
-    //     console.log("pictures data:", data );
+    const fetchData = async () => {
+      try {
+        // Fetch image data
+        const url = `https://graph.mapillary.com/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url,geometry,sequence&bbox=${bbox}&limit=100`;
+        // `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url&bbox=${bbox}&limit=100`
+        const response = await axios.get(url);
+        if (response.status !== 200) {
+          throw new Error("Can't fetch pictures for viewing now!");
+        } 
+        const data = response.data.data;
+        console.log("pictures data:", data );
 
-    //     const sequenceSet = new Set();
-    //     const uniqueData = data.filter(item => {
-    //       if(!sequenceSet.has(item.sequence)) {
-    //         sequenceSet.add(item.sequence);
-    //         return true;
-    //       }
-    //       return false;
-    //     });
-    //     console.log("filtered pictures data:", uniqueData );
+        const sequenceSet = new Set();
+        const uniqueData = data.filter(item => {
+          if(!sequenceSet.has(item.sequence)) {
+            sequenceSet.add(item.sequence);
+            return true;
+          }
+          return false;
+        });
+        console.log("filtered pictures data:", uniqueData );
         
-    //     uniqueData.forEach(image => {
-    //       // Create a new marker with the image as the icon
-    //       // if (image.computed_geometry) {
-    //       //   const marker = L.marker(
-    //       //     [image.computed_geometry.coordinates[1], image.computed_geometry.coordinates[0]], 
-    //       //     { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
-    //       //   ); 
-    //       //   // Add the marker to the map
-    //       //   viewClusterRef.current.addLayer(marker);
-    //       //   viewMarkersRef.current.push(marker);
-    //       //   // marker.addTo(viewCluster);
-    //       // }
-    //       if (image.geometry) {
-    //         const marker = L.marker(
-    //           [image.geometry.coordinates[1], image.geometry.coordinates[0]], 
-    //           { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
-    //         ); 
-    //         // Add the marker to the map
-    //         viewClusterRef.current.addLayer(marker);
-    //         viewMarkersRef.current.push(marker);
-    //         // marker.addTo(viewCluster);
-    //       }
+        uniqueData.forEach(image => {
+          // Create a new marker with the image as the icon
+          if (image.computed_geometry) {
+            const marker = L.marker(
+              [image.computed_geometry.coordinates[1], image.computed_geometry.coordinates[0]], 
+              { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
+            ); 
 
-    //     });
+            // Add a click event listener to the marker
+            marker.on('click', () => {
+
+              // Move the Viewer to the image
+              viewerRef.current.moveTo(image.id);
+            });
+            // Add the marker to the map
+            viewClusterRef.current.addLayer(marker);
+            viewMarkersRef.current.push(marker);
+          }
+        });
 
          
-    //   } catch (error) {
-    //     console.error("PIC MARKER", error);
-    //   }
-    // };
+      } catch (error) {
+        console.error("PIC MARKER", error);
+      }
+    };
 
-    // fetchData();
-    
-    // const mapillaryLayer = L.tileLayer(`/api/maps/vtp/mly1_public/2/{z}/{x}/{y}?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}`,
-    //   {
-    //     maxZoom: 15,
-    //     tms: false,
-    //     attribution: '<a href="https://www.mapillary.com/">Mapillary</a>',
-    //     id: 'mapbox.mapbox-streets-v7'
-    //   }
-    //   ).addTo(map);
-    // //   mapillaryLayer.setZIndex(999);
-    // console.log('map.hasLayer(mapillaryLayer)', map.hasLayer(mapillaryLayer));
-  //   var mapillaryUrl = `/api/maps/vtp/mly1_public/2/{z}/{x}/{y}?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}`;
+    fetchData();
 
-  //   var vectorGrid = L.vectorGrid.protobuf(mapillaryUrl, {
-  //     vectorTileLayerStyles: {
-  //       sequence: function(properties, zoom) {
-  //             return {
-  //                 // radius: 3,
-  //                 fillColor: "#ff0000",
-  //                 fillOpacity: 0.5,
-  //                 stroke: true,
-  //                 fill: true,
-  //                 color: 'white',
-  //                 weight: 1
-  //             }
-  //         }
-  //     },
-  //     interactive: true,
-  //     getFeatureId: function(f) {
-  //         return f.properties.id;
-  //     }
-  // }).addTo(map);
-  
-  // // Interact with the features
-  // vectorGrid.on('click', function(e) {
-  //     var properties = e.layer.properties;
-  //     var popupContent = 
-  //         `<b>Feature ID:</b> ${properties.id}<br>` +
-  //         `<b>Class:</b> ${properties.image_id}<br>` +
-          
-  //     L.popup()
-  //         .setLatLng(e.layer.latlng)
-  //         .setContent(popupContent)
-  //         .openOn(map);
-  // });
-
-    
-    
-    
-    // console.log('key is:', import.meta.env.VITE_APP_ACCESS_TOKEN);
   }, [selectedZone, isShowViewMarkers]);
   
 
@@ -538,10 +493,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       </Box>
 
     }
-          {selectedZone ?
+          {/* {selectedZone ?
         <div id="mapillary" style={{display: 'block'}}></div> :
         <div id="mapillary" style={{display: 'none'}}></div>
-      }
+      } */}
   </div>;
 }
 

@@ -114,7 +114,7 @@ export const generateAllCollection = () => {
 			'name': nameList[i - 1],
 			'borough': 'Manhattan',
 			'median_income':  Math.floor(Math.random() * 8000) + 1,
-			'mode_age_group': 'females_under_5'
+			'mode_age_group': 'males_35_44'
 		}
         data.push(zone);
     }
@@ -206,10 +206,10 @@ export const generateOneCollection = () => {
     }
     let data = {
 		'zoneID': 5,
-		'name': 'XXX AIR Port',
+		'name': 'Times Sq/Theatre District',
 		'borough': 'Manhatan',
 		'median_income': 3000,
-		'mode_age_group': 'females_under_5',
+		'mode_age_group': 'males_35_44',
         "females_under_5": 2.7558268021319585,
         "females_5_14": 2.9665997308383996,
         "females_15_24": 6.107989252839439,

@@ -475,6 +475,12 @@ function SolutionsContent() {
                 isLoading={isLoading} 
                 style={{ height: isMobile ? '380px' : '750px' }} // change the height based on the screen size
               />
+
+{selectedZone ?
+        <div id="mapillary" style={{display: 'block'}}></div> :
+        <div id="mapillary" style={{display: 'none'}}></div>
+      }
+
             </Grid>
             <Grid item xs={12} md={12} lg={3} style={{ height: isMobile ? 'auto' : '750px' }}>
               <InfoModule 

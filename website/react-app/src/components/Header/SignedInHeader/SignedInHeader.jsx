@@ -140,7 +140,10 @@ const submitLogout= (e)=> {
                   <PersonIcon className="icon" /> Profile
                 </DropdownMenu.Item>
 
-                <DropdownMenu.Item className="DropdownMenuItem">
+                <DropdownMenu.Item 
+                  className="DropdownMenuItem"
+                  onClick={()=>navigate('/saved')}
+                >
                   <HeartIcon className="icon" />
                   Saved Locations
                 </DropdownMenu.Item>
