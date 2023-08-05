@@ -7,10 +7,10 @@ from django.db import models
 
 class UserAdminConfig(UserAdmin):
     model = AppUser
-    search_fields = ('email','username',)
-    list_filter = ('email','username','is_staff')
+    search_fields = ('email','username','user_id')
+    list_filter = ('email','username','is_staff','user_id')
     ordering = ('-date_joined',)
-    list_display = ('email','username','is_staff')
+    list_display = ('email','username','is_staff','user_id')
 
     fieldsets = (
         (None, {'fields': ('email', 'username',)}),

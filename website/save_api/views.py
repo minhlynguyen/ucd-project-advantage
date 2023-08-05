@@ -6,7 +6,7 @@ from .models import SavedZone
 from main.models import Zone
 from .serializers import SavedSerializer
 from rest_framework import permissions, status
-from rest_framework.decorators import api_view, schema, permission_classes
+from rest_framework.decorators import api_view, schema, permission_classes, authentication_classes
 from main.serializers import zone_census_serializer
 
 
