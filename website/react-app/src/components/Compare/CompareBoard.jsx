@@ -12,7 +12,7 @@ export default function CompareBoard() {
 
   return (
     <Container sx={{ mt: 4, mb: 4, height: '60vh'}}>
-      {confirmMode ? <CompareConfirm setConfirmMode={setConfirmMode}/> : <CompareDetail setConfirmMode={setConfirmMode}/>}
+      {confirmMode ? <CompareConfirm setConfirmMode={setConfirmMode}/> : <CompareDetail setConfirmMode={setConfirmMode} />}
     </Container>
   );
 }

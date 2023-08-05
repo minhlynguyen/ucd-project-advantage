@@ -23,12 +23,15 @@
     flex-shrink: 0;
 }
 
-.datetime-select {
+/* .datetime-select {
     display: flex;
     align-items: center;
-}
+} */
+
+
 
 .map-info-container {
+    margin-top: 3px;
     /* display: flex;
     flex-direction: row;
     flex-grow: 1;

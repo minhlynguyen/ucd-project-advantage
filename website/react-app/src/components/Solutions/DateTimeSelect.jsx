@@ -125,17 +125,60 @@ import Button from '@mui/material/Button';
 import { getTimeString } from '../../utils/dateTimeUtils';
 import dayjs from 'dayjs';
 import minMax from 'dayjs/plugin/minMax';
+import { Stack } from '@mui/material';
 // import dayjs from 'dayjs';
 
 // Register the plugin
 dayjs.extend(minMax);
 
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  components: {
+    MuiInputBase: {
+      styleOverrides: {
+        input: {
+          padding: '0px', 
+          fontSize: '0.9rem'
+        },
+        inputSizeSmall: {
+          padding: '0px',
+          fontSize: '0.9rem'
+        },
+        readOnly:  {
+          padding: '0px',
+          fontSize: '0.9rem'
+        },
+        root: {
+          padding: '1px 5px',
+          paddingRight: '5px'
+        }
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        input: {
+          padding: '0px', 
+        },
+      },
+    },
+    MuiFormLabel : {
+      styleOverrides: {
+        root : {
+          fontSize: '0.9rem',
+          lineHeight: '0.7rem'
+        }
+      },
+    }
+  },
+});
+
+
 export default function DateTimeSelect() {
   const { adTime, setAdTime } = useContext(SolutionsContext);
   const [startTime, setStartTime] = useState(adTime[0] ? dayjs(adTime[0]) : null);
   const [endTime, setEndTime] = useState(adTime[1] ? dayjs(adTime[1]) : null);
-  
 
   const style = {
     border: '1px solid #ccc',
@@ -160,7 +203,9 @@ export default function DateTimeSelect() {
 
 
   return (
+    <ThemeProvider theme={theme}>
     <div className='datetime-select'>
+      <Stack direction={{lg: 'row', xs: 'column', md: 'row'}} spacing={1.1}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker
           views={['year', 'month', 'day', 'hours']}
@@ -189,8 +234,10 @@ export default function DateTimeSelect() {
 
         />
       </LocalizationProvider>
-      <Button variant='outlined' onClick={handleConfirm} sx={{marginLeft: '10px'}}>Confirm</Button>
+      <Button variant='outlined' onClick={handleConfirm} sx={{ height: '1.6rem', fontSize: '0.9rem', padding: '10px' }}>Confirm</Button>
+      </Stack>
     </div>
+    </ThemeProvider>
   );
 }
 

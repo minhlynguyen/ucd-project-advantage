@@ -13,11 +13,12 @@ import { Chart as ChartJS, LinearScale, CategoryScale, PointElement, LineElement
 import BasicZone from '../Cards/BasicZone';
 import { getBarData, getBarOptions, getLineData, getLineOptions, getPieDataForGender, getPieOptionsForGender } from '../../utils/chartsUtils';
 import { getGenderPercList } from '../../utils/distributionUtils';
+import { generateAdTimeDataForSingleZone } from '../../utils/testDataGenerator';
 
 ChartJS.register(LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement);
 
 export default function CompareDetail({setConfirmMode}) {
-  const { adTimeMode, compareZones} = React.useContext(SolutionsContext);
+  const { adTime, adTimeMode, compareZones} = React.useContext(SolutionsContext);
   const [businessData, setBusinessData] = useState(null);
   const [totalBusiness, setTotalBusiness] = useState([null, null]);
   const [impressionData, setImpressionData] = useState(compareZones);
@@ -48,47 +49,59 @@ export default function CompareDetail({setConfirmMode}) {
 
   // fetch data for line chart
   useEffect(()=>{
-    const fetchData = async () => {
-      try {
-        const url1 = '';
-        const url2 = '';
-        const [response1, response2] = await Promise.all([axios.get(url1), axios.get(url2)]);
-        if (response1.status !== 201 || response1.data.status !== "1" || response2.status !== 201 || response2.data.status !== "1") {
-          throw new Error("Can't fetch data for Line Graph now! Error:");
-        }
-        
-        const data = [response1.data.data, response2.data.data];
-        const copyImpressionData = [...impressionData];
-        data.forEach((d, i) => {
-          const zone = compareZones[i];
-          const impressionItems = d.map(item => {
-            return {
-              time: item.datetime,
-              value: item.impression_predict || 0, // if detail has no impression_predict or impression_predict is null, let it be 0
-              validValue: item.impression_predict ? parseFloat((item.impression_predict * zone.properties.impression.targetPerc).toFixed(2)) : 0
-            };
-          });
-          const processedData = {
-            ...zone,
-            properties: {
-              ...zone.properties,
-              impression: {
-                ...zone.properties.impression,
-                adTime: {
-                  ...zone.properties.impression.adTime,
-                  items: impressionItems
-                }
-              }
-            }
-          };
-          copyImpressionData[i] = processedData;
-        } );
-        setImpressionData(copyImpressionData);
-      } catch(error) {
-        console.log( error);
+
+    if (!adTimeMode) {
+      return;
+    }
+
+    const updateData = async (zone, index) => {
+      let data = [];
+      function arraysEqual(a, b) {
+        return a.length === b.length && a.every((val, index) => val === b[index]);
       }
+      if (!arraysEqual(adTime, ['', ''])) {
+        // // set url here
+        // axios.post('', {time_range: ''})
+        // .then((response) => {
+        //   if (response.data.status !== "1") {
+        //     throw new Error("Can't fetch data for Line Graph now!");
+        //   }
+        //   data = response.data.data;
+        // }).catch((error) => {
+        //   console.log(error);
+        // });
+        data = generateAdTimeDataForSingleZone().data[String(zone.id)].detail;// test data
+      }
+
+      const impressionItems = data.map(item => {
+        return {
+          time: item.datetime,
+          value: item.impression_predict || 0, // if detail has no impression_predict or impression_predict is null, let it be 0
+          validValue: item.impression_predict ? parseFloat((item.impression_predict * zone.properties.impression.targetPerc).toFixed(2)) : 0
+        };
+      });
+      const processedData = {
+        ...zone,
+        properties: {
+          ...zone.properties,
+          impression: {
+            ...zone.properties.impression,
+            adTime: {
+              ...zone.properties.impression.adTime,
+              items: impressionItems
+            }
+          }
+        }
+      };
+      setImpressionData(prevData => {
+        const newData = [...prevData];
+        newData[index] = processedData;
+        return newData;
+      });
     };
-    // fetchData();
+    updateData(zone1, 0);
+    updateData(zone2, 1);
+
   }, []);
   // for bar chart
   useEffect(() => {

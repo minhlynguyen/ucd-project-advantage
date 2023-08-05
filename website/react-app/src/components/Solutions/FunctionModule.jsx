@@ -58,7 +58,7 @@ function FunctionModule( {filters, setFilters }) {
           </Grid>
         </AccordionDetails>
       </Accordion>
-        <TimeControl/>
+      <TimeControl/>
     </div>
   );
 }
