@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     "user_api",
     'django_extensions',
     "save_api",
-    "rest_framework_simplejwt.token_blacklist"
+    'rest_framework_simplejwt',
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
@@ -181,7 +182,7 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('JWT',), # Define the header type
+    'AUTH_HEADER_TYPES': ('Bearer', 'JWT'), # Define the header type
     'USER_ID_FIELD': 'user_id',
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
