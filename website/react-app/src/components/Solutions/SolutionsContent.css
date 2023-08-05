@@ -55,6 +55,18 @@
     /* width: 70%; */
 }
 
+.viewer-mode-btn {
+    background-color: #374762;
+    color: white;
+    padding: 5px;
+    border-radius: 15px;
+}
+
+.viewer-mode-btn:hover {
+    background-color: white;
+    color: #374762;
+}
+
 .info-module {
     /* width: 30%; */
     justify-content: center;

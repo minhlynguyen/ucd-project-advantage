@@ -463,7 +463,9 @@ function SolutionsContent() {
   return (
     <ThemeProvider theme={uiTheme}>
     <SolutionsContext.Provider 
-    value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, handleClickMore, filteredZones, compareZones, setCompareZones, setOpenCompareBoard, collection, addCollection, deleteCollection }}
+    value={{ realTime, setRealTime, adTime, setAdTime, adTimeMode, setAdTimeMode, 
+    handleClickMore, filteredZones, compareZones, setCompareZones, setOpenCompareBoard,
+    collection, addCollection, deleteCollection }}
     >
       <div className="solutions-content">      
         <FunctionModule filters={filters} setFilters={setFilters}/>
@@ -473,15 +475,16 @@ function SolutionsContent() {
               <MapModule 
                 zones={filteredZones} 
                 selectedZone={selectedZone} 
-                setSelectedZone={setSelectedZone} 
-                isLoading={isLoading} 
+                setSelectedZone={setSelectedZone}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
                 style={{ height: isMobile ? '380px' : '750px' }} // change the height based on the screen size
               />
 
-{selectedZone ?
+{/* {selectedZone ?
         <div id="mapillary" style={{display: 'block'}}></div> :
         <div id="mapillary" style={{display: 'none'}}></div>
-      }
+      } */}
 
             </Grid>
             <Grid item xs={12} md={12} lg={3} style={{ height: isMobile ? 'auto' : '750px' }}>

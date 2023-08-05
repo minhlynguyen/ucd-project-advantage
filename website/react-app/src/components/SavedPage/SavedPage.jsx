@@ -16,7 +16,7 @@ import ZoneBoard from '../Cards/ZoneBoard';
 import { generateAllCollection } from '../../utils/testDataGenerator';
 import { convertToReadableForGroup } from '../../utils/distributionUtils';
 import SavedZoneBoard from './SavedZoneBoard';
-
+import axiosInstance from '../../AxiosConfig';
 
 const defaultTheme = createTheme();
 
@@ -46,13 +46,16 @@ export default function SavedPage() {
   // when loading, fetch data from backend and set as zones
   React.useEffect(() => {
     const fetchData = async () => {
+
       let data = [];
-      // axios.get('')
+      // axiosInstance.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/user/save/`)
       // .then((response) => {
       //   if (response.data.status !== "1") {
       //     throw new Error("Can't fetch collection data for current user now!");
       //   }
+        
       //   data = response.data.data;
+      //   setZones(data);
       // }).catch((error) => {
       //   console.log(error);
       // });
@@ -68,6 +71,7 @@ export default function SavedPage() {
   // otherwise, show cards for each zone
   React.useEffect(() => {
     let infoContent;
+    console.log(typeof zones, Array.isArray(zones))
     if (zones === null) {
       infoContent = 
       // <Typography variant="h5" align="center" color="text.secondary" paragraph>

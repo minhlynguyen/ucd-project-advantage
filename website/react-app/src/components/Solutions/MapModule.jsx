@@ -18,9 +18,13 @@ import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import * as d3 from 'd3';
+import * as turf from '@turf/turf';
+import '@skyraptor/leaflet.bouncemarker';
+import { notify } from '../../utils/notify';
 
 
-function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
+
+function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoading }) {
   // The map container div
   const mapRef = useRef(null);
   // Map instance
@@ -44,6 +48,8 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   const viewMarkersRef = useRef([]);
   const viewClusterRef = useRef(L.markerClusterGroup({disableClusteringAtZoom: 15}));
   const [isShowViewMarkers, setIsShowViewMarkers] = useState(false);
+  const [bbox, setBbox] = useState(null);
+  const viewerControlRef = useRef(null);
 
   
   // Map tile layer initialisation
@@ -54,25 +60,9 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
-
-
       map.addLayer(clusterRef.current);
       map.addLayer(viewClusterRef.current);
       mapInstanceRef.current = map;
-      
-      // Add zoomend event listener
-      map.on('zoomend', () => {
-        const zoomLevel = map.getZoom();
-        console.log('Zoom level is now: ', zoomLevel);
-        
-        // Check zoom level
-        if (zoomLevel >= 18) {
-          // Execute your function here
-          console.log('Zoom level is now equal or above 17');
-          setIsShowViewMarkers(true);
-
-        }
-      });
     }    
   }, []);
 
@@ -149,28 +139,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
         return div;
       };
-
-      // // Viewer button Control
-      // let viwerModeControl = L.control({position: 'topright'});
-      // viwerModeControl.onAdd = function(map) {
-      //   var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-      //   this._button = L.DomUtil.create('button', 'viewer-mode-btn', container);
-      //   this._button.innerHTML = 'Viewer Mode';
-      //   this._button.style.display = selectedZone ? 'block' : 'none';
-        
-      //   this._button.onclick = function() {
-      //     if (this.innerHTML === "Viewer Mode") {
-      //       this.innerHTML = "Return to Normal Mode";
-      //       map.setView(selectedZoneCenter, 17);
-      //       var bbox = map.getBounds();
-      //       console.log(bbox); // 你可以在此处使用bbox
-      //     } else {
-      //       this.innerHTML = "Viewer Mode";
-      //       map.setView(selectedZoneCenter, 13); // 或者返回到之前的视野
-      //     }
-      //   }
-      // };
-    
+  
 
       // Search Control
       // Add geocoder control
@@ -300,13 +269,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
     if (currentZoneRef.current) {
       geoJsonRef.current.resetStyle(currentZoneRef.current); 
       infoRef.current.update();
-      
-      // //remove view markers
-   
-      viewMarkersRef.current.forEach(marker => {
-        viewClusterRef.current.removeLayer(marker);
-      });
-      
 
     }
     if (selectedZone) {
@@ -326,6 +288,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       }
     }
   }, [selectedZone]);
+
   // Manage markers when a zone is selected
   useEffect(() => {
     console.log("UseEffect: Manage markers when a zone is selected");
@@ -404,7 +367,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
       viewerRef.current = new Viewer({
         container: 'mapillary',
-        imageId: '178975760792906',  
+        // imageId: '178975760792906',  
         accessToken: import.meta.env.VITE_APP_ACCESS_TOKEN,  // Mapillary Client ID
         trackResize: true,
         component: {cover: true},
@@ -421,6 +384,65 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
     }
   }, []);
 
+  // Add viewer mode button when one zone is selected
+  useEffect(() => {
+    if (!selectedZone || !mapInstanceRef.current) {
+      return;
+    }
+    // center
+    const centroid = turf.centroid(selectedZone);
+    const selectedZoneCenter = [centroid.geometry.coordinates[1], centroid.geometry.coordinates[0]];
+    // Viewer button Control
+    let viewerModeControl = L.control({position: 'topright'});
+    viewerModeControl.onAdd = function(map) {
+      var container = L.DomUtil.create('div', 'viewer-mode-container');
+      // var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+      this._button = L.DomUtil.create('button', 'viewer-mode-btn', container);
+      this._button.style.cursor = 'pointer';
+      this._button.innerHTML = 'Viewer Mode';
+      this._button.style.display = selectedZone ? 'block' : 'none';
+      
+      this._button.onclick = function() {
+        if (this.innerHTML === "Viewer Mode") {
+          this.innerHTML = "Return to Normal Mode";
+          // map.setView(selectedZoneCenter, 18);
+          // const bounds = map.getBounds();
+          // setBbox(`${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`);
+          // setIsShowViewMarkers(true);
+          const onZoomEnd = function() { 
+            const bounds = map.getBounds();
+            setBbox(`${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`);
+            setIsShowViewMarkers(true);
+            
+            map.off('zoomend', onZoomEnd);
+          };
+      
+          map.on('zoomend', onZoomEnd);
+      
+          map.setView(selectedZoneCenter, 17);
+          
+        } else {
+          setIsShowViewMarkers(false);
+          this.innerHTML = "Viewer Mode";
+        }
+      }
+      return container;
+    };
+
+    viewerControlRef.current = viewerModeControl;
+    viewerModeControl.addTo(mapInstanceRef.current);
+    
+    //unmount the viewer button
+    return () => {
+      // reset viewer mode
+      setIsShowViewMarkers(false);
+      if (viewerControlRef.current && mapInstanceRef.current) {
+        mapInstanceRef.current.removeControl(viewerControlRef.current);
+      }
+    };
+  }, [selectedZone]);
+
+  // Manage view markers when viewer mode
   useEffect(() => {
     if (!selectedZone) {
       return;
@@ -428,24 +450,18 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
     if (!isShowViewMarkers) {
       return;
     }
-    // Get map instance
-    const map = mapInstanceRef.current;
-    // Get current bounds of the map view
-    const bounds = map.getBounds();
-    console.log("bbox", bounds);
-    // Convert bounds to bbox string
-    const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
-
         
     const fetchData = async () => {
       try {
+        // setIsLoading(true);
         // Fetch image data
         const url = `https://graph.mapillary.com/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url,geometry,sequence&bbox=${bbox}&limit=100`;
         // `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url&bbox=${bbox}&limit=100`
         const response = await axios.get(url);
         if (response.status !== 200) {
           throw new Error("Can't fetch pictures for viewing now!");
-        } 
+        }
+
         const data = response.data.data;
         console.log("pictures data:", data );
 
@@ -458,36 +474,77 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
           return false;
         });
         console.log("filtered pictures data:", uniqueData );
+
+        // let bouncingMarker = null;
         
         uniqueData.forEach(image => {
-          // Create a new marker with the image as the icon
-          if (image.computed_geometry) {
+          // // Create a new marker with the image as the icon
+           if (image.computed_geometry) {
+            let normalIcon = L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] });
+            let hoveredIcon = L.icon({ iconUrl: image.thumb_256_url, iconSize: [35, 35] });
+        
             const marker = L.marker(
               [image.computed_geometry.coordinates[1], image.computed_geometry.coordinates[0]], 
-              { icon: L.icon({ iconUrl: image.thumb_256_url, iconSize: [25, 25] }) }
+              { icon: normalIcon }
             ); 
-
+        
             // Add a click event listener to the marker
             marker.on('click', () => {
-
+              viewerRef.current.deactivateCover();
+              
               // Move the Viewer to the image
-              viewerRef.current.moveTo(image.id);
+              try {
+                viewerRef.current.moveTo(image.id);
+              } catch (error) {
+                console.log("Can't show the image now.");
+              }
+              // viewerRef.current.moveTo(image.id).then(
+              //   image => {},
+              //   error => {console.log("Can't show the image now.");}
+              // )
+              // .catch(error => {console.log("Can't show the image now.");});
+              
+              marker.bounce({duration: 500, height: 100});
+
             });
+        
+            // Add mouseover and mouseout event listeners to the marker
+            marker.on('mouseover', () => {
+              marker.setIcon(hoveredIcon);
+            });
+            marker.on('mouseout', () => {
+              setTimeout(() => {
+                marker.setIcon(normalIcon);
+              }, 100);
+            });
+        
             // Add the marker to the map
             viewClusterRef.current.addLayer(marker);
             viewMarkersRef.current.push(marker);
           }
         });
 
+        notify("Pick a picture to view street.");
          
       } catch (error) {
         console.error("PIC MARKER", error);
+        notify("Can't fetch street view data now, try it later", 'error');
+      } finally {
+        // setIsLoading(false);
       }
     };
 
     fetchData();
+    return () => {
+      // //remove view markers
+      viewMarkersRef.current.forEach(marker => {
+        viewClusterRef.current.removeLayer(marker);
+      });
+      viewMarkersRef.current = [];
+      viewerRef.current.activateCover();
+    };
 
-  }, [selectedZone, isShowViewMarkers]);
+  }, [isShowViewMarkers]);
   
 
 
@@ -507,10 +564,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       </Box>
 
     }
-          {/* {selectedZone ?
+          {isShowViewMarkers ?
         <div id="mapillary" style={{display: 'block'}}></div> :
         <div id="mapillary" style={{display: 'none'}}></div>
-      } */}
+      }
   </div>;
 }
 
