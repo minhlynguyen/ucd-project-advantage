@@ -4,6 +4,8 @@ from .models import ZoneDetail, Place, ZonePuma, Zone
 from django.core.serializers import serialize
 from rest_framework_gis import serializers as geoserializers
 from django.db.models import Count, Q, Sum, Avg
+from django.utils import timezone
+import datetime
 
 class PlaceSerializer(geoserializers.GeoFeatureModelSerializer):
 
@@ -115,8 +117,37 @@ def zone_census_serializer(id=None):
         return(data)
     else: 
         return(data.get(id))
+    
+def today_info(id=None):
+    now=timezone.now()
+    year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+    zones = ZoneDetail.objects.filter(datetime__date=datetime.date(int(year), int(month), int(day))).order_by("taxi_zone_id","datetime")
 
-
-
+    if id == None:
+        serializer = ZoneDataSerializer(zones,many=True)
+        data = serializer.data
+        data = {
+            item["taxi_zone_id"]: {
+                "detail": [
+                    {
+                        k: v
+                        for k, v in entry.items()
+                        if k != "taxi_zone_id"
+                    }
+                for entry in data
+                if entry["taxi_zone_id"] == item["taxi_zone_id"]
+                ]
+            }
+            for item in data
+        }
+        return data
+    
+    else:
+        zone = zones.filter(taxi_zone_id=id)
+        serializer = ZoneDataSerializer(zone,many=True)
+        data = serializer.data
+        for item in data:
+            item.pop('taxi_zone_id')
+        return data
 
 

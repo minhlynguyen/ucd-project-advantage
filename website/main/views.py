@@ -1,7 +1,8 @@
 from django.utils import timezone
+from django.http import JsonResponse
 from django.core.serializers import serialize
 import datetime
-from .serializers import ZoneDataSerializer, zone_census_serializer
+from .serializers import ZoneDataSerializer, zone_census_serializer, today_info
 from .models import Place, ZoneDetail
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import response
@@ -88,31 +89,12 @@ def zone_hourly(request, id=None):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def all_zones_today(request):
+def all_zones_today(request, id=None):
     """
     Retrieve history detail of all zone in 24 hour
     """
     try:
-        now=timezone.now()
-        year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
-        zone = ZoneDetail.objects.filter(datetime__date=datetime.date(int(year), int(month), int(day))).order_by("taxi_zone_id","datetime")
+        data = today_info(id)
+        return response.Response({"status":"1","data":data})
     except Exception as e:
         return response.Response({"status":"2","data":str(e)})
-
-    serializer = ZoneDataSerializer(zone,many=True)
-    data = serializer.data
-    data = {
-        item["taxi_zone_id"]: {
-            "detail": [
-                {
-                    k: v
-                    for k, v in entry.items()
-                    if k != "taxi_zone_id"
-                }
-            for entry in data
-            if entry["taxi_zone_id"] == item["taxi_zone_id"]
-            ]
-        }
-        for item in data
-    }
-    return response.Response({"status":"1","data":data})
