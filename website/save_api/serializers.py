@@ -4,4 +4,4 @@ from .models import SavedZone
 class SavedSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedZone
-        fields = ('user','zone','added')   
+        fields = ('zone','added')   

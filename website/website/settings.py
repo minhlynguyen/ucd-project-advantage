@@ -175,7 +175,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1), 
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
     'ROTATE_REFRESH_TOKENS': True, # When someone request a refresh token, a new access and refresh token is given back
     'BLACKLIST_AFTER_ROTATION': True, # Blacklist the keys after the keys have been utilized
@@ -190,3 +190,4 @@ SIMPLE_JWT = {
 }
 
 # TEST_RUNNER = 'website.runner.PostgresSchemaTestRunner'
+APPEND_SLASH = False
