@@ -4,6 +4,8 @@ from .models import ZoneDetail, Place, ZonePuma, Zone
 from django.core.serializers import serialize
 from rest_framework_gis import serializers as geoserializers
 from django.db.models import Count, Q, Sum, Avg
+from django.utils import timezone
+import datetime
 
 class PlaceSerializer(geoserializers.GeoFeatureModelSerializer):
 
@@ -35,7 +37,7 @@ def find_key_with_highest_value(zone_data):
     # Add a pair of 'key_with_highest_value': name of the key back to the zone_data dictionary
     zone_data['main_group'] = key_with_highest_value
 
-def zone_census_serializer():
+def zone_census_serializer(id=None):
 
     full_zone = ZonePuma.objects.filter(median_income__isnull=False).aggregate(Avg('median_income'),
                                                             Avg('females_under_5'),Avg('females_5_14'),
@@ -111,9 +113,41 @@ def zone_census_serializer():
     for zone_id, zone_data in data.items():
         find_key_with_highest_value(zone_data)
 
-    return(data)
+    if id == None:
+        return(data)
+    else: 
+        return(data.get(id))
+    
+def today_info(id=None):
+    now=timezone.now()
+    year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
+    zones = ZoneDetail.objects.filter(datetime__date=datetime.date(int(year), int(month), int(day))).order_by("taxi_zone_id","datetime")
 
-
-
+    if id == None:
+        serializer = ZoneDataSerializer(zones,many=True)
+        data = serializer.data
+        data = {
+            item["taxi_zone_id"]: {
+                "detail": [
+                    {
+                        k: v
+                        for k, v in entry.items()
+                        if k != "taxi_zone_id"
+                    }
+                for entry in data
+                if entry["taxi_zone_id"] == item["taxi_zone_id"]
+                ]
+            }
+            for item in data
+        }
+        return data
+    
+    else:
+        zone = zones.filter(taxi_zone_id=id)
+        serializer = ZoneDataSerializer(zone,many=True)
+        data = serializer.data
+        for item in data:
+            item.pop('taxi_zone_id')
+        return data
 
 

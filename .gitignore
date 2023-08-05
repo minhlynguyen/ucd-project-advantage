@@ -17,3 +17,4 @@ delete dupes.py
 data-analytics/.DS_Store
 data-analytics/train_model_1/.DS_Store
 .DS_Store
+website/.coverage
