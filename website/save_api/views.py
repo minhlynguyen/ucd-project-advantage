@@ -107,7 +107,7 @@ def saved_zone_info(request, zone):
         dict_item['females_55_64'] = census['females_55_64']
         dict_item['females_65_74'] = census['females_65_74']
         dict_item['females_75_84'] = census['females_75_84']
-        dict_item['males_85'] = census['females_85']
+        dict_item['females_85'] = census['females_85']
         dict_item['males_under_5'] = census['males_under_5']
         dict_item['males_5_14'] = census['males_5_14']
         dict_item['males_15_24'] = census['males_15_24']
