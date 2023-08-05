@@ -63,7 +63,8 @@ function SolutionsContent() {
     const fetchData = async () => {
       setIsFetchingImpression(true);
       // !!!!!!remove the baseURL if use axiosInstance
-      const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/data/`;//24h impression and business data
+      // const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/data/`;//24h impression and business data
+      const url = `${import.meta.env.VITE_APP_API_BASE_URL}/api/main/today/`;//24h impression and business data
       // axiosInstance.get(url).then((response) => {
       axios.get(url, { timeout: 60000 }).then((response) => {
         if (response.data.status === "2") {
@@ -99,7 +100,8 @@ function SolutionsContent() {
   useEffect(()=>{
     const fetchData = async () => {
       setIsFetchingCensus(true);
-      const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/`;//census data
+      // const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/`;//census data
+      const url = `${import.meta.env.VITE_APP_API_BASE_URL}/api/main/census/`;//census data
       // axiosInstance.get(url).then((response) => {
       axios.get(url).then((response) => {
         if (response.data.status === "2") {

@@ -150,7 +150,26 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
         return div;
       };
 
- 
+      // // Viewer button Control
+      // let viwerModeControl = L.control({position: 'topright'});
+      // viwerModeControl.onAdd = function(map) {
+      //   var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+      //   this._button = L.DomUtil.create('button', 'viewer-mode-btn', container);
+      //   this._button.innerHTML = 'Viewer Mode';
+      //   this._button.style.display = selectedZone ? 'block' : 'none';
+        
+      //   this._button.onclick = function() {
+      //     if (this.innerHTML === "Viewer Mode") {
+      //       this.innerHTML = "Return to Normal Mode";
+      //       map.setView(selectedZoneCenter, 17);
+      //       var bbox = map.getBounds();
+      //       console.log(bbox); // 你可以在此处使用bbox
+      //     } else {
+      //       this.innerHTML = "Viewer Mode";
+      //       map.setView(selectedZoneCenter, 13); // 或者返回到之前的视野
+      //     }
+      //   }
+      // };
     
 
       // Search Control
@@ -322,9 +341,10 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
       (async () => {
         try {
           // Request data for markers in selected zone
-          const url = `${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${selectedZone.id}/places`;
+          // const url = `${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${selectedZone.id}/places`;
+          const url = `${import.meta.env.VITE_APP_API_BASE_URL}api/main/places/${selectedZone.id}/`;
           const response = await axios.get(url);
-          if (response.status !== 201 || response.data.status !== "1"){
+          if (response.status !== 200 || response.data.status !== "1"){
             throw new Error("Can't fetch markers data!");
           }
           addMarkersToMap(response.data.data); 
@@ -377,12 +397,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading }) {
 
   }, [selectedZone]);
 
-  // Add markers for view when a zone is selected
-  useEffect(() => {
-
-  }, []);
-
-  
 
   // Initialize Mapillary viewer when the map is ready
   useEffect(() => {

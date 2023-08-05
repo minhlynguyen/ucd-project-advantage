@@ -33,7 +33,8 @@ const axiosInstance = axios.create({
 
 		if (
 			error.response.status === 401 &&
-			originalRequest.url === axios + 'token/refresh/'
+			// originalRequest.url === axios + 'token/refresh/'
+			originalRequest.url === axios + 'api/user/login/refresh/'
 		) {
 			window.location.href = '/login/';
 			return Promise.reject(error);
@@ -55,7 +56,7 @@ const axiosInstance = axios.create({
 
 				if (tokenParts.exp > now) {
 					return axiosInstance
-						.post('/token/refresh/', { refresh: refreshToken })
+						.post('/api/user/login/refresh/', { refresh: refreshToken })
 						.then((response) => {
 							localStorage.setItem('access_token', response.data.access);
 							localStorage.setItem('refresh_token', response.data.refresh);

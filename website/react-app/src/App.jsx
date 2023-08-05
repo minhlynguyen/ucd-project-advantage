@@ -53,7 +53,7 @@ function App() {
           },
         });
         return axiosInstanceForUserAuth
-        .post('/token/refresh/', { refresh: refreshToken })
+        .post('/api/user/login/refresh/', { refresh: refreshToken })
         .then((response) => {
           localStorage.setItem('access_token', response.data.access);
           localStorage.setItem('refresh_token', response.data.refresh);
