@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import ViewDeleteSavedZone, saved_list
+from .views import saved_list, saved_detail
 
 app_name = 'save_api'
 
 urlpatterns = [   
-    path('',saved_list, name='zonesavelist'), #view multiple zone
-    path('<int:zone>/', ViewDeleteSavedZone.as_view(), name = 'zonesave'), #delete 1 zone from collection only
+    path('',saved_list, name='zone_save_list'), #view multiple zone
+    path('<int:zone>/', saved_detail, name = 'zone_get_delete'), #delete 1 zone from collection only
 ]
