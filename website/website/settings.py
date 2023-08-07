@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     "user_api",
     'django_extensions',
     "save_api",
-    "rest_framework_simplejwt.token_blacklist"
+    'rest_framework_simplejwt',
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
@@ -88,13 +89,12 @@ WSGI_APPLICATION = "website.wsgi.application"
 
 DATABASES = {
     "default": {
-        # "ENGINE": "django.db.backends.postgresql",
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "NAME": "advantage-db",
         "USER": "advantage",
         "PASSWORD": config("DB_PASSWORD"),
         "HOST": "database-1.cvwut6jnqsvn.us-east-1.rds.amazonaws.com",
-        "PORT": "5432",
+        "PORT": "5432"
     }
 }
 
@@ -168,21 +168,26 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly", 
+    ],
 }
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1), 
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
     'ROTATE_REFRESH_TOKENS': True, # When someone request a refresh token, a new access and refresh token is given back
     'BLACKLIST_AFTER_ROTATION': True, # Blacklist the keys after the keys have been utilized
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('JWT',), # Define the header type
+    'AUTH_HEADER_TYPES': ('Bearer', 'JWT'), # Define the header type
     'USER_ID_FIELD': 'user_id',
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
+
+# TEST_RUNNER = 'website.runner.PostgresSchemaTestRunner'
+APPEND_SLASH = False

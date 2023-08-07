@@ -4,37 +4,25 @@ from django.db import models as models
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models as geomodels
 from django.contrib.gis.geos import GEOSGeometry
+from django.db.models.query import QuerySet
 from django.utils import timezone
 
 # from impression.models import Impression
 # Create your models here.
 
 # Taxi zone models in maps schema
-class Zone(models.Model):
+class Zone(geomodels.Model):
     id = geomodels.PositiveIntegerField(primary_key=True)
     name = geomodels.CharField(max_length=45)
     borough = geomodels.CharField(max_length=13)
     geom = geomodels.MultiPolygonField()
 
-    def current_detail(self):
-
-        # Use this when data is updated
-        now=datetime.datetime.now(tz=ZoneInfo("America/New_York"))
-        year, month, day= now.strftime("%Y"), now.strftime("%m"), now.strftime("%d")
-
-        # This is for testing
-        year, month, day = 2023, 4, 30
-        return ZoneDetail.objects.filter(taxi_zone=self, 
-                                        #  datetime__exact=datetime.strptime("2023-04-30T23:00:00-0400", "%Y-%m-%dT%H:%M:%S%z")
-                                        datetime__date=datetime.date(year, month, day)
-                                         )#,
-
-    def multipolygon(self):
-        return str(self.geom)
-
     class Meta:
         managed = True
         db_table = 'maps\".\"zone'
+
+    def __str__(self):
+        return f"Zone(id={self.id}, name='{self.name}', borough='{self.borough}')"
 
 class ZoneDetail(models.Model):
     zone_time_id = models.AutoField(primary_key=True)
@@ -66,6 +54,13 @@ class ZoneDetail(models.Model):
         managed = True
         db_table = 'maps\".\"zone_detail'
         unique_together = (('taxi_zone','datetime'))
+    
+    def __str__(self):
+        return (
+            f"ZoneDetail(zone_time_id={self.zone_time_id}, "
+            f"taxi_zone={self.taxi_zone}, "
+            f"datetime={self.datetime})"
+        )
 
 # PUMA model in maps schema
 class Puma(geomodels.Model):
@@ -97,6 +92,9 @@ class Puma(geomodels.Model):
     class Meta:
         managed = True
         db_table = 'maps\".\"puma'
+
+    def __str__(self):
+        return f"Puma(id={self.id}, median_income={self.median_income}, main_demographic='{self.main_demographic}')"
 
 # Models to calculate intersection among Zones and Pumas
 
@@ -132,8 +130,16 @@ class ZonePuma(geomodels.Model):
         db_table = 'maps\".\"zone_puma'
         unique_together = (('zone','puma'))
 
+    def __str__(self):
+        return f"Zone: {self.zone.name}, Puma: Puma ID: {self.puma.id}"
+
 # Places model in maps schema
 class Place(geomodels.Model):
+
+    class PlaceObjects(models.Manager):
+        def get_queryset(self) -> QuerySet:
+            return super().get_queryset().filter(status='Active')
+        
     id = geomodels.AutoField(primary_key=True)
     nyc_id = geomodels.CharField(unique=True, max_length=30)
     status = geomodels.CharField(max_length=8)
@@ -143,7 +149,12 @@ class Place(geomodels.Model):
     name = geomodels.CharField(max_length=150)
     geom = geomodels.PointField()
     taxi_zone = models.ForeignKey(Zone,related_name='zone_places',on_delete=models.RESTRICT)
+    objects = models.Manager() #default manager
+    placeobjects = PlaceObjects()
 
     class Meta:
         managed = True
         db_table = 'maps\".\"place'
+
+    def __str__(self):
+        return f"Place(id={self.id}, name='{self.name}', nyc_id='{self.nyc_id}', status='{self.status}')"

@@ -1,3 +1,8 @@
-from django.contrib import admin
+from django.contrib.gis import admin
+from save_api.models import SavedZone
+from django.contrib.auth.admin import UserAdmin
 
-# Register your models here.
+class SavedZoneAdmin(admin.GISModelAdmin):
+    list_display = ('user','zone','added')
+
+admin.site.register(SavedZone, SavedZoneAdmin)

@@ -8,12 +8,13 @@ from django.utils import timezone
 class SavedZone(models.Model):
     
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name="saved_by")
-    zone = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name="saved_zone")
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE, related_name="saved_zone")
     added = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = 'user_data\".\"saved_zone'
         ordering = ('-added',)
+        unique_together = (('user','zone'))
 		
     # def __str__(self):
     #     return self.title
