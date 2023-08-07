@@ -33,7 +33,7 @@ export default function SignupLoginPage() {
     axiosInstance
       .post("/api/user/register/", {
         email: registerEmail,
-        username: userName,
+        // username: userName,
         password: registerPassword,
       })
       .then(function () {
@@ -139,7 +139,7 @@ export default function SignupLoginPage() {
               <h2>Register</h2>
 
             </div>
-            <Form.Field className="FormField" name="username">
+            {/* <Form.Field className="FormField" name="username">
               <Form.Message className="FormMessage" match="valueMissing">
                 Please enter your name
               </Form.Message>
@@ -158,7 +158,7 @@ export default function SignupLoginPage() {
                   />
                 </Form.Control>
               </div>
-            </Form.Field>
+            </Form.Field> */}
             <Form.Field className="FormField" name="email">
               <div className="input-container">
                 <Form.Message className="FormMessage" match="valueMissing">
