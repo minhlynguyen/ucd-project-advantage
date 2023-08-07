@@ -8,6 +8,11 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.urls import reverse
 from user_api.models import AppUser
+from rest_framework.test import APIRequestFactory
+from .models import ZoneDetail
+from .views import zone_hourly
+from .serializers import ZoneDataSerializer, find_key_with_highest_value
+
 
 polygon1 = GEOSGeometry(
 'POLYGON((-74.006 40.7128, -73.995 40.7128, -73.995 40.7213, -74.006 40.7213, -74.006 40.7128))',
@@ -286,6 +291,7 @@ class PlaceInZoneViewTestCase(TestCase):
             borough='Test Borough',
             geom=MultiPolygon(polygon1, polygon2, srid=4326),  # Replace with valid geometry
         )
+
         self.place = Place.objects.create(
             nyc_id='test_place',
             status='Active',
@@ -295,8 +301,29 @@ class PlaceInZoneViewTestCase(TestCase):
             geom= GEOSGeometry('POINT(1 1)'),  
             taxi_zone_id=1,  
         )
+        
         self.user = AppUser.objects.create_user(email='testuser@email.com', password='testpassword')
         self.client = APIClient()
+
+        # Create a test Place object with 'Inactive' status
+        self.inactive_place = Place.objects.create(
+            nyc_id='inactive_id',
+            status='Inactive',
+            small_cate='Test Small Category',
+            big_cate='Test Big Category',
+            name='Inactive Place',
+            geom=GEOSGeometry('POINT(2 2)'),
+            taxi_zone_id=1
+        )
+
+    def test_get_queryset_active_places(self):
+        # Get the active places using the custom manager
+        active_places = Place.placeobjects.all()
+
+        # Assert that only the active_place is in the queryset
+        self.assertEqual(active_places.count(), 1)
+        self.assertEqual(active_places[0], self.place)
+
 
     def test_place_in_zone_success(self):
         url = reverse('main:place_in_zone',args=[1])
@@ -312,3 +339,88 @@ class PlaceInZoneViewTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['status'], '2')
+
+
+class ZoneHourlyViewTest(TestCase):
+    def setUp(self):
+        self.zone = Zone.objects.create(
+            id=1,
+            name="Test Zone",
+            borough="Test Borough",
+            geom=MultiPolygon(polygon1, polygon2, srid=4326)
+        )
+        self.factory = APIRequestFactory()
+        self.url = reverse('main:zone_hourly')  # Use the correct URL name
+        self.user = AppUser.objects.create_user(email='testuser@email.com', password='testpassword')
+        self.client = APIClient()
+        self.maxDiff = None
+
+    def test_zone_hourly_all_zones(self):
+        # Create test data
+
+        start_time = timezone.now()
+        end_time = start_time + timezone.timedelta(hours=1)
+        self.zone_detail = ZoneDetail.objects.create(taxi_zone_id=1, datetime=start_time, impression_predict=10)
+        self.client.force_authenticate(user=self.user)
+        # Make a GET request
+        response = self.client.get(self.url, {'start_time': start_time, 'end_time': end_time})
+
+        # Assert response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['status'], '1')
+        self.assertEqual(response.data['data'], {1: 10})
+
+    def test_zone_hourly_single_zone(self):
+        # Create test data
+        start_time = timezone.now()
+        end_time = start_time + timezone.timedelta(hours=1)
+        self.zone_detail = ZoneDetail.objects.create(taxi_zone_id=1, datetime=start_time, impression_predict=10)
+        self.client.force_authenticate(user=self.user)
+        # Make a GET request
+        response = self.client.get(self.url, {'start_time': start_time, 'end_time': end_time, 'zone_id': 1})
+
+        # Assert response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['status'], '1')
+        self.assertEqual(response.data['data'][1]['detail'][0]['impression_predict'],10)
+
+    def test_zone_hourly_invalid_zone(self):
+        # Make a GET request with invalid zone ID
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.url, {'start_time': timezone.now(), 'end_time': timezone.now(), 'zone_id': 999})
+        
+        # Assert response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['status'], '2')
+        self.assertEqual(response.data['data'], 'Zone does not exist')
+
+
+class FindKeyWithHighestValueTest(TestCase):
+    def setUp(self):
+        self.zone_data = {
+            'category1': 10,
+            'category2': 20,
+            'category3': 15,
+            'median_income': 50000
+        }
+    
+    def test_find_key_with_highest_value(self):
+        # Assert that the result is the key with the highest value (category2 in this case)
+        result = find_key_with_highest_value(self.zone_data)
+        self.assertEqual(result, 'category2')
+
+    def test_find_key_with_highest_value_empty_dict(self):
+        empty_data = {}
+
+        result = find_key_with_highest_value(empty_data)
+
+        # Assert that the result is None for an empty dictionary
+        self.assertIsNone(result)
+
+    def test_find_key_with_highest_value_non_dict_input(self):
+        non_dict_data = [1, 2, 3]
+
+        result = find_key_with_highest_value(non_dict_data)
+
+        # Assert that the result is None for non-dictionary input
+        self.assertIsNone(result)

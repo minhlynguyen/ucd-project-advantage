@@ -31,11 +31,17 @@ def find_key_with_highest_value(zone_data):
     # Filter out 'median_income' key from consideration
     filtered_keys = [key for key in zone_data if key != 'median_income']
 
+    if not filtered_keys:
+        return None
+
     # Find the key with the highest value using the max function with a custom key function
     key_with_highest_value = max(filtered_keys, key=lambda k: zone_data[k])
 
     # Add a pair of 'key_with_highest_value': name of the key back to the zone_data dictionary
     zone_data['main_group'] = key_with_highest_value
+    
+    # Return the key
+    return key_with_highest_value
 
 def zone_census_serializer(id=None):
 
