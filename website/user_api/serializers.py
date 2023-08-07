@@ -15,7 +15,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        fields = ('email', 'user_name', 'password')
+        fields = ('email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -53,10 +53,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 #             raise ValidationError('user not found')
 #         return user
 
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserModel
-#         fields = ('email','username')
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppUser
+        fields = ('email')
 
 # class SuperUserRegisterSerializer(serializers.ModelSerializer):
 #     class Meta:

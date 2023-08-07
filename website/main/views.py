@@ -9,6 +9,7 @@ from rest_framework import response
 from rest_framework.decorators import api_view, schema, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum
+import json
 
 
 @api_view(['GET'])
@@ -19,9 +20,10 @@ def zone_census(request, id=None):
     """
     try: 
         census = zone_census_serializer(id)
+        return response.Response({"status":"1","data":census})
     except Exception as e:
         return response.Response({"status":"2","data":str(e)})    
-    return response.Response({"status":"1","data":census})
+    
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -30,10 +32,17 @@ def place_in_zone(request, id):
     Retrieve all places of a zone. Status code 1=DB success, 2=DB fail
     """
     try:
+        
+        {'status': '1', 'data': '{"type": "FeatureCollection", "crs": {"type": "name", "properties": ...}, "features": []}'}
         places = serialize('geojson',Place.objects.filter(taxi_zone_id=id,status="Active"))
+        places_json = json.loads(places)
+        if len(places_json['features']) == 0:
+            return response.Response({"status":"2","data":places})
+        else:
+            return response.Response({"status":"1","data":places})
     except Exception as e:
         return response.Response({"status":"2","data":str(e)})
-    return response.Response({"status":"1","data":places})
+    
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

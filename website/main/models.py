@@ -21,6 +21,9 @@ class Zone(geomodels.Model):
         managed = True
         db_table = 'maps\".\"zone'
 
+    def __str__(self):
+        return f"Zone(id={self.id}, name='{self.name}', borough='{self.borough}')"
+
 class ZoneDetail(models.Model):
     zone_time_id = models.AutoField(primary_key=True)
     taxi_zone = models.ForeignKey(Zone,related_name='zone_detail',on_delete=models.RESTRICT)
@@ -51,6 +54,13 @@ class ZoneDetail(models.Model):
         managed = True
         db_table = 'maps\".\"zone_detail'
         unique_together = (('taxi_zone','datetime'))
+    
+    def __str__(self):
+        return (
+            f"ZoneDetail(zone_time_id={self.zone_time_id}, "
+            f"taxi_zone={self.taxi_zone}, "
+            f"datetime={self.datetime})"
+        )
 
 # PUMA model in maps schema
 class Puma(geomodels.Model):
@@ -82,6 +92,9 @@ class Puma(geomodels.Model):
     class Meta:
         managed = True
         db_table = 'maps\".\"puma'
+
+    def __str__(self):
+        return f"Puma(id={self.id}, median_income={self.median_income}, main_demographic='{self.main_demographic}')"
 
 # Models to calculate intersection among Zones and Pumas
 
@@ -117,6 +130,9 @@ class ZonePuma(geomodels.Model):
         db_table = 'maps\".\"zone_puma'
         unique_together = (('zone','puma'))
 
+    def __str__(self):
+        return f"Zone: {self.zone.name}, Puma: Puma ID: {self.puma.id}"
+
 # Places model in maps schema
 class Place(geomodels.Model):
 
@@ -139,3 +155,6 @@ class Place(geomodels.Model):
     class Meta:
         managed = True
         db_table = 'maps\".\"place'
+
+    def __str__(self):
+        return f"Place(id={self.id}, name='{self.name}', nyc_id='{self.nyc_id}', status='{self.status}')"
