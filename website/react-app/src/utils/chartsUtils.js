@@ -110,10 +110,15 @@ export const getBarOptions = () => {
         },
         plugins: {
             title: {
-                display: true,
-                text: 'Business Distribution',
-                color: 'white', 
+              display: true,
+              text: 'Business Distribution',
+              color: 'white', 
             },
+            legend: {
+              labels: {
+                color: 'white'
+              }
+            }
         },
     };
     return businessOptions;

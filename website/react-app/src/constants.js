@@ -54,15 +54,15 @@ export const BIG_CATE = [
 ];
 // For markers
 export const BIG_CATE_ICONS = {
-    "Entertainment and Recreation": '/museum.png',
-    "Financial Services": '/museum.png',
-    "Food and Beverage": '/museum.png',
-    "Parking and Automotive Services": '/museum.png',
-    "Professional Services": '/museum.png',
-    "Real Estate": '/museum.png',
-    "Retail Services": '/museum.png',
-    "Transportation": '/museum.png',
-    "Health Care": '/museum.png',
+    "Entertainment and Recreation": '/markers/bowling-alley.png',
+    "Financial Services": '/markers/dollars.png',
+    "Food and Beverage": '/markers/restaurant.png',
+    "Parking and Automotive Services": '/markers/parking.png',
+    "Professional Services": '/markers/location.png',
+    "Real Estate": '/markers/home.png',
+    "Retail Services": '/markers/shopping-cart.png',
+    "Transportation": '/markers/train-station.png',
+    "Health Care": '/markers/first-aid-kit.png',
     "Wifi hotspot": '/markers/wifi.png',
     "Education": '/markers/university.png'
 };

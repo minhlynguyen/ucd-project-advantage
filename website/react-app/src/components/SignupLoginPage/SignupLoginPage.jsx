@@ -31,7 +31,7 @@ export default function SignupLoginPage() {
   const handleSignupSubmit = (e) => {
     e.preventDefault();
     axiosInstance
-      .post("/user/register", {
+      .post("/api/user/register/", {
         email: registerEmail,
         username: userName,
         password: registerPassword,
@@ -39,7 +39,7 @@ export default function SignupLoginPage() {
       .then(function () {
         axiosInstance
           // .post("/user/login", {
-          .post("/token/", { //new
+          .post("/api/user/login/", { //new
             email: registerEmail,
             password: registerPassword,
           })
@@ -85,7 +85,7 @@ export default function SignupLoginPage() {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     axiosInstance
-      .post("token/", {
+      .post("api/user/login/", {
         email: loginEmail,
         password: loginPassword,
       })

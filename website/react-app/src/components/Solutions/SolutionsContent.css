@@ -45,14 +45,26 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 300px;
-    height: 200px;
+    width: 400px;
+    height: 300px;
     z-index: 1000;
 }
 
 .map-module {
     height: 750px;
     /* width: 70%; */
+}
+
+.viewer-mode-btn {
+    background-color: #374762;
+    color: white;
+    padding: 5px;
+    border-radius: 15px;
+}
+
+.viewer-mode-btn:hover {
+    background-color: white;
+    color: #374762;
 }
 
 .info-module {

@@ -14,6 +14,7 @@ import BasicZone from '../Cards/BasicZone';
 import { getBarData, getBarOptions, getLineData, getLineOptions, getPieDataForGender, getPieOptionsForGender } from '../../utils/chartsUtils';
 import { getGenderPercList } from '../../utils/distributionUtils';
 import { generateAdTimeDataForSingleZone } from '../../utils/testDataGenerator';
+import axiosInstance from '../../AxiosConfig';
 
 ChartJS.register(LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement);
 
@@ -54,50 +55,96 @@ export default function CompareDetail({setConfirmMode}) {
       return;
     }
 
+    // const updateData = async (zone, index) => {
+    //   let data = [];
+    //   function arraysEqual(a, b) {
+    //     return a.length === b.length && a.every((val, index) => val === b[index]);
+    //   }
+    //   if (!arraysEqual(adTime, ['', ''])) {
+    //     // // set url here
+    //     // axios.post('', {time_range: ''})
+    //     // .then((response) => {
+    //     //   if (response.data.status !== "1") {
+    //     //     throw new Error("Can't fetch data for Line Graph now!");
+    //     //   }
+    //     //   data = response.data.data;
+    //     // }).catch((error) => {
+    //     //   console.log(error);
+    //     // });
+    //     data = generateAdTimeDataForSingleZone().data[String(zone.id)].detail;// test data
+    //   }
+
+    //   const impressionItems = data.map(item => {
+    //     return {
+    //       time: item.datetime,
+    //       value: item.impression_predict || 0, // if detail has no impression_predict or impression_predict is null, let it be 0
+    //       validValue: item.impression_predict ? parseFloat((item.impression_predict * zone.properties.impression.targetPerc).toFixed(2)) : 0
+    //     };
+    //   });
+    //   const processedData = {
+    //     ...zone,
+    //     properties: {
+    //       ...zone.properties,
+    //       impression: {
+    //         ...zone.properties.impression,
+    //         adTime: {
+    //           ...zone.properties.impression.adTime,
+    //           items: impressionItems
+    //         }
+    //       }
+    //     }
+    //   };
+    //   setImpressionData(prevData => {
+    //     const newData = [...prevData];
+    //     newData[index] = processedData;
+    //     return newData;
+    //   });
+    // };
+    
     const updateData = async (zone, index) => {
       let data = [];
       function arraysEqual(a, b) {
         return a.length === b.length && a.every((val, index) => val === b[index]);
       }
       if (!arraysEqual(adTime, ['', ''])) {
-        // // set url here
-        // axios.post('', {time_range: ''})
-        // .then((response) => {
-        //   if (response.data.status !== "1") {
-        //     throw new Error("Can't fetch data for Line Graph now!");
-        //   }
-        //   data = response.data.data;
-        // }).catch((error) => {
-        //   console.log(error);
-        // });
-        data = generateAdTimeDataForSingleZone().data[String(zone.id)].detail;// test data
-      }
-
-      const impressionItems = data.map(item => {
-        return {
-          time: item.datetime,
-          value: item.impression_predict || 0, // if detail has no impression_predict or impression_predict is null, let it be 0
-          validValue: item.impression_predict ? parseFloat((item.impression_predict * zone.properties.impression.targetPerc).toFixed(2)) : 0
-        };
-      });
-      const processedData = {
-        ...zone,
-        properties: {
-          ...zone.properties,
-          impression: {
-            ...zone.properties.impression,
-            adTime: {
-              ...zone.properties.impression.adTime,
-              items: impressionItems
-            }
+        const start_time = adTime[0].slice(0, 19);
+        const end_time = adTime[1].slice(0, 19);
+        // set url here
+        axiosInstance.get(`/api/main/hourly/?start_time=${start_time}&end_time=${end_time}&zone_id=${zone.id}`)
+        .then((response) => {
+          if (response.data.status !== "1") {
+            throw new Error("Can't fetch data for Line Graph now!");
           }
-        }
-      };
-      setImpressionData(prevData => {
-        const newData = [...prevData];
-        newData[index] = processedData;
-        return newData;
-      });
+          data = response.data.data[zone.id].detail;
+          const impressionItems = data.map(item => {
+            return {
+              time: item.datetime,
+              value: item.impression_predict || 0, // if detail has no impression_predict or impression_predict is null, let it be 0
+              validValue: item.impression_predict ? parseFloat((item.impression_predict * zone.properties.impression.targetPerc).toFixed(2)) : 0
+            };
+          });
+          const processedData = {
+            ...zone,
+            properties: {
+              ...zone.properties,
+              impression: {
+                ...zone.properties.impression,
+                adTime: {
+                  ...zone.properties.impression.adTime,
+                  items: impressionItems
+                }
+              }
+            }
+          };
+          setImpressionData(prevData => {
+            const newData = [...prevData];
+            newData[index] = processedData;
+            return newData;
+          });
+        }).catch((error) => {
+          console.log(error);
+        }); 
+      }
     };
     updateData(zone1, 0);
     updateData(zone2, 1);
@@ -105,21 +152,33 @@ export default function CompareDetail({setConfirmMode}) {
   }, []);
   // for bar chart
   useEffect(() => {
+    const updateData = async () => {
+      let data1 = {};
+      let data2 = {};
 
-    Promise.all([
-      axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone1.id}`),
-      axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone2.id}`)
-    ]).then((responses) => {
-      const dataZone1 = responses[0].data;
-      const dataZone2 = responses[1].data;
-  
+      // Promise.all([
+      //   axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone1.id}`),
+      //   axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone2.id}`)
+      // ]).then((responses) => {
+      //   if (responses[0].data.status !== "1" || responses[1].data.status !== "1") {
+      //     throw new Error("Can't fetch data for business now!");
+      //   }
+      //   data1 = responses[0].data.data[String(zone1.id)].detail[0];
+      //   data2 = responses[1].data.data[String(zone2.id)].detail[0];
+      // }).catch((error) => {
+      //   console.error('Error fetching data: ', error);
+      // });
+
+      data1 = generateAdTimeDataForSingleZone().data[String(zone1.id)].detail[0];//test
+      data2 = generateAdTimeDataForSingleZone().data[String(zone2.id)].detail[0];//test
+
       setTotalBusiness([
-        dataZone1.data[zone1.id].detail[0].total_business,
-        dataZone2.data[zone2.id].detail[0].total_business
+        data1.total_business,
+        data2.total_business
       ]);
   
-      const categoriesDataZone1 = BIG_CATE.map((category) => dataZone1.data[zone1.id].detail[0][category]);
-      const categoriesDataZone2 = BIG_CATE.map((category) => dataZone2.data[zone2.id].detail[0][category]);
+      const categoriesDataZone1 = BIG_CATE.map((category) => data1[category]);
+      const categoriesDataZone2 = BIG_CATE.map((category) => data2[category]);
       
       setBusinessData(getBarData(
         {
@@ -131,9 +190,9 @@ export default function CompareDetail({setConfirmMode}) {
           label: zone2.properties.name
         })
       );
-    }).catch((error) => {
-      console.error('Error fetching data: ', error);
-    });
+    };
+
+    updateData();
   
   }, [compareZones]);
   
