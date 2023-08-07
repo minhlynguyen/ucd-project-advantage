@@ -19,6 +19,6 @@ class SavedList(APITestCase):
         """
         Ensure we can view all objects.
         """
-        url = reverse('save_api:zonesavelist')
+        url = reverse('save_api:zone_save_list')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
