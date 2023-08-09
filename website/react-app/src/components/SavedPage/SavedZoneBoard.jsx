@@ -53,7 +53,8 @@ export default function SavedZoneBoard({zoneID}) {
       let data = {};
 
       // set url here
-      axiosInstance.get(`/api/user/save/${id}/info/`)
+      // axiosInstance.get(`/api/user/save/${id}/info/`)
+      axiosInstance.get(`/api/save/${id}/info/`)
       .then((response) => {
         if (response.data.status !== "1") {
           throw new Error("Can't fetch data for current zone now!");

@@ -65,7 +65,8 @@ export default function SavedPage() {
     const fetchData = async () => {
 
       let data = [];
-      axiosInstance.get(`/api/user/save/`)
+      // axiosInstance.get(`/api/user/save/`)
+      axiosInstance.get(`/api/save/`)
       // axiosInstance.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/user/save/`)
       .then((response) => {
         if (response.data.status !== "1") {
@@ -150,7 +151,8 @@ export default function SavedPage() {
 
   const handleDelete = (zoneID) => {
     const updateData = async (id) => {
-      axiosInstance.delete(`/api/user/save/${id}/`)
+      axiosInstance.delete(`/api/save/${id}/`)
+      // axiosInstance.delete(`/api/user/save/${id}/`)
       .then(response => {
         // if (response.data.status !== "1") {S
         //   throw new Error("Failed to delete collection!");

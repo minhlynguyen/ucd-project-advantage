@@ -406,7 +406,8 @@ function SolutionsContent() {
     const fetchData = async () => {
       let data = [];
 
-      axiosInstance.get(`/api/user/save/`)
+      axiosInstance.get(`/api/save/`)
+      // axiosInstance.get(`/api/user/save/`)
       .then((response)=> {
         if (response.data.status !== "1") {
           throw new Error("Can't fetch collection data for current user now!");
@@ -473,7 +474,8 @@ function SolutionsContent() {
     // };
     const updateData = async (id) => {
    
-      axiosInstance.post(`/api/user/save/`, {zone: id})
+      axiosInstance.post(`/api/save/`, {zone: id})
+      // axiosInstance.post(`/api/user/save/`, {zone: id})
       .then(response => {
         // if (response.data.status !== "1") {
         //   throw new Error("Failed to add collection!");
@@ -518,7 +520,8 @@ function SolutionsContent() {
 
     // };
     const updateData = async (id) => {
-      axiosInstance.delete(`/api/user/save/${id}/`)
+      // axiosInstance.delete(`/api/user/save/${id}/`)
+      axiosInstance.delete(`/api/save/${id}/`)
       .then(response => {
         // if (response.data.status !== "1") {S
         //   throw new Error("Failed to delete collection!");
