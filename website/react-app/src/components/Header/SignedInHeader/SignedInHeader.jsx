@@ -103,7 +103,7 @@ const submitLogout= (e)=> {
             {currentUser ? (
               <Link
                 className="nav-links saved-locations"
-                to=""
+                to="/saved"
                 onClick={closeMobileMenu}
               >
                 Saved Locations

@@ -51,6 +51,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
   const [isShowViewMarkers, setIsShowViewMarkers] = useState(false);
   const [bbox, setBbox] = useState(null);
   const viewerControlRef = useRef(null);
+  const [isOpenViewer, setIsOpenViewer] = useState(false);
 
   
   // Map tile layer initialisation
@@ -512,6 +513,8 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
               // Move the Viewer to the image
               try {
                 viewerRef.current.moveTo(image.id);
+                setIsOpenViewer(true);
+
               } catch (error) {
                 console.log("Can't show the image now.");
               }
@@ -559,6 +562,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       });
       viewMarkersRef.current = [];
       viewerRef.current.activateCover();
+      setIsOpenViewer(false);
     };
 
   }, [isShowViewMarkers]);
@@ -581,10 +585,11 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       </Box>
 
     }
-          {isShowViewMarkers ?
-        <div id="mapillary" style={{display: 'block'}}></div> :
-        <div id="mapillary" style={{display: 'none'}}></div>
-      }
+    {/* {isShowViewMarkers ? */}
+    {isOpenViewer ?
+      <div id="mapillary" style={{display: 'block'}}></div> :
+      <div id="mapillary" style={{display: 'none'}}></div>
+    }
   </div>;
 }
 

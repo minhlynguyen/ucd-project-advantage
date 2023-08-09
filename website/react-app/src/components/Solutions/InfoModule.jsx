@@ -78,7 +78,7 @@ function InfoModule({ zones, selectedZone, setSelectedZone, isLoading }) {
   
   return (
     <div className="info-module" style={{ overflowX: 'auto', overflowY: 'auto', height: '100%' }}>
-      <Stack spacing={1} direction={isMobile ? 'row' : 'column'}>
+      <Stack spacing={1} >
         {info}
         {detailMode && (
           <Button variant="outlined" onClick={() => setSelectedZone(null)}>
