@@ -2,6 +2,7 @@ from types import MethodType
 from django.test.runner import DiscoverRunner
 from django.db import connections
 
+# Prepare test database for unit testing
 def prepare_database(self):
     self.connect()
     self.connection.cursor().execute("""
