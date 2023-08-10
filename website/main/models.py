@@ -54,6 +54,9 @@ class ZoneDetail(models.Model):
         managed = True
         db_table = 'maps\".\"zone_detail'
         unique_together = (('taxi_zone','datetime'))
+        index_together = [
+            ("taxi_zone", "datetime"),
+        ]
     
     def __str__(self):
         return (
@@ -158,3 +161,30 @@ class Place(geomodels.Model):
 
     def __str__(self):
         return f"Place(id={self.id}, name='{self.name}', nyc_id='{self.nyc_id}', status='{self.status}')"
+
+class ZoneToday(models.Model):
+
+    zone_id = models.PositiveIntegerField(null=True)
+    date_time = models.DateTimeField(null=True)
+    impression_predict = models.PositiveIntegerField(null=True) # ML model predict
+    entertainment_and_recreation = models.PositiveIntegerField(null=True)
+    financial_services = models.PositiveIntegerField(null=True)
+    food_and_beverage = models.PositiveIntegerField(null=True)
+    parking_and_automotive_services = models.PositiveIntegerField(null=True)
+    professional_services = models.PositiveIntegerField(null=True)
+    real_estate = models.PositiveIntegerField(null=True)
+    retail_services = models.PositiveIntegerField(null=True)
+    transportation = models.PositiveIntegerField(null=True)
+    hospital = models.PositiveIntegerField(null=True)
+    hotspots = models.PositiveIntegerField(null=True)
+    school = models.PositiveIntegerField(null=True)
+    total_business = models.PositiveIntegerField(null=True)           
+    holiday = models.CharField(max_length=50,null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'maps\".\"zone_today'
+        unique_together = (('zone_id','date_time'))
+        index_together = [
+            ("zone_id", "date_time"),
+        ]
