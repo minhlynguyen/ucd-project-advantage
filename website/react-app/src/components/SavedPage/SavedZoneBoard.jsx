@@ -2,17 +2,13 @@ import React, { useEffect, useRef, useState }  from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import SolutionsContext from '../Solutions/SolutionsContext';
-import axios from 'axios';
 import { ALL_AGES, BIG_CATE } from '../../constants';
 import { Line, Pie, Bar, Doughnut } from 'react-chartjs-2';
-
 import { Chart as ChartJS, LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement } from 'chart.js';
 import BasicZone from '../Cards/BasicZone';
 import { convertToReadableForGroup, getGenderPercList } from '../../utils/distributionUtils';
 import { getBarData, getBarOptions, getLineData, getLineOptions, getPieDataForGender, getPieOptionsForGender } from '../../utils/chartsUtils';
-import { generateOneCollection } from '../../utils/testDataGenerator';
-import { convertToBriefDateString, getCurrentTimeInNY } from '../../utils/dateTimeUtils';
+import { convertToBriefDateString} from '../../utils/dateTimeUtils';
 import axiosInstance from '../../AxiosConfig';
 
 ChartJS.register(LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement);
@@ -26,34 +22,13 @@ export default function SavedZoneBoard({zoneID}) {
   const [businessData, setBusinessData] = useState(null);
   const [summaryData, setSummaryData] = useState(null);
 
-  console.log(zone);
+
   // fetch data
   useEffect(() => {
-    // const updateData = async (id) => {
-    //   let data = {};
-
-    //   // // set url here
-    //   // axios.get('')
-    //   // .then((response) => {
-    //   //   if (response.data.status !== "1") {
-    //   //     throw new Error("Can't fetch data for current zone now!");
-    //   //   }
-    //   //   data = response.data.data;
-    //   // }).catch((error) => {
-    //   //   console.log(error);
-    //   // });
-
-    //   data = generateOneCollection().data;
-
-    //   data.age = ALL_AGES.map(ageGroup => data[ageGroup.name_backend]);
-    //   setZone(data);
-    //   console.log(zone);
-    // };
     const updateData = async (id) => {
       let data = {};
-
       // set url here
-      axiosInstance.get(`/api/user/save/${id}/info/`)
+      axiosInstance.get(`/api/save/${id}/info/`)
       .then((response) => {
         if (response.data.status !== "1") {
           throw new Error("Can't fetch data for current zone now!");
@@ -134,11 +109,8 @@ export default function SavedZoneBoard({zoneID}) {
     if (!zone) {
       return;
     }
-    // let item = zone.details.filter(item => item.datetime === getCurrentTimeInNY())[0];
-    let item = zone.details[0];//just for test
-    console.log('item', item);
+    let item = zone.details[0];
     const categoriesData = BIG_CATE.map((category) => item[category]);
-    console.log('categoriesData', categoriesData);
     setBusinessData(getBarData(
       {
         arr: categoriesData,
@@ -166,12 +138,10 @@ export default function SavedZoneBoard({zoneID}) {
             flexDirection: 'column',
             backgroundColor: 'rgba(50, 67, 95, 1)',
             borderRadius: '10px',
-            // height: '30vh',
             minHeight: '40vh',
             justifyContent: 'center',
             alignItems: 'center'}}
         >
-          {/* <Line data={getLineData(adTimeMode ? 'Ad' : 'Real', zone)} options={getLineOptions(adTimeMode ? 'Ad' : 'Real', zone)} /> */}
           {impressionData ?
             <Line data={impressionData} options={getLineOptions('Real')} />
             : null

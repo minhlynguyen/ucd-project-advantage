@@ -35,7 +35,8 @@ export default function SignedInHeader() {
   // submit logout functionality
 const submitLogout= (e)=> {
     e.preventDefault();
-    axiosInstance.post("api/user/logout/blacklist/", { refresh_token: localStorage.getItem('refresh_token')})
+    // axiosInstance.post("api/user/logout/blacklist/", { refresh_token: localStorage.getItem('refresh_token')})
+    axiosInstance.post("api/user/logout/", { refresh: localStorage.getItem('refresh_token')})
     .then(function () {
       setCurrentUser(false);
       localStorage.removeItem('access_token')
@@ -102,7 +103,7 @@ const submitLogout= (e)=> {
             {currentUser ? (
               <Link
                 className="nav-links saved-locations"
-                to=""
+                to="/saved"
                 onClick={closeMobileMenu}
               >
                 Saved Locations

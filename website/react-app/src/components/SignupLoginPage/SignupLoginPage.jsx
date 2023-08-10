@@ -21,7 +21,6 @@ export default function SignupLoginPage() {
   const [loginPassword, setLoginPassword] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
-  const [userName, setUsername] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [addclass, setaddclass] = useState("");
   const [errorMessageRegister, setErrorMessageRegister] = useState("");
@@ -33,13 +32,11 @@ export default function SignupLoginPage() {
     axiosInstance
       .post("/api/user/register/", {
         email: registerEmail,
-        username: userName,
         password: registerPassword,
       })
       .then(function () {
         axiosInstance
-          // .post("/user/login", {
-          .post("/api/user/login/", { //new
+          .post("/api/user/login/", {
             email: registerEmail,
             password: registerPassword,
           })
@@ -139,26 +136,7 @@ export default function SignupLoginPage() {
               <h2>Register</h2>
 
             </div>
-            <Form.Field className="FormField" name="username">
-              <Form.Message className="FormMessage" match="valueMissing">
-                Please enter your name
-              </Form.Message>
-              <div className="signup-username-container">
-                <Form.Control asChild>
-                  <input
-                    type=""
-                    placeholder="username"
-                    id="username"
-                    name="username"
-                    required
-                    aria-describedby="uidnote"
-                    autoComplete="off"
-                    value={userName}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </Form.Control>
-              </div>
-            </Form.Field>
+
             <Form.Field className="FormField" name="email">
               <div className="input-container">
                 <Form.Message className="FormMessage" match="valueMissing">

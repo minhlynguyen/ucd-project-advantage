@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate} from "react-router-dom";
 import './SolutionsContent.css';
 import FunctionModule from './FunctionModule';
 import MapModule from './MapModule';
 import InfoModule from './InfoModule';
 import axios from 'axios';
-import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge, Snackbar, Grid, Tooltip } from '@mui/material';
+import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge,Tooltip } from '@mui/material';
 import { useTheme } from '@mui/system';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
@@ -12,10 +13,10 @@ import CompareBoard from '../Compare/CompareBoard';
 import ZoneBoard from '../Cards/ZoneBoard';
 import { ALL_BOROUGHS, ALL_AGES } from '../../constants';
 import SolutionsContext from './SolutionsContext';
-import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
+import { areHoursEqual, getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 import axiosInstance from '../../AxiosConfig';
-import { generateAdTimeData, generateAllCollection } from '../../utils/testDataGenerator';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { notify } from '../../utils/notify';
 
 const uiTheme = createTheme({
   palette: {
@@ -57,17 +58,14 @@ function SolutionsContent() {
   const [isFetchingGEOM, setIsFetchingGEOM] = useState(false);
   const [isFetchingAdTimeData, setIsFetchingAdTimeData] = useState(false);
   const [collection, setCollection] = useState([]);//list of zones that user saved
-
+  const navigate = useNavigate();
+  
   // fetch impression data
   useEffect(()=>{
     const fetchData = async () => {
       setIsFetchingImpression(true);
-      // !!!!!!remove the baseURL if use axiosInstance
-      // const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/data/`;//24h impression and business data
-      // const url = `${import.meta.env.VITE_APP_API_BASE_URL}/api/main/today/`;//24h impression and business data
       const url = `/api/main/today/`;//24h impression and business data
       axiosInstance.get(url).then((response) => {
-      // axios.get(url, { timeout: 60000 }).then((response) => {
         if (response.data.status === "2") {
           throw new Error("Can't fetch impression data from DB now!");
         }
@@ -83,11 +81,12 @@ function SolutionsContent() {
         }
         setImpressionMap(map);
       }).catch((error) => {
-        // console.log("Error:", error);
         if (error.code === 'ECONNABORTED') {
           console.log("Request timed out");
+          notify("Request timed out", 'error');
         } else {
           console.log("Error:", error);
+          notify(error.message, 'error');
         }
       }).finally (() => {
         setIsFetchingImpression(false);
@@ -101,11 +100,8 @@ function SolutionsContent() {
   useEffect(()=>{
     const fetchData = async () => {
       setIsFetchingCensus(true);
-      // const url = `${import.meta.env.VITE_APP_API_BASE_URL}/main/zones/`;//census data
-      // const url = `${import.meta.env.VITE_APP_API_BASE_URL}/api/main/census/`;//census data
       const url = `/api/main/census/`;//census data
       axiosInstance.get(url).then((response) => {
-      // axios.get(url).then((response) => {
         if (response.data.status === "2") {
           throw new Error("Can't fetch census data from DB now!");
         }
@@ -121,6 +117,7 @@ function SolutionsContent() {
         setAgeMap(map);
       }).catch((error) => {
         console.log("Error:", error);
+        notify(error.message, 'error');
       }).finally (() => {
         setIsFetchingCensus(false);
       });
@@ -134,12 +131,12 @@ function SolutionsContent() {
     const fetchData = async () => {
       setIsFetchingGEOM(true);
       const url = "./map-initialising.json";
-      // axiosInstance.get(url).then((response) => {
       axios.get(url).then((response) => {
         const data = JSON.parse(response.data.data);
         setData_GEOM(data);
       }).catch((error) => {
         console.log("Error: Can't fetch GEOM data from DB now!", error);
+        notify("Error: Can't fetch GEOM data from DB now!", 'error');
       }).finally (() => {
         setIsFetchingGEOM(false);
       });
@@ -156,7 +153,6 @@ function SolutionsContent() {
 
   // Process data to get allZones
   useEffect(() => {
-    // console.log("UseEffect: Fetch data for initialising");
     if (!data_GEOM) {
       return;
     }
@@ -201,6 +197,7 @@ function SolutionsContent() {
         setAllZones(processedGeojson);
       } catch (error) {
         console.error(error);
+        notify();
       };
     };
 
@@ -209,12 +206,6 @@ function SolutionsContent() {
 
   // Change filteredZones when filters, allZone, realTime, adTimeMode change
   useEffect(() => {
-    console.log("UseEffect: Change filteredZones when filters, allZoneRef, realTime, adTimeMode change");
-    console.log("filters", filters);
-    console.log("adTimeMode:", adTimeMode);
-    console.log("realTime:", realTime);
-    console.log("allZones:",allZones);
-
     if (!allZones) {
       return;
     }
@@ -269,7 +260,8 @@ function SolutionsContent() {
         displayTotal = adTimeImpression.totalValue;
         displayValid = adTimeImpression.totalValidValue;
       } else {
-        const realTimeItem = realTimeImpression.items.find(item => item.time === realTime);
+        // const realTimeItem = realTimeImpression.items.find(item => item.time === realTime);// sometimes the day isn't the same in Irish time and NYC time
+        const realTimeItem = realTimeImpression.items.find(item => areHoursEqual(item.time, realTime));
         if (realTimeItem) {
           displayTotal = realTimeItem.value;
           displayValid = realTimeItem.validValue;
@@ -298,7 +290,6 @@ function SolutionsContent() {
       ...allZones,
       features: filteredFeatures
     };
-    console.log("filteredGeojson:", filteredGeojson);
 
     setFilteredZones(filteredGeojson);
   }, [filters, allZones, adTimeMode, realTime]);
@@ -307,8 +298,7 @@ function SolutionsContent() {
   // Change allZonesRef when adTime change
   // fetch data to chnage allZones (impression.adTime) when time range change (ad time)
   useEffect(() => {
-    console.log("UseEffect:Change allZonesRef when adTime change");
-    console.log("adTime:", adTime);
+
     if (!adTimeMode) {
       return;
     }
@@ -321,14 +311,12 @@ function SolutionsContent() {
         const start_time = adTime[0].slice(0, 19);
         const end_time = adTime[1].slice(0, 19);
         setIsFetchingAdTimeData(true);
-        // axios.post('', {time_range: ''})
-        // axiosInstance.get('/api/main/hourly/?start_time=2023-08-01T00:00:00&end_time=2023-08-05T23:59:59')
         axiosInstance.get(`/api/main/hourly/?start_time=${start_time}&end_time=${end_time}`)
         .then((response) => {
           if (response.data.status !== "1") {
             throw new Error("Can't fetch impression data for ad time now!");
           }
-          console.log("ad time data", response.data.data);
+
           data = response.data.data;
 
           // change the total impression in ad time field (the valid impression would be changed in other useEffect automatically since allZones changed)
@@ -352,31 +340,11 @@ function SolutionsContent() {
           });
         }).catch((error) => {
           console.log(error);
+          notify(error.message, 'error');
         }).finally(() => {
           setIsFetchingAdTimeData(false);
         });
-        // data = generateAdTimeData().data;
       }
-
-      // // change the total impression in ad time field (the valid impression would be changed in other useEffect automatically since allZones changed)
-      // const updatedFeatures = allZones.features.map(feature => ({
-      //   ...feature,
-      //   properties: {
-      //     ...feature.properties,
-      //     impression: {
-      //       ...feature.properties.impression,
-      //       adTime: {
-      //         ...feature.properties.impression.adTime,
-      //         totalValue: data[String(feature.id)] || 0
-      //       }
-      //     }
-      //   }
-      // }));
-
-      // setAllZones({
-      //   ...allZones,
-      //   features: updatedFeatures
-      // });
     };
 
     updateData();
@@ -385,28 +353,9 @@ function SolutionsContent() {
 
   // fetch collection data
   useEffect(()=>{
-    // const fetchData = async () => {
-    //   let data = [];
-
-    //   // axios.get('')
-    //   // .then((response)=> {
-    //   //   if (response.data.status !== "1") {
-    //   //     throw new Error("Can't fetch collection data for current user now!");
-    //   //   }
-    //   //   data = response.data.data;
-    //   // }).catch(error => {
-    //   //   console.log(error);
-    //   // });
-
-    //   data = generateAllCollection().data;
-
-    //   setCollection(data.map(zone => zone.zoneID));
-      
-    // };
     const fetchData = async () => {
       let data = [];
-
-      axiosInstance.get(`/api/user/save/`)
+      axiosInstance.get(`/api/save/`)
       .then((response)=> {
         if (response.data.status !== "1") {
           throw new Error("Can't fetch collection data for current user now!");
@@ -416,6 +365,7 @@ function SolutionsContent() {
         setCollection(data.map(zone => zone.zoneID));
       }).catch(error => {
         console.log(error);
+        notify(error.message, 'error');
       });
       
     };
@@ -424,10 +374,12 @@ function SolutionsContent() {
   }, []);
 
   const handleClickLikeFab = () => {
-    const currentURL = window.location.href;
-    const urlObject = new URL(currentURL);
-    const likeUrl = new URL('/saved', urlObject);
-    window.open(likeUrl, '_blank');
+    // const currentURL = window.location.href;
+    // const urlObject = new URL(currentURL);
+    // const likeUrl = new URL('/saved', urlObject);
+    // window.open(likeUrl, '_blank');
+
+    navigate('/saved');
   };
 
   const handleClickDifference = () => {
@@ -439,7 +391,6 @@ function SolutionsContent() {
   };
 
   const handleClickMore = (zone) => {
-    console.log("zone:", zone);
     setOpenZoneBoard(zone);
   };  
 
@@ -448,44 +399,18 @@ function SolutionsContent() {
   };
 
   const addCollection = (zoneID) => {
-    // const updateData = async (id) => {
-
-    //   let isUpdated = false;
-
-    //   // axios.get('')
-    //   // .then(response => {
-    //   //   if (response.data.status !== "1") {
-    //   //     throw new Error("Failed to add collection!");
-    //   //   }
-    //   //   isUpdated = true;
-    //   // })
-    //   // .catch(error => {
-    //   //   console.log(error);
-    //   // });
-
-    //   isUpdated = true;
-
-    //   if (isUpdated) {
-    //     setCollection(prev => [...prev, id]);
-    //     console.log("Collection added succussfully!");
-    //   }
-
-    // };
     const updateData = async (id) => {
    
-      axiosInstance.post(`/api/user/save/`, {zone: id})
+      axiosInstance.post(`/api/save/`, {zone: id})
       .then(response => {
-        // if (response.data.status !== "1") {
-        //   throw new Error("Failed to add collection!");
-        // }
         const data = response.data;
-        console.log("data hreeeee", data);
         setCollection(prev => [...prev, id]);
         console.log("Collection added succussfully!");
-   
+        notify("Collection added succussfully!", 'success');
       })
       .catch(error => {
         console.log(error);
+        notify("Failed to add collection, try it later.", "error");
       });
 
 
@@ -494,40 +419,16 @@ function SolutionsContent() {
   };
 
   const deleteCollection = (zoneID) => {
-    // const updateData = async (id) => {
-
-    //   let isUpdated = false;
-
-    //   // axios.get('')
-    //   // .then(response => {
-    //   //   if (response.data.status !== "1") {S
-    //   //     throw new Error("Failed to delete collection!");
-    //   //   }
-    //   //   isUpdated = true;
-    //   // })
-    //   // .catch(error => {
-    //   //   console.log(error);
-    //   // });
-
-    //   isUpdated = true;
-
-    //   if (isUpdated) {
-    //     setCollection(prev => prev.filter(item => item !== id));
-    //     console.log("Collection removed succussfully!");
-    //   }
-
-    // };
     const updateData = async (id) => {
-      axiosInstance.delete(`/api/user/save/${id}/`)
+      axiosInstance.delete(`/api/save/${id}/`)
       .then(response => {
-        // if (response.data.status !== "1") {S
-        //   throw new Error("Failed to delete collection!");
-        // }
         setCollection(prev => prev.filter(item => item !== id));
         console.log("Collection removed succussfully!");
+        notify("Collection removed succussfully!", 'success');
       })
       .catch(error => {
         console.log(error);
+        notify("Failed to remove collection, try it later.", "error");
       });
     };
     updateData(zoneID);
@@ -543,32 +444,23 @@ function SolutionsContent() {
       <div className="solutions-content">      
         <FunctionModule filters={filters} setFilters={setFilters}/>
         <div className="map-info-container">
-          <Grid container>
-            <Grid item xs={12} md={12} lg={9}>
+              <div className='map-container'>
               <MapModule 
                 zones={filteredZones} 
                 selectedZone={selectedZone} 
                 setSelectedZone={setSelectedZone}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
-                style={{ height: isMobile ? '380px' : '750px' }} // change the height based on the screen size
               />
-
-{/* {selectedZone ?
-        <div id="mapillary" style={{display: 'block'}}></div> :
-        <div id="mapillary" style={{display: 'none'}}></div>
-      } */}
-
-            </Grid>
-            <Grid item xs={12} md={12} lg={3} style={{ height: isMobile ? 'auto' : '750px' }}>
+              </div>
+            <div className='info-container'>
               <InfoModule 
                 zones={filteredZones} 
                 selectedZone={selectedZone} 
                 setSelectedZone={setSelectedZone} 
                 isLoading={isLoading} 
               />
-            </Grid>
-          </Grid>
+              </div>
         </div>
         <Box className='floating-button'>
           <Tooltip title='Go to compare'>      

@@ -41,17 +41,27 @@ export default function HomePage() {
           <p className="smaller-text">Monday - Friday, 9am-6pm</p>
           <div className="section1-homepage-button-container">
             {currentUser ? (
-              <Link to="/solutions">
-                <a className="homepage-getstarted-button">
-                  Start now
-                </a>
-              </Link>
+              // <Link to="/solutions">
+              //   <a className="homepage-getstarted-button">
+              //     Start now
+              //   </a>
+              // </Link>
+              <Link to="/solutions" className="homepage-getstarted-button link-button">
+
+                Start now
+
+            </Link>
             ) : (
-              <Link to="/signup">
-                <a className="homepage-getstarted-button">
+              // <Link to="/signup">
+              //   <a className="homepage-getstarted-button">
+              //     Start now
+              //   </a>
+              // </Link>
+              <Link to="/signup" className="homepage-getstarted-button link-button">
+          
                   Start now
-                </a>
-              </Link>
+
+              </Link>              
             )}
           </div>
         </div>
@@ -183,12 +193,12 @@ export default function HomePage() {
         </h2>
         <div className="homepage-button-container">
           {currentUser ? (
-            <Link to="/solutions">
-              <a className="homepage-getstarted-button">Start now</a>
+            <Link to="/solutions" className="homepage-getstarted-button link-button">
+              Start now
             </Link>
           ) : (
-            <Link to="/signup">
-              <a className="homepage-getstarted-button">Start now</a>
+            <Link to="/signup" className="homepage-getstarted-button link-button">
+              Start now
             </Link>
           )}
         </div>

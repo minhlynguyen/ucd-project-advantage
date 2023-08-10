@@ -1,4 +1,3 @@
-
 import { Box, Button, Card, Container, IconButton, Paper, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -7,6 +6,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SolutionsContext from '../Solutions/SolutionsContext';
+import { notify } from '../../utils/notify';
 
 const paperStyle = {
   padding: 20,
@@ -50,19 +50,9 @@ export default function BriefZoneCard({ zone, setSelectedZone }) {
           setCompareZones(newCompareZones);
         } else {
           // If there is no null element, show the Snackbar
-          toast.error('Currently only supports comparing two zones.', {
-            position: 'bottom-center',
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          
+          notify('Currently only supports comparing two zones.', "warn");          
         }
       }
-
     };
   };
 
@@ -96,7 +86,6 @@ export default function BriefZoneCard({ zone, setSelectedZone }) {
         onMouseLeave={handleMouseLeave}
         >
         <h3>{zone.properties.name}</h3>
-        {/* <Typography>ID: {zone.id}</Typography> */}
         <Typography style={{ fontStyle: 'italic', color: 'grey' }}>Borough: {zone.properties.borough}</Typography>
         <Typography>Total Impression: {zone.properties.impression.display.total}</Typography>
         <Typography>Target Impression: {zone.properties.impression.display.valid}</Typography>
