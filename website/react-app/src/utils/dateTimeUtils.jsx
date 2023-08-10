@@ -57,3 +57,11 @@ export const convertToBriefDateString = (inputString) => {
       throw new Error('Invalid date string format.');
     }
 }
+
+// check if equal in hour
+export const areHoursEqual = (time1, time2) => {
+    const date1 = new Date(time1);
+    const date2 = new Date(time2);
+
+    return date1.getUTCHours() === date2.getUTCHours();
+};

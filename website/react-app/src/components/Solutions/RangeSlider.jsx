@@ -5,8 +5,7 @@ import { Typography } from '@mui/material';
 
 export default function RangeSlider({ setTempFilters, reset}) {
 
-    // const defaultValue = [0, 2000];
-    const defaultValue = [0, 100000];
+    const defaultValue = [0, 100000];// income range min and max
     const [value, setValue] = useState(defaultValue);
     const label = 'income';
 

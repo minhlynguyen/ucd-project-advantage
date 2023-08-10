@@ -19,12 +19,6 @@ export default function BasicZone({zone, totalBusiness}) {
         <Typography component="span">Total Impression</Typography>
         </div> : null
         }
-        {/* {zone.properties.impression ?
-        <div>                
-        <Typography component="span" sx={{ fontSize: '32px', color: '#c57682', fontFamily: 'Arial', fontStyle: 'italic', mr: 2 }}>{zone.properties.impression.display.valid}</Typography>
-        <Typography component="span">Target Impression</Typography>
-        </div> : null
-        } */}
         {
           (zone.properties.impression && zone.properties.impression.display.valid) ?
             <div>                

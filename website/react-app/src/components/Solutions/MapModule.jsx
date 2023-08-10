@@ -1,28 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import chroma from 'chroma-js';
 import { Box, CircularProgress } from '@mui/material';
-import { Viewer, CameraControls } from 'mapillary-js';
+import { Viewer } from 'mapillary-js';
 import 'mapillary-js/dist/mapillary.css';
 import axios from 'axios';
 import 'leaflet.vectorgrid';
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
 import 'leaflet-control-geocoder';
 import './MapModule.css';
-import SolutionsContext from './SolutionsContext';
-import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 import { Icon } from 'leaflet';
 import { BIG_CATE_ICONS } from '../../constants';
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import * as d3 from 'd3';
 import * as turf from '@turf/turf';
 import '@skyraptor/leaflet.bouncemarker';
 import { notify } from '../../utils/notify';
 import axiosInstance from '../../AxiosConfig';
-
 
 
 function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoading }) {
@@ -44,18 +39,24 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
   const layerMappingRef = useRef({});
   // Mapillary viewer instance
   const viewerRef = useRef(null);
-  // marker cluster
+  // marker cluster for business markers
   const clusterRef = useRef(L.markerClusterGroup());
+  // view makers list
   const viewMarkersRef = useRef([]);
+  // cluster for view markers
   const viewClusterRef = useRef(L.markerClusterGroup({disableClusteringAtZoom: 15}));
+  // state to control showing view markers
   const [isShowViewMarkers, setIsShowViewMarkers] = useState(false);
+  // bounds for map
   const [bbox, setBbox] = useState(null);
+  // Viewr mode control in the top-right
   const viewerControlRef = useRef(null);
+  // state to control opening viewer or not
+  const [isOpenViewer, setIsOpenViewer] = useState(false);
 
   
   // Map tile layer initialisation
   useEffect(() => {
-    console.log("UseEffect:Map tile layer initialisation");
     if (mapRef.current && !mapInstanceRef.current) {
       const map = L.map(mapRef.current).setView([40.7831, -73.9712], 12);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -71,20 +72,11 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
   // When zones change, add new Geojson layer, controls and set listeners
   // Refer to https://leafletjs.com/examples/choropleth/
   useEffect(() => {
-    console.log("UseEffect:When zones change, add new Geojson layer, controls and set listeners");
-    console.log("zones:", zones);
-    if (Object.keys(zones).length !== 0) {
 
+    if (Object.keys(zones).length !== 0) {
       var geojson;
 
-      // set color scale and style
-      let minVal = Math.log(1); // log(1) = 0
-      let maxVal = Math.log(1001); // log(1001) is around 6.91
-      let colorScale = d3.scaleLinear()
-          .domain([minVal, maxVal])
-          .range(['#fff5f0', '#08306b'])
-          .interpolate(d3.interpolateRgb);
-          
+      // set color scale and style          
       function getColor(d) {
         return d > 800  ? '#023858' :
                d > 400  ? '#045a8d' :
@@ -100,8 +92,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       function style(feature) {
         return {
             fillColor: getColor(feature.properties.impression.display.valid),
-            // fillColor: colorScale(Math.log(feature.properties.impression.display.valid + 1)),
-
             weight: 2,
             opacity: 1,
             color: 'white',
@@ -141,7 +131,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
         return div;
       };
   
-
       // Search Control
       // Add geocoder control
       let geocoder = new L.Control.Geocoder({
@@ -157,8 +146,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
         marker.bindPopup(result.geocode.name || result.geocode.html || result.geocode.label);
         marker.openPopup();
       };
-      
-      
+            
       // Listeners
       // highlight when mouse in
       function highlightFeature(e) {
@@ -172,8 +160,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
           });
           layer.bringToFront();
         }
-
-        // info.update(layer.feature.properties);
         info.update(layer.feature.properties);
       }
       // reset style when mouse out
@@ -187,18 +173,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       
       // click the zone
       function zoomToFeature(e) {
-
-        // mapInstanceRef.current.fitBounds(e.target.getBounds());
-        // Set current zone
-        // setCurrentZone(e.target);
-        // if (viewerRef.current) {
-        //   const center = e.target.getBounds().getCenter();
-        //   viewerRef.current.moveTo(center.lat, center.lng);
-        // }
-
-        console.log("user pick this zone in map:", e.target.feature);
         setSelectedZone(e.target.feature);
-
       }
       // summary of listeners
       function onEachFeature(feature, layer) {
@@ -219,7 +194,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       // store the geoJSON layer in the ref
       geoJsonRef.current = geojson;
       // Fit the map view to the geoJSON layer
-      // mapInstanceRef.current.fitBounds(geojson.getBounds());
       mapInstanceRef.current.setView([40.7831, -73.9712], 12);
 
       info.addTo(mapInstanceRef.current);
@@ -265,7 +239,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
   //What happened to the map (zones and map) when a zone is selected
   //when selectedZone change, reset pre's style and set new one's style and get a zoom level in the map
   useEffect(() => {
-    console.log("UseEffect:What happened to the map when a zone is selected");
     // return pre selected zone to normal
     if (currentZoneRef.current) {
       geoJsonRef.current.resetStyle(currentZoneRef.current); 
@@ -280,11 +253,9 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
         color: '#32435f',
         fillOpacity: 0
       });
-      // Add markers
 
     } else {
       if (geoJsonRef.current) {
-        // mapInstanceRef.current.fitBounds(geoJsonRef.current.getBounds());
         mapInstanceRef.current.setView([40.7831, -73.9712], 12);
       }
     }
@@ -292,7 +263,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
 
   // Manage markers when a zone is selected
   useEffect(() => {
-    console.log("UseEffect: Manage markers when a zone is selected");
     if (!mapInstanceRef.current) {
       return;
     }
@@ -310,27 +280,12 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       })
       .catch(error => {
         console.error(error);
-        notify("Can't fetch places data for ad time now!", 'error');
+        notify(error.message, 'error');
       })
     };
 
     // If there is a selected zone
     if (selectedZone) {
-      // Create an async function to handle the async operation
-      // (async () => {
-      //   try {
-      //     // Request data for markers in selected zone
-      //     // const url = `${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${selectedZone.id}/places`;
-      //     const url = `${import.meta.env.VITE_APP_API_BASE_URL}api/main/places/${selectedZone.id}/`;
-      //     const response = await axios.get(url);
-      //     if (response.status !== 200 || response.data.status !== "1"){
-      //       throw new Error("Can't fetch markers data!");
-      //     }
-      //     addMarkersToMap(response.data.data); 
-      //   } catch (error) {
-      //     console.error(error);
-      //   }
-      // })();
       fetchData(selectedZone.id);
     }
 
@@ -340,7 +295,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
 
       // For each feature, create a marker and add it to the map
       features.forEach(feature => {
-        // const icon = new Icon({ iconUrl: '/museum.png', iconSize: [40, 40]});
         let big_cate = feature.properties.big_cate;
         if (big_cate === "('Health Care',)") {
           big_cate = "Health Care";
@@ -384,8 +338,7 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
 
       viewerRef.current = new Viewer({
         container: 'mapillary',
-        // imageId: '178975760792906',  
-        accessToken: import.meta.env.VITE_APP_ACCESS_TOKEN,  // Mapillary Client ID
+        accessToken: import.meta.env.VITE_APP_ACCESS_TOKEN,
         trackResize: true,
         component: {cover: true},
         combinedPanning: false,
@@ -393,7 +346,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       });
       viewerRef.current.on('image', (event) => {
         // This will be executed when a new image is ready to be displayed
-        console.log('Image loaded:', event.image.id);
         // Manually dispatch a resize event to render new image
         window.dispatchEvent(new Event('resize'));
       });
@@ -413,7 +365,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
     let viewerModeControl = L.control({position: 'topright'});
     viewerModeControl.onAdd = function(map) {
       var container = L.DomUtil.create('div', 'viewer-mode-container');
-      // var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
       this._button = L.DomUtil.create('button', 'viewer-mode-btn', container);
       this._button.style.cursor = 'pointer';
       this._button.innerHTML = 'Viewer Mode';
@@ -422,10 +373,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       this._button.onclick = function() {
         if (this.innerHTML === "Viewer Mode") {
           this.innerHTML = "Return to Normal Mode";
-          // map.setView(selectedZoneCenter, 18);
-          // const bounds = map.getBounds();
-          // setBbox(`${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`);
-          // setIsShowViewMarkers(true);
           const onZoomEnd = function() { 
             const bounds = map.getBounds();
             setBbox(`${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`);
@@ -470,17 +417,14 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
         
     const fetchData = async () => {
       try {
-        // setIsLoading(true);
         // Fetch image data
         const url = `https://graph.mapillary.com/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url,geometry,sequence&bbox=${bbox}&limit=100`;
-        // `/api/images?access_token=${import.meta.env.VITE_APP_ACCESS_TOKEN}&fields=id,computed_geometry,thumb_256_url&bbox=${bbox}&limit=100`
         const response = await axios.get(url);
         if (response.status !== 200) {
           throw new Error("Can't fetch pictures for viewing now!");
         }
 
         const data = response.data.data;
-        console.log("pictures data:", data );
 
         const sequenceSet = new Set();
         const uniqueData = data.filter(item => {
@@ -490,9 +434,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
           }
           return false;
         });
-        console.log("filtered pictures data:", uniqueData );
-
-        // let bouncingMarker = null;
         
         uniqueData.forEach(image => {
           // // Create a new marker with the image as the icon
@@ -512,14 +453,12 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
               // Move the Viewer to the image
               try {
                 viewerRef.current.moveTo(image.id);
+                setIsOpenViewer(true);
+
               } catch (error) {
-                console.log("Can't show the image now.");
+                console.log("Can't show the street image now.");
+                notify("Can't show the street image now.", "error");
               }
-              // viewerRef.current.moveTo(image.id).then(
-              //   image => {},
-              //   error => {console.log("Can't show the image now.");}
-              // )
-              // .catch(error => {console.log("Can't show the image now.");});
               
               marker.bounce({duration: 500, height: 100});
 
@@ -546,8 +485,6 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       } catch (error) {
         console.error("PIC MARKER", error);
         notify("Can't fetch street view data now, try it later", 'error');
-      } finally {
-        // setIsLoading(false);
       }
     };
 
@@ -559,14 +496,13 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       });
       viewMarkersRef.current = [];
       viewerRef.current.activateCover();
+      setIsOpenViewer(false);
     };
 
   }, [isShowViewMarkers]);
   
 
-
   return <div ref={mapRef} className="map-module">
-
     {isLoading && 
       <Box
         sx={{
@@ -579,12 +515,11 @@ function MapModule({ zones, selectedZone, setSelectedZone, isLoading, setIsLoadi
       >
         <CircularProgress size={60}/>
       </Box>
-
     }
-          {isShowViewMarkers ?
-        <div id="mapillary" style={{display: 'block'}}></div> :
-        <div id="mapillary" style={{display: 'none'}}></div>
-      }
+    {isOpenViewer ?
+      <div id="mapillary" style={{display: 'block'}}></div> :
+      <div id="mapillary" style={{display: 'none'}}></div>
+    }
   </div>;
 }
 

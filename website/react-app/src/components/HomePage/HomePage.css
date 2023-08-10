@@ -221,7 +221,8 @@ h2 {
   margin-top: -20em;
 }
 .section-4 h2 {
-  width: 15em; /* Set the desired width */
+  /* width: 15em; Set the desired width */
+  width: 100%;
   text-align: center;
   margin-top: -2em;
 }
@@ -306,7 +307,8 @@ h2 {
 
 
   .section2-content {
-    grid-gap: 4em;
+    /* grid-gap: 4em; */
+    grid-gap: 1em;
     margin-top: 8rem;
   }
   .stats-container {
@@ -319,4 +321,12 @@ h2 {
   .section-4 h2 {
     padding: 1em;
   }
+
+  .myCarousel {
+    width: 100%;
+  }
+}
+
+.link-button {
+  text-decoration: none;
 }

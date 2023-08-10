@@ -15,6 +15,7 @@ export default function TimeControl() {
     setAdTimeMode(event.target.checked);
   };
 
+  // when slider value changed, convert to NYC time and set as realtime
   const handleSliderChange = (event, newValue) => {
     const newRealTime = setHourInTimeString(getCurrentTimeInNY(), newValue);
     setRealTime(newRealTime);
@@ -57,8 +58,6 @@ export default function TimeControl() {
               valueLabelDisplay="auto" 
             />
             <Typography variant='body2'>24h</Typography>
-        
-        
           </Stack> 
         }
     </Stack>

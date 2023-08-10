@@ -50,11 +50,9 @@ export default function MultiSelect({ setTempFilters, reset, type }) {
         <Autocomplete
           sx={{ margin: '10px 0' }}
           multiple
-          // options={ALL_BOROUGHS}
           options={defaultValue}
           value={selectedOptions}
           disableCloseOnSelect
-          // getOptionLabel={(option) => option.name}
           getOptionLabel={(option) => option[name]}
           renderOption={(props, option, { selected }) => (
             <li {...props}>
@@ -64,7 +62,6 @@ export default function MultiSelect({ setTempFilters, reset, type }) {
                 style={{ marginRight: 5 }}
                 checked={selected}
               />
-              {/* {option.name} */}
               {option[name]}
             </li>
           )}
@@ -72,7 +69,6 @@ export default function MultiSelect({ setTempFilters, reset, type }) {
           onChange={handleSelectChange}
           renderInput={(params) => (
             <TextField {...params} label={type} />
-            // <TextField {...params} label="Locate in" />
           )}
         />
       </ThemeProvider>

@@ -42,29 +42,29 @@ export default function Header() {
             </Link>
           </li> */}
           {currentUser ? (
-            <Link className="login-register-link" to="/solutions">
-              <a className="nav-links-mobile regbutton"> Get Started </a>{" "}
+            <Link className="login-register-link nav-links-mobile regbutton" to="/solutions">
+              Get Started {" "}
             </Link>
           ) : (
-            <Link className="login-register-link" to="/signup">
-              <a className="nav-links-mobile regbutton"> Get Started </a>{" "}
+            <Link className="login-register-link nav-links-mobile regbutton" to="/signup">
+               Get Started{" "}
             </Link>
           )}
-          <Link className="login-register-link" to="/signup">
-            <a className="nav-links-mobile loginbutton">Login</a>
+          <Link className="login-register-link nav-links-mobile loginbutton" to="/signup">
+            Login
           </Link>
         </ul>
         {currentUser ? (
-          <Link className="login-register-link" to="/solutions">
-            <a className="getstarted-button"> Get Started </a>{" "}
+          <Link className="login-register-link getstarted-button" to="/solutions">
+            Get Started {" "}
           </Link>
         ) : (
-          <Link className="login-register-link" to="/signup">
-            <a className="getstarted-button"> Get Started </a>{" "}
+          <Link className="login-register-link getstarted-button" to="/signup">
+            Get Started{" "}
           </Link>
         )}
-        <Link className="login-register-link" to="/signup">
-          <a className="login-button">Login</a>
+        <Link className="login-register-link login-button" to="/signup">
+        Login
         </Link>
       </nav>
     </header>

@@ -1,14 +1,11 @@
 // import * as React from 'react';
 import React, { useEffect, useRef, useState, useContext }  from 'react';
-import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Box, Button, Typography } from '@mui/material';
-import axios from 'axios';
+import { Button } from '@mui/material';
 import { BIG_CATE } from '../../constants';
 import { Line, Pie, Bar, Doughnut } from 'react-chartjs-2';
 import SolutionsContext from '../Solutions/SolutionsContext';
-
 import { Chart as ChartJS, LinearScale, CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, PieController, ArcElement, BarController, BarElement } from 'chart.js';
 import BasicZone from '../Cards/BasicZone';
 import { getBarData, getBarOptions, getLineData, getLineOptions, getPieDataForGender, getPieOptionsForGender } from '../../utils/chartsUtils';
@@ -54,52 +51,6 @@ export default function CompareDetail({setConfirmMode}) {
     if (!adTimeMode) {
       return;
     }
-
-    // const updateData = async (zone, index) => {
-    //   let data = [];
-    //   function arraysEqual(a, b) {
-    //     return a.length === b.length && a.every((val, index) => val === b[index]);
-    //   }
-    //   if (!arraysEqual(adTime, ['', ''])) {
-    //     // // set url here
-    //     // axios.post('', {time_range: ''})
-    //     // .then((response) => {
-    //     //   if (response.data.status !== "1") {
-    //     //     throw new Error("Can't fetch data for Line Graph now!");
-    //     //   }
-    //     //   data = response.data.data;
-    //     // }).catch((error) => {
-    //     //   console.log(error);
-    //     // });
-    //     data = generateAdTimeDataForSingleZone().data[String(zone.id)].detail;// test data
-    //   }
-
-    //   const impressionItems = data.map(item => {
-    //     return {
-    //       time: item.datetime,
-    //       value: item.impression_predict || 0, // if detail has no impression_predict or impression_predict is null, let it be 0
-    //       validValue: item.impression_predict ? parseFloat((item.impression_predict * zone.properties.impression.targetPerc).toFixed(2)) : 0
-    //     };
-    //   });
-    //   const processedData = {
-    //     ...zone,
-    //     properties: {
-    //       ...zone.properties,
-    //       impression: {
-    //         ...zone.properties.impression,
-    //         adTime: {
-    //           ...zone.properties.impression.adTime,
-    //           items: impressionItems
-    //         }
-    //       }
-    //     }
-    //   };
-    //   setImpressionData(prevData => {
-    //     const newData = [...prevData];
-    //     newData[index] = processedData;
-    //     return newData;
-    //   });
-    // };
     
     const updateData = async (zone, index) => {
       let data = [];
@@ -156,19 +107,6 @@ export default function CompareDetail({setConfirmMode}) {
       let data1 = {};
       let data2 = {};
 
-      // Promise.all([
-      //   axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone1.id}`),
-      //   axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}main/zones/${zone2.id}`)
-      // ]).then((responses) => {
-      //   if (responses[0].data.status !== "1" || responses[1].data.status !== "1") {
-      //     throw new Error("Can't fetch data for business now!");
-      //   }
-      //   data1 = responses[0].data.data[String(zone1.id)].detail[0];
-      //   data2 = responses[1].data.data[String(zone2.id)].detail[0];
-      // }).catch((error) => {
-      //   console.error('Error fetching data: ', error);
-      // });
-
       data1 = generateAdTimeDataForSingleZone().data[String(zone1.id)].detail[0];//test
       data2 = generateAdTimeDataForSingleZone().data[String(zone2.id)].detail[0];//test
 
@@ -220,7 +158,6 @@ export default function CompareDetail({setConfirmMode}) {
               alignItems: 'center'
             }}
           >
-            {/* <Line data={getLineData(adTimeMode ? 'Ad' : 'Real', zone1, zone2)} options={getLineOptions(adTimeMode ? 'Ad' : 'Real')} /> */}
             <Line data={getLineData(adTimeMode ? 'Ad' : 'Real', impressionData[0], impressionData[1])} options={getLineOptions(adTimeMode ? 'Ad' : 'Real')} />
           </Paper>
         </Grid>
@@ -274,6 +211,5 @@ export default function CompareDetail({setConfirmMode}) {
         </Grid>
 
       </Grid>
-    // </Container>
   );
 }
