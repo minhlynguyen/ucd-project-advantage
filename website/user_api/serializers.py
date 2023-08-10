@@ -1,14 +1,9 @@
-# from django.forms import ValidationError
-# from rest_framework import serializers
-# from django.contrib.auth import get_user_model, authenticate
-
 from rest_framework import serializers
 from user_api.models import AppUser
 
 class UserRegisterSerializer(serializers.ModelSerializer):
 
     email = serializers.EmailField(required=True)
-    # user_name = serializers.CharField(required=True)
     password = serializers.CharField(min_length=8, write_only=True)
 
     class Meta:

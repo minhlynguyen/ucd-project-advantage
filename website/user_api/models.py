@@ -1,5 +1,4 @@
 from django.db import models
-# from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -26,16 +25,12 @@ class AppUserManager(BaseUserManager):
 		user.is_staff = True
 		user.save()
 		return user
-		# return self.create_user(email, user_name, first_name, password, **extra_fields)
 
-# https://testdriven.io/blog/django-custom-user-model/
 class AppUser(AbstractBaseUser, PermissionsMixin):
 	user_id = models.AutoField(primary_key=True)
 	email = models.EmailField(_("email address"), unique=True)
 	username = models.CharField(max_length=150, null=True)
-	# email = models.EmailField(max_length=50, unique=True)
 	is_staff = models.BooleanField(default=False)
-	# is_active = models.BooleanField(default=False)
 	user_type = models.IntegerField(default=1)
 	date_joined = models.DateTimeField(default=timezone.now)
 
