@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState }  from 'react';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import { Box, Typography } from '@mui/material';
 import CompareDetail from './CompareDetail';
 import CompareConfirm from './CompareConfirm';
 

@@ -4,7 +4,7 @@ import FunctionModule from './FunctionModule';
 import MapModule from './MapModule';
 import InfoModule from './InfoModule';
 import axios from 'axios';
-import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge, Snackbar, Grid, Tooltip } from '@mui/material';
+import { Box, Fab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery, Badge,Tooltip } from '@mui/material';
 import { useTheme } from '@mui/system';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DifferenceIcon from '@mui/icons-material/Difference';
@@ -12,10 +12,10 @@ import CompareBoard from '../Compare/CompareBoard';
 import ZoneBoard from '../Cards/ZoneBoard';
 import { ALL_BOROUGHS, ALL_AGES } from '../../constants';
 import SolutionsContext from './SolutionsContext';
-import { getCurrentTimeInNY } from '../../utils/dateTimeUtils';
+import { areHoursEqual, getCurrentTimeInNY } from '../../utils/dateTimeUtils';
 import axiosInstance from '../../AxiosConfig';
-import { generateAdTimeData, generateAllCollection } from '../../utils/testDataGenerator';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { notify } from '../../utils/notify';
 
 const uiTheme = createTheme({
   palette: {
@@ -81,8 +81,10 @@ function SolutionsContent() {
       }).catch((error) => {
         if (error.code === 'ECONNABORTED') {
           console.log("Request timed out");
+          notify("Request timed out", 'error');
         } else {
           console.log("Error:", error);
+          notify(error.message, 'error');
         }
       }).finally (() => {
         setIsFetchingImpression(false);
@@ -113,6 +115,7 @@ function SolutionsContent() {
         setAgeMap(map);
       }).catch((error) => {
         console.log("Error:", error);
+        notify(error.message, 'error');
       }).finally (() => {
         setIsFetchingCensus(false);
       });
@@ -131,6 +134,7 @@ function SolutionsContent() {
         setData_GEOM(data);
       }).catch((error) => {
         console.log("Error: Can't fetch GEOM data from DB now!", error);
+        notify("Error: Can't fetch GEOM data from DB now!", 'error');
       }).finally (() => {
         setIsFetchingGEOM(false);
       });
@@ -191,6 +195,7 @@ function SolutionsContent() {
         setAllZones(processedGeojson);
       } catch (error) {
         console.error(error);
+        notify();
       };
     };
 
@@ -199,12 +204,6 @@ function SolutionsContent() {
 
   // Change filteredZones when filters, allZone, realTime, adTimeMode change
   useEffect(() => {
-    console.log("UseEffect: Change filteredZones when filters, allZoneRef, realTime, adTimeMode change");
-    console.log("filters", filters);
-    console.log("adTimeMode:", adTimeMode);
-    console.log("realTime:", realTime);
-    console.log("allZones:",allZones);
-
     if (!allZones) {
       return;
     }
@@ -259,7 +258,8 @@ function SolutionsContent() {
         displayTotal = adTimeImpression.totalValue;
         displayValid = adTimeImpression.totalValidValue;
       } else {
-        const realTimeItem = realTimeImpression.items.find(item => item.time === realTime);
+        // const realTimeItem = realTimeImpression.items.find(item => item.time === realTime);// sometimes the day isn't the same in Irish time and NYC time
+        const realTimeItem = realTimeImpression.items.find(item => areHoursEqual(item.time, realTime));
         if (realTimeItem) {
           displayTotal = realTimeItem.value;
           displayValid = realTimeItem.validValue;
@@ -288,7 +288,6 @@ function SolutionsContent() {
       ...allZones,
       features: filteredFeatures
     };
-    console.log("filteredGeojson:", filteredGeojson);
 
     setFilteredZones(filteredGeojson);
   }, [filters, allZones, adTimeMode, realTime]);
@@ -297,8 +296,7 @@ function SolutionsContent() {
   // Change allZonesRef when adTime change
   // fetch data to chnage allZones (impression.adTime) when time range change (ad time)
   useEffect(() => {
-    console.log("UseEffect:Change allZonesRef when adTime change");
-    console.log("adTime:", adTime);
+
     if (!adTimeMode) {
       return;
     }
@@ -316,7 +314,7 @@ function SolutionsContent() {
           if (response.data.status !== "1") {
             throw new Error("Can't fetch impression data for ad time now!");
           }
-          console.log("ad time data", response.data.data);
+
           data = response.data.data;
 
           // change the total impression in ad time field (the valid impression would be changed in other useEffect automatically since allZones changed)
@@ -340,6 +338,7 @@ function SolutionsContent() {
           });
         }).catch((error) => {
           console.log(error);
+          notify(error.message, 'error');
         }).finally(() => {
           setIsFetchingAdTimeData(false);
         });
@@ -364,6 +363,7 @@ function SolutionsContent() {
         setCollection(data.map(zone => zone.zoneID));
       }).catch(error => {
         console.log(error);
+        notify(error.message, 'error');
       });
       
     };
@@ -387,7 +387,6 @@ function SolutionsContent() {
   };
 
   const handleClickMore = (zone) => {
-    console.log("zone:", zone);
     setOpenZoneBoard(zone);
   };  
 
@@ -401,13 +400,13 @@ function SolutionsContent() {
       axiosInstance.post(`/api/save/`, {zone: id})
       .then(response => {
         const data = response.data;
-        console.log("data hreeeee", data);
         setCollection(prev => [...prev, id]);
         console.log("Collection added succussfully!");
-   
+        notify("Collection added succussfully!", 'success');
       })
       .catch(error => {
         console.log(error);
+        notify("Failed to add collection, try it later.", "error");
       });
 
 
@@ -421,9 +420,11 @@ function SolutionsContent() {
       .then(response => {
         setCollection(prev => prev.filter(item => item !== id));
         console.log("Collection removed succussfully!");
+        notify("Collection removed succussfully!", 'success');
       })
       .catch(error => {
         console.log(error);
+        notify("Failed to remove collection, try it later.", "error");
       });
     };
     updateData(zoneID);
@@ -439,8 +440,6 @@ function SolutionsContent() {
       <div className="solutions-content">      
         <FunctionModule filters={filters} setFilters={setFilters}/>
         <div className="map-info-container">
-          {/* <Grid container> */}
-            {/* <Grid item xs={12} md={12} lg={9}> */}
               <div className='map-container'>
               <MapModule 
                 zones={filteredZones} 
@@ -448,11 +447,8 @@ function SolutionsContent() {
                 setSelectedZone={setSelectedZone}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
-                // style={{ height: isMobile ? '380px' : '750px' }} // change the height based on the screen size
               />
               </div>
-            {/* </Grid> */}
-            {/* <Grid item xs={12} md={12} lg={3} style={{ height: isMobile ? 'auto' : '750px' }}> */}
             <div className='info-container'>
               <InfoModule 
                 zones={filteredZones} 
@@ -461,8 +457,6 @@ function SolutionsContent() {
                 isLoading={isLoading} 
               />
               </div>
-            {/* </Grid> */}
-          {/* </Grid> */}
         </div>
         <Box className='floating-button'>
           <Tooltip title='Go to compare'>      

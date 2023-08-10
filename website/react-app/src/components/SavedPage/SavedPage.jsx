@@ -2,42 +2,27 @@ import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from 'axios';
 import { CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/system';
-import ZoneBoard from '../Cards/ZoneBoard';
-import { generateAllCollection } from '../../utils/testDataGenerator';
 import { convertToReadableForGroup } from '../../utils/distributionUtils';
 import SavedZoneBoard from './SavedZoneBoard';
 import axiosInstance from '../../AxiosConfig';
+import { notify } from '../../utils/notify';
 
 const defaultTheme = createTheme();
 
 export default function SavedPage() {
   const [zones, setZones] = React.useState(null);
-  // const [zones, setZones] = React.useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-  // const [zones, setZones] = React.useState([]);
   const [info, setInfo] = React.useState('');
   const [openZoneBoard, setOpenZoneBoard] = React.useState(false); // zone board dialog
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedZoneID, setSelectedZoneID] = React.useState(null);
-
-  // const handleClickMore = () => {
-  //   setOpenZoneBoard(true);
-  // }
-
-  // const handleView = (index) => {
-  //   setOpenZoneBoard(true);
-  // }
-
 
   const handleCloseZoneBoard = () => {
     setOpenZoneBoard(false);
@@ -45,38 +30,19 @@ export default function SavedPage() {
 
   // when loading, fetch data from backend and set as zones
   React.useEffect(() => {
-    // const fetchData = async () => {
 
-    //   let data = [];
-    //   // axiosInstance.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/user/save/`)
-    //   // .then((response) => {
-    //   //   if (response.data.status !== "1") {
-    //   //     throw new Error("Can't fetch collection data for current user now!");
-    //   //   }
-        
-    //   //   data = response.data.data;
-    //   //   setZones(data);
-    //   // }).catch((error) => {
-    //   //   console.log(error);
-    //   // });
-    //   data = generateAllCollection().data;
-    //   setZones(data);
-    // }
     const fetchData = async () => {
-
       let data = [];
-      // axiosInstance.get(`/api/user/save/`)
       axiosInstance.get(`/api/save/`)
-      // axiosInstance.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/user/save/`)
       .then((response) => {
         if (response.data.status !== "1") {
           throw new Error("Can't fetch collection data for current user now!");
         }
-        
         data = response.data.data;
         setZones(data);
       }).catch((error) => {
         console.log(error);
+        notify(error.message, "error");
       });
     }
     fetchData();
@@ -91,16 +57,12 @@ export default function SavedPage() {
     console.log(typeof zones, Array.isArray(zones))
     if (zones === null) {
       infoContent = 
-      // <Typography variant="h5" align="center" color="text.secondary" paragraph>
-      // Loading...
-      // </Typography>;
       <Box
         sx={{
           position: 'absolute',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          // zIndex: 1000,  // add this line
         }}
       >
         <CircularProgress size={60}/>
@@ -152,30 +114,24 @@ export default function SavedPage() {
   const handleDelete = (zoneID) => {
     const updateData = async (id) => {
       axiosInstance.delete(`/api/save/${id}/`)
-      // axiosInstance.delete(`/api/user/save/${id}/`)
       .then(response => {
-        // if (response.data.status !== "1") {S
-        //   throw new Error("Failed to delete collection!");
-        // }
         setZones(prev => prev.filter(item => item.zoneID !== id));
         console.log("Collection removed succussfully!");
+        notify("Collection removed succussfully!", "success");
       })
       .catch(error => {
         console.log(error);
+        notify("Fail to remove collection, try it again!", "error");
       });
     };
 
     updateData(zoneID);
   };
 
-
-
-
   const handleView = (zoneID) => {
     setSelectedZoneID(zoneID);
     setOpenZoneBoard(true);
   };
-
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -183,7 +139,6 @@ export default function SavedPage() {
           sx={{
             bgcolor: 'background.paper',
             pt: 14,
-            // pb: 2,
           }}
         >
           <Container maxWidth="sm">
@@ -196,10 +151,6 @@ export default function SavedPage() {
             >
               Your Collection
             </Typography>
-            {/* <Button variant='outlined'>Seek for More Solutions</Button> */}
-            {/* <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              No collection yet...
-            </Typography> */}
           </Container>
         </Box>
         <Container sx={{ py: 8, minHeight: '50vh' }} maxWidth="md">
@@ -216,7 +167,6 @@ export default function SavedPage() {
           </DialogActions>
         </Dialog>
 
-      {/* </main> */}
     </ThemeProvider>
   );
 }

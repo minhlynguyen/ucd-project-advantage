@@ -326,3 +326,7 @@ h2 {
     width: 100%;
   }
 }
+
+.link-button {
+  text-decoration: none;
+}

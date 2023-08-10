@@ -19,12 +19,12 @@
 }
 
 @media screen and (max-width: 400px) {
-#mapillary {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 25%;
-    z-index: 801;
-}
+    #mapillary {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 25%;
+        z-index: 801;
+    }
 }

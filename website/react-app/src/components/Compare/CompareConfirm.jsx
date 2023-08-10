@@ -1,7 +1,6 @@
-// import * as React from 'react';
-import React, { useEffect, useRef, useState, useContext }  from 'react';
+import React, { useContext }  from 'react';
 import Grid from '@mui/material/Grid';
-import { Box, Button, Container, IconButton, Paper, Typography } from '@mui/material';
+import { Box, Button, IconButton, Paper } from '@mui/material';
 import SolutionsContext from '../Solutions/SolutionsContext';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import BasicZone from '../Cards/BasicZone';
@@ -53,8 +52,6 @@ export default function CompareConfirm( {setConfirmMode} ) {
       </Grid>
 
       <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
-        {/* <Typography variant="h4" align="center">VS</Typography> */}
-        {/* <img src={'/compareIcon.png'} alt="VS Icon" style={{height: '50px', width: '50px'}}/> */}
         <Button variant="contained" disabled={!(compareZones[0] && compareZones[1])} onClick={handleCompareClick}>
           <img src={'/compareIcon.png'} alt="VS Icon" style={{height: '50px', width: '50px'}}/>Compare
         </Button>
@@ -67,11 +64,6 @@ export default function CompareConfirm( {setConfirmMode} ) {
           </Paper>
         }
       </Grid>
-
-      {/* <Grid item xs={12} md={12} lg={12} sx={{display: 'flex', justifyContent: 'center'}}>
-        <Button variant="contained" disabled={!(compareZones[0] && compareZones[1])} onClick={handleCompareClick}><img src={'/compareIcon.png'} alt="VS Icon" style={{height: '50px', width: '50px'}}/>Compare</Button>
-      </Grid> */}
-
     </Grid>
   );
 }

@@ -1,4 +1,9 @@
 // constants.js
+/*
+This file defines constants used
+*/
+
+// all boroughs in NYC
 export const ALL_BOROUGHS = [
     { name: 'Manhattan', id: 1 },
     { name: 'Brooklyn', id: 2 },
@@ -8,6 +13,7 @@ export const ALL_BOROUGHS = [
     {name: "EWR", id: 6}
   ];
 
+// all age-gender groups including the filter name, id and name from backend data
 export const ALL_AGES = [
     { age: 'Females Under 5', id: 0, name_backend: 'females_under_5' },
     { age: 'Females 5-14', id: 1, name_backend: 'females_5_14' },
@@ -32,13 +38,7 @@ export const ALL_AGES = [
 ];
 
 
-export const ALL_INCOMES = [
-    { income: '0-18', id: 0 },
-    { income: '19-30', id: 1 },
-    { income: '30+', id: 2 },
-];
-
-// For graphs
+// Big categories for business for graphs
 export const BIG_CATE = [
     "entertainment_and_recreation",
     "financial_services",
@@ -52,7 +52,8 @@ export const BIG_CATE = [
     "hotspots",
     "school"
 ];
-// For markers
+
+// Big categories for business for markers
 export const BIG_CATE_ICONS = {
     "Entertainment and Recreation": '/markers/bowling-alley.png',
     "Financial Services": '/markers/dollars.png',

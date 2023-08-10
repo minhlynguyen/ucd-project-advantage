@@ -7,10 +7,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MultiSelect from './MultiSelect';
 import RangeSlider from './RangeSlider';
 import TimeControl from './TimeControl';
-import { Box, Button, Container, Grid, Slider, Stack } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import CheckIcon from '@mui/icons-material/Check';
-import DateTimeSelect from './DateTimeSelect';
+
 
 function FunctionModule( {filters, setFilters }) {
   // set hooks
@@ -18,7 +18,8 @@ function FunctionModule( {filters, setFilters }) {
   const [reset, setReset] = useState(false)
   // const [realTime, setRealTime] = useState(false)
   const [accordionExpanded, setAccordionExpanded] = useState(false);
-  // handle events
+
+
   const handleReset = () => {
     setReset(prevReset => !prevReset);  // Toggle the value of reset
   }
@@ -27,6 +28,7 @@ function FunctionModule( {filters, setFilters }) {
     setFilters(tempFilters);//need to refresh map even the filters are the same. (or cancel selected zone)
     setAccordionExpanded(false);
   };
+
   const handleAccordionChange = (event, isExpanded) => {
     setAccordionExpanded(isExpanded);
   };
@@ -41,9 +43,6 @@ function FunctionModule( {filters, setFilters }) {
           <MultiSelect setTempFilters={setTempFilters} reset={reset} type={'boroughs'}/>
           <MultiSelect setTempFilters={setTempFilters} reset={reset} type={'groups'}/>
           <Grid container>
-            {/* <Grid item xs={12} md={6} lg={6}>
-              <RangeSlider label={'Age'} setTempFilters={setTempFilters} reset={reset}/>
-            </Grid> */}
             <Grid item xs={12} md={6} lg={6}>
               <RangeSlider setTempFilters={setTempFilters} reset={reset}/>
             </Grid>
