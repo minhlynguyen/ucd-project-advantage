@@ -109,6 +109,7 @@ def all_zones_today(request, id=None):
         return response.Response({"status":"2","data":str(e)})
     
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def all_zones_today_new(request, id=None):
     """
     Retrieve history detail of all zone in 24 hour
