@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.core.serializers import serialize
 import datetime
-from .serializers import ZoneDataSerializer, zone_census_serializer, today_info #, today_info_test
+from .serializers import ZoneDataSerializer, zone_census_serializer, today_info, today_info_new
 from .models import Place, ZoneDetail
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import response
@@ -109,12 +109,12 @@ def all_zones_today(request, id=None):
         return response.Response({"status":"2","data":str(e)})
     
 @api_view(['GET'])
-def all_zones_today_test(request, id=None):
+def all_zones_today_new(request, id=None):
     """
     Retrieve history detail of all zone in 24 hour
     """
     try: 
-        data = today_info_test(id)
+        data = today_info_new(id)
         return response.Response({"status":"1","data":data})
     except Exception as e:
         return response.Response({"status":"2","data":str(e)})        
