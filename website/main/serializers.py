@@ -28,7 +28,7 @@ class ZoneTodaySerializer(serializers.ModelSerializer):
     
     class Meta:
         model=ZoneToday
-        fields = ['zone_id','date_time','impression_predict', 'entertainment_and_recreation',
+        fields = ['zone_id','datetime','impression_predict', 'entertainment_and_recreation',
                   'financial_services', 'food_and_beverage', 'parking_and_automotive_services',
                   'professional_services', 'real_estate','retail_services', 'transportation',
                   'hospital','hotspots','school','total_business','holiday']
@@ -166,7 +166,7 @@ def today_info(id=None):
         return data
 
 def today_info_new(id=None):
-    zones = ZoneToday.objects.all().order_by("zone_id","date_time")
+    zones = ZoneToday.objects.all().order_by("zone_id","datetime")
     if id == None:
         serializer = ZoneTodaySerializer(zones,many=True)
         data = serializer.data
