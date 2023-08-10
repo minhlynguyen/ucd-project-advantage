@@ -165,7 +165,7 @@ class Place(geomodels.Model):
 class ZoneToday(models.Model):
 
     zone_id = models.PositiveIntegerField(null=True)
-    date_time = models.DateTimeField(null=True)
+    datetime = models.DateTimeField(null=True)
     impression_predict = models.PositiveIntegerField(null=True) # ML model predict
     entertainment_and_recreation = models.PositiveIntegerField(null=True)
     financial_services = models.PositiveIntegerField(null=True)
@@ -184,7 +184,7 @@ class ZoneToday(models.Model):
     class Meta:
         managed = True
         db_table = 'maps\".\"zone_today'
-        unique_together = (('zone_id','date_time'))
+        unique_together = (('zone_id','datetime'))
         index_together = [
-            ("zone_id", "date_time"),
+            ("zone_id", "datetime"),
         ]

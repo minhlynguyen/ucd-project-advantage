@@ -1,7 +1,7 @@
 UPDATE maps.zone_today AS p
 SET 
 zone_id = q.zone_id,
-date_time = q.date_time,
+datetime = q.datetime,
 entertainment_and_recreation = q.entertainment_and_recreation,
 financial_services = q.financial_services,
 food_and_beverage = q.food_and_beverage,
@@ -18,7 +18,7 @@ holiday = q.holiday
 FROM (
 SELECT
 	taxi_zone_id as zone_id,
-	datetime as date_time, 
+	datetime, 
 	impression_predict,
 	entertainment_and_recreation, 
 	financial_services, 
@@ -34,8 +34,8 @@ SELECT
 	total_business,
 	holiday
 FROM maps.zone_detail
-WHERE date(datetime) = CURRENT_DATE
+WHERE date(datetime AT TIME ZONE 'America/New_York' ) = CURRENT_DATE
 ) AS q
 WHERE p.zone_id = q.zone_id
-AND EXTRACT(HOUR FROM p.date_time) = EXTRACT(HOUR FROM q.date_time)
+AND EXTRACT(HOUR FROM p.datetime) = EXTRACT(HOUR FROM q.datetime)
 ;
