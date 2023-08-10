@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate} from "react-router-dom";
 import './SolutionsContent.css';
 import FunctionModule from './FunctionModule';
 import MapModule from './MapModule';
@@ -57,7 +58,8 @@ function SolutionsContent() {
   const [isFetchingGEOM, setIsFetchingGEOM] = useState(false);
   const [isFetchingAdTimeData, setIsFetchingAdTimeData] = useState(false);
   const [collection, setCollection] = useState([]);//list of zones that user saved
-
+  const navigate = useNavigate();
+  
   // fetch impression data
   useEffect(()=>{
     const fetchData = async () => {
@@ -372,10 +374,12 @@ function SolutionsContent() {
   }, []);
 
   const handleClickLikeFab = () => {
-    const currentURL = window.location.href;
-    const urlObject = new URL(currentURL);
-    const likeUrl = new URL('/saved', urlObject);
-    window.open(likeUrl, '_blank');
+    // const currentURL = window.location.href;
+    // const urlObject = new URL(currentURL);
+    // const likeUrl = new URL('/saved', urlObject);
+    // window.open(likeUrl, '_blank');
+
+    navigate('/saved');
   };
 
   const handleClickDifference = () => {
