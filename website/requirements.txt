@@ -10,6 +10,7 @@ django-leaflet==0.29.0
 djangorestframework==3.14.0
 djangorestframework-gis==1.0
 djangorestframework-simplejwt==5.2.2
+gunicorn
 holidays==0.29
 httpie==3.2.2
 idna==3.4
