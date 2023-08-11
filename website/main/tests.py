@@ -5,13 +5,11 @@ from .models import Zone, ZoneDetail, Puma, ZonePuma, Place
 from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
 from rest_framework.test import APIClient
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 from django.urls import reverse
 from user_api.models import AppUser
 from rest_framework.test import APIRequestFactory
 from .models import ZoneDetail
-from .views import zone_hourly
-from .serializers import ZoneDataSerializer, find_key_with_highest_value
+from .serializers import find_key_with_highest_value
 
 
 polygon1 = GEOSGeometry(
@@ -90,7 +88,6 @@ class ZoneDetailModelTestCase(TestCase):
         self.assertEqual(self.zone_detail.zone_time_id, 1)
         self.assertEqual(self.zone_detail.taxi_zone.id, 1)
         self.assertEqual(self.zone_detail.impression_history, 100)
-        # Add more assertions for other fields as needed
 
     def test_unique_constraint(self):
         with self.assertRaises(IntegrityError):
@@ -103,12 +100,9 @@ class ZoneDetailModelTestCase(TestCase):
                 datetime=zone_time.datetime,
             )
 
-    # Add more test methods as needed
-
     def test_default_values(self):
         self.assertEqual(self.zone_detail.entertainment_and_recreation, 10)
         self.assertEqual(self.zone_detail.financial_services, 20)
-        # Add assertions for other default fields
 
 
 class PumaModelTestCase(TestCase):
@@ -165,8 +159,6 @@ class PumaModelTestCase(TestCase):
         self.assertEqual(self.puma.males_85, 950)
         self.assertEqual(self.puma.main_demographic, "Test Demo")
 
-#     # Add more test cases for other methods or functionalities in the Puma model.
-#     # ...
     def test_puma_str_representation(self):
         puma = Puma.objects.get(id=1)
         expected_representation = (
@@ -222,15 +214,10 @@ class ZonePumaModelTestCase(TestCase):
         self.assertEqual(self.zone_puma.zone, self.zone)
         self.assertEqual(self.zone_puma.puma, self.puma)
         self.assertEqual(self.zone_puma.intersection, 0.75)
-        # Add test cases for other ZonePuma attributes here.
-        # ...
 
     def test_zone_puma_str_representation(self):
         expected_str = f"Zone: {self.zone.name}, Puma: Puma ID: {self.puma.id}"
         self.assertEqual(str(self.zone_puma), expected_str)
-
-    # Add more test cases for other methods or functionalities in the ZonePuma model.
-    # ...
 
 
 class PlaceModelTestCase(TestCase):
@@ -258,16 +245,12 @@ class PlaceModelTestCase(TestCase):
         self.assertEqual(self.place.status, "Active")
         self.assertEqual(self.place.small_cate, "Test Small Cate")
         self.assertEqual(self.place.big_cate, "Test Big Cate")
-        # Add more assertions for other Place attributes here.
-        # ...
 
     def test_place_str_representation(self):
         place = Place.objects.get(id=1)
         expected_representation = f"Place(id={place.id}, name='{place.name}', nyc_id='{place.nyc_id}', status='{place.status}')"
         self.assertEqual(str(place), expected_representation)
 
-    # Add more test cases for other methods or functionalities in the Place model.
-    # ...
 class ZoneCensusViewTestCase(TestCase):
 
     def setUp(self):

@@ -1,12 +1,8 @@
-from django.utils import timezone
-from django.http import JsonResponse
 from django.core.serializers import serialize
-import datetime
 from .serializers import ZoneDataSerializer, zone_census_serializer, today_info, today_info_new
 from .models import Place, ZoneDetail
-from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import response
-from rest_framework.decorators import api_view, schema, permission_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum
 import json

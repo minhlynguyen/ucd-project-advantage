@@ -1,9 +1,7 @@
 from rest_framework import serializers
 from .models import ZoneDetail, Place, ZonePuma, Zone, ZoneToday
-# from impression.models import Impression
-from django.core.serializers import serialize
 from rest_framework_gis import serializers as geoserializers
-from django.db.models import Count, Q, Sum, Avg
+from django.db.models import Sum, Avg
 from django.utils import timezone
 import datetime
 
