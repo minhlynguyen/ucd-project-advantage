@@ -1,12 +1,9 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from rest_framework import generics, response
 from rest_framework.response import Response
 from .models import SavedZone
 from main.models import Zone
 from .serializers import SavedSerializer
 from rest_framework import permissions, status
-from rest_framework.decorators import api_view, schema, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes
 from main.serializers import zone_census_serializer, today_info
 
 class SavedZonePermission(permissions.BasePermission):
