@@ -7,6 +7,7 @@ from django.utils.timezone import make_aware
 import pgeocode
 import warnings
 from main.models import Place, Zone
+from decouple import config
 
 def fxn():
     warnings.warn("deprecated", DeprecationWarning)
@@ -23,7 +24,8 @@ class Command(BaseCommand):
         client = Socrata("data.cityofnewyork.us",
                         "EXI398QZgUcSkIww5h9tF5v0u",
                         username="ly.nguyen@ucdconnect.ie",
-                        password="mS.sMHVPLQn5*tU")
+                        password=config("NYC_PASSWORD")
+                        )
         data = client.get(code, limit=limit)
         return data
 

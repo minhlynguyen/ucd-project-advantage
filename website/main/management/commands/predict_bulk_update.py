@@ -4,8 +4,6 @@ from django.db.models import Q
 from django.utils import timezone
 import pickle, datetime, holidays, warnings
 from main.models import ZoneDetail
-import transaction
-
 
 def fxn():
     warnings.warn("deprecated", DeprecationWarning)
