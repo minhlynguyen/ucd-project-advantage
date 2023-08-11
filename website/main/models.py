@@ -1,14 +1,7 @@
-import datetime
-from zoneinfo import ZoneInfo
 from django.db import models as models
-from django.contrib.auth.models import User
 from django.contrib.gis.db import models as geomodels
-from django.contrib.gis.geos import GEOSGeometry
 from django.db.models.query import QuerySet
 from django.utils import timezone
-
-# from impression.models import Impression
-# Create your models here.
 
 # Taxi zone models in maps schema
 class Zone(geomodels.Model):

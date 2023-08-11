@@ -6,7 +6,6 @@ from rest_framework.test import APITestCase
 from .models import SavedZone
 from main.models import Zone
 from user_api.models import AppUser
-# from django.contrib.auth.models import User
 from save_api.views import saved_list, saved_detail
 
 polygon1 = GEOSGeometry(

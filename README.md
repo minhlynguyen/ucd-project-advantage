@@ -132,5 +132,3 @@ website/website: The main project directory containing settings, URLs, and confi
 website/main, user_api, save_api: The apps' directory where you can define models, views, serializers, and other app-specific components.
 requirements.txt: A list of Python dependencies required for the project.
 website/manage.py: A command-line utility to interact with the project.
-Usage and API Endpoints
-Describe the usage of your API endpoints here. Provide examples of requests and expected responses. Include information about authentication and any additional features.
