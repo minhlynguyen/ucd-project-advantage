@@ -1,0 +1,11 @@
+/* /* These styles are not specific to a particular component but rather provide a consistent look and feel across the entire application */
+
+/* root */
+@import url('https://fonts.googleapis.com/css2?family=Dosis');
+@import url('https://fonts.googleapis.com/css2?family=Roboto');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

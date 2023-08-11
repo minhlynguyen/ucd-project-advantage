@@ -1,0 +1,13 @@
+/* This style page styles the App file which will contain all the compenents */
+
+.loader-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Optional: Set the height to fill the viewport */
+    flex-direction: column;
+  }
+
+  .loadingpagespinner{
+    margin-top: -5em;
+  }

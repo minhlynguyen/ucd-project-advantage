@@ -1,0 +1,27 @@
+#!/bin/bash
+
+NAME="website"  #Django application name
+DIR=/home/student/advantage/website   #Directory where project is located
+USER=student   #User to run this script as
+GROUP=student  #Group to run this script as
+WORKERS=5     #Number of workers that Gunicorn should spawn
+SOCKFILE=unix:/home/student/advantage/website/gunicorn.sock   #This socket file will communicate with Nginx 
+DJANGO_SETTINGS_MODULE=website.settings   #Which Django setting file should use
+DJANGO_WSGI_MODULE=website.wsgi           #Which WSGI file should use
+LOG_LEVEL=debug
+
+cd $DIR
+source /home/student/advantage/website/venv/bin/activate  #Activate the virtual environment
+export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export PYTHONPATH=$DIR:$PYTHONPATH
+
+
+#Command to run the progam under supervisor
+exec /home/student/advantage/website/venv/bin/gunicorn ${DJANGO_WSGI_MODULE}:application -b localhost:8000 \
+--name $NAME \
+--workers $WORKERS \
+--user=$USER \
+--group=$GROUP \
+--bind=$SOCKFILE \
+--log-level=$LOG_LEVEL \
+--log-file=-

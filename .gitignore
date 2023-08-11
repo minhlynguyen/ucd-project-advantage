@@ -1,0 +1,19 @@
+data-ingestions/.DS_Store
+.DS_Store
+website/website/.env
+*.xlsx
+node_modules
+*.env
+*.pyc
+/.vscode/
+website/docker-compose.yml
+website/Dockerfile
+delete dupes.py
+*.parquet
+*.json
+*.csv
+*checkpoint.ipynb
+data-analytics/.DS_Store
+data-analytics/train_model_1/.DS_Store
+.DS_Store
+website/.coverage
