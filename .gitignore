@@ -4,7 +4,6 @@ website/website/.env
 *.xlsx
 node_modules
 *.env
-website/requirements.txt
 *.pyc
 /.vscode/
 website/docker-compose.yml
