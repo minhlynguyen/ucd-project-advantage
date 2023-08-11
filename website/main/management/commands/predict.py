@@ -150,6 +150,7 @@ class Command(BaseCommand):
                         FROM temp_holiday_data AS thd
                         WHERE zd.zone_time_id = thd.zone_time_id 
                     """)
+                    print(result.shape,"rows x columns updated")
                     connection.commit()
             finally:
                 connection.close()
