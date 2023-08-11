@@ -80,26 +80,22 @@ class Command(BaseCommand):
                     if business['license_status']=='Active':
                         if small_industry in ('Catering Establishment','Sidewalk Cafe','Third Party Food Delivery'):
                             big_industry = 'Food and Beverage'
-                            # food_and_beverage += food_and_beverage
 
                         elif small_industry in ('Gaming Cafe','Amusement Arcade','Cabaret','Bingo Game Operator',
                                                         'Amusement Device Permanent','Amusement Device Portable',
                                                         'Amusement Device Temporary','Games of Chance',
                                                         'Sightseeing Bus','Sightseeing Guide','Pool or Billiard Room'):
                             big_industry = 'Entertainment and Recreation'
-                            # entertainment_and_recreation += entertainment_and_recreation
 
                         elif small_industry in ('Car Wash','Booting Company','Garage','Garage and Parking Lot','Parking Lot',
                                                         'Secondhand Dealer - Auto','Tow Truck Company','Tow Truck Exemption',
                                                         'Tow Truck Driver'):
                             big_industry = 'Parking and Automotive Services'
-                            # parking_and_automotive_services += parking_and_automotive_services
 
                         elif small_industry in ('Employment Agency','Electronic & Appliance Service','General Vendor Distributor',
                                                         'Process Serving Agency','Scale Dealer Repairer','Scrap Metal Processor',
                                                         'General Vendor','Process Server Individual'):
                             big_industry = 'Professional Services'
-                            # professional_services += professional_services
 
                         elif small_industry in ('Laundry','Laundries','Laundry Jobber','General Vendor Distributor',
                                                         'Newsstand','Electronics Store','Electronic Cigarette Dealer',
@@ -107,24 +103,19 @@ class Command(BaseCommand):
                                                         'Secondhand Dealer - General','Tobacco Retail Dealer',
                                                         'Ticket Seller Business','Stoop Line Stand','Special Sale','Ticket Seller'):
                             big_industry = 'Retail Services'
-                            # retail_services += retail_services
 
                         elif small_industry in ('Debt Collection Agency','Pawnbroker'):
                             big_industry = 'Financial Services'
-                            # financial_services += financial_services
 
                         elif small_industry in ('Construction Labor Provider','Home Improvement Contractor','Commercial Lessor',
                                                         'Auction House Premises','Storage Warehouse','Locksmith','Locksmith Apprentice'):
                             big_industry = 'Real Estate'
-                            # real_estate += real_estate
 
                         elif small_industry in ('Horse Drawn Cab Owner','Pedicab Business','Pedicab Driver','Horse Drawn Driver'):
                             big_industry = 'Transportation'
-                            # transportation += transportation
 
                         else:
                             big_industry = 'Others'
-                            # others += others
 
                     # Check if a record in already in database
                     try:
@@ -144,7 +135,6 @@ class Command(BaseCommand):
                                 long, lat = self.geolocate(business.get('address_zip'))
                                 business['longitude'] = long
                                 business['latitude'] = lat
-                                # print("Zip code", business['address_zip'], "converted to", long, lat, "for Business license", business['license_nbr'])
                             
                             # Find the taxi zones that contains the place
                             long = business['longitude']

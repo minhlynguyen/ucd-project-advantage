@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ZoneDetail, Place, ZonePuma, Zone
+from .models import ZoneDetail, Place, ZonePuma, Zone, ZoneToday
 # from impression.models import Impression
 from django.core.serializers import serialize
 from rest_framework_gis import serializers as geoserializers
@@ -20,6 +20,15 @@ class ZoneDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = ZoneDetail
         fields = ['taxi_zone_id','datetime','impression_predict', 'entertainment_and_recreation',
+                  'financial_services', 'food_and_beverage', 'parking_and_automotive_services',
+                  'professional_services', 'real_estate','retail_services', 'transportation',
+                  'hospital','hotspots','school','total_business','holiday']
+        
+class ZoneTodaySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model=ZoneToday
+        fields = ['zone_id','datetime','impression_predict', 'entertainment_and_recreation',
                   'financial_services', 'food_and_beverage', 'parking_and_automotive_services',
                   'professional_services', 'real_estate','retail_services', 'transportation',
                   'hospital','hotspots','school','total_business','holiday']
@@ -154,6 +163,35 @@ def today_info(id=None):
         data = serializer.data
         for item in data:
             item.pop('taxi_zone_id')
+        return data
+
+def today_info_new(id=None):
+    zones = ZoneToday.objects.all().order_by("zone_id","datetime")
+    if id == None:
+        serializer = ZoneTodaySerializer(zones,many=True)
+        data = serializer.data
+        data = {
+            item["zone_id"]: {
+                "detail": [
+                    {
+                        k: v
+                        for k, v in entry.items()
+                        if k != "zone_id"
+                    }
+                for entry in data
+                if entry["zone_id"] == item["zone_id"]
+                ]
+            }
+            for item in data
+        }
+        return data
+    
+    else:
+        zone = zones.filter(taxi_zone_id=id)
+        serializer = ZoneTodaySerializer(zone,many=True)
+        data = serializer.data
+        for item in data:
+            item.pop('zone_id')
         return data
 
 
