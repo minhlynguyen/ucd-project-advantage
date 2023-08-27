@@ -1,8 +1,31 @@
-# Group-7
+# AdVantage 1.0: An innovative solution to businesses seeking optimal locations for advertisement in New York
 
-Group Project: Collaborative repository for our Computer Science project at UCD. Developing an innovative solution to businesses seeking optimal locations in New York. Code, docs, and communication hub for seamless teamwork. Stay tuned for updates on our progress!
+AdVantage 1.0 is the product of my amazing team of 5 in which I was the Back-end Lead, along with a Co-ordination Lead, a Data Analytics Lead, a Front-end Lead and a Maintenance (DevOps) Lead. 
 
-Follow these steps to set up the project on your local machine:
+Most of the codes in folder [*website*](https://github.com/minhlynguyen/ucd-project-advantage/tree/main/website) are the result of my own research and development in 10 weeks of our Research Practicum Module. I also actively contributed to some other parts of the project such as data cleaning, data features selection, user experience design.
+
+## About the product:
+
+AdVantage is a web-based platform designed to forecast activity levels at various sites throughout New York City (NYC). By leveraging a range of data sources to create a data-centered solution, our goal is to equip advertisers with the insights needed to make informed choices when selecting billboard locations, thus enabling strategic investments.
+
+### User authentication
+
+Homepage is where any user can visit and have a basic understanding of the benefits of using our product, with multiple call-to-action entries to lead them to registering an account. After registering, user is authenticated and has permission to view our Solutions page in which they can use our features. 
+
+<p>
+  <img alt="Home page" src="demo/homepage-without-user-authentication-light.gif" width="30%">
+&nbsp; &nbsp; &nbsp; &nbsp;
+  <img alt="Authenticated user can view Solution page" src="demo/authentication-allow-user-to-view-solutions-light.gif" width="30%">
+</p>
+
+### 24h busyness of the same day across different NYC areas
+
+### Busyness during user's input time range
+
+### Busyness can be filtered by borough and the target audience groups so user can study the number of desired audience they can reach. 
+
+
+# Follow these steps to set up the project on your local machine:
 
 ## Set up the environment
 
