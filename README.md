@@ -98,11 +98,11 @@ For this project, recommended version is Node.js (v18.15.0) and npm (9.5.0).
 
 ### 2. Install dependencies of project
 
-All dependencies for front-end part are listed in `/website/react-app/package.json`.
-Go to front-end folder (`/website/react-app`) and install all dependencies.
+All dependencies for front-end part are listed in `/react-app/package.json`.
+Go to front-end folder (`/react-app`) and install all dependencies.
 
 ```
-cd ./website/react-app/
+cd ./react-app/
 npm install
 ```
 
@@ -111,7 +111,7 @@ npm install
 after installing all the dependencies, we can run the dev environment.
 
 ```
-cd ./website/react-app/
+cd ./react-app/
 npm run dev
 ```
 
