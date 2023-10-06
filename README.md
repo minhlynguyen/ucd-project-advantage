@@ -11,7 +11,7 @@ Follow these steps to set up the project on your local machine:
 Begin by cloning this repository to your local machine using the following command:
 
 ```
-git clone https://github.com/nezebilo/advantage.git
+git clone https://github.com/minhlynguyen/ucd-project-advantage.git
 ```
 
 ### 2. Create a Virtual Environment
